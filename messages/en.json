@@ -1,0 +1,116 @@
+{
+  "nav": {
+    "browse": "Browse Cars",
+    "host": "Become a Host",
+    "list": "List Your Car",
+    "signIn": "Sign In",
+    "getStarted": "Get Started",
+    "dashboard": "Dashboard",
+    "messages": "Messages",
+    "profile": "Profile",
+    "signOut": "Sign Out"
+  },
+  "home": {
+    "hero": {
+      "title": "Rent a car, your way",
+      "subtitle": "Rwanda's leading car rental marketplace. Self-drive or with a driver.",
+      "search": "Search available cars"
+    },
+    "stats": {
+      "cars": "Cars listed",
+      "districts": "Districts covered",
+      "trips": "Trips completed"
+    }
+  },
+  "search": {
+    "title": "Find your perfect car",
+    "location": "Location",
+    "allLocations": "All Locations",
+    "pickupDate": "Pick-up date",
+    "returnDate": "Return date",
+    "search": "Search",
+    "filters": "Filters",
+    "sortBy": "Sort by",
+    "bestMatch": "Best Match",
+    "priceLow": "Price: Low to High",
+    "priceHigh": "Price: High to Low",
+    "topRated": "Top Rated",
+    "noResults": "No cars found",
+    "noResultsDesc": "Try adjusting your search dates or location",
+    "availableIn": "{count} cars available in {location}"
+  },
+  "car": {
+    "bookNow": "Book Now",
+    "requestToBook": "Request to Book",
+    "instantBook": "Book Instantly",
+    "notAvailable": "Not Available",
+    "perDay": "/day",
+    "addDriver": "Add a Driver",
+    "pickup": "Pick-up",
+    "return": "Return",
+    "total": "Total",
+    "days": "{count} day",
+    "days_plural": "{count} days",
+    "platformFee": "Platform fee (10%)",
+    "freeCancel": "Free cancellation up to 24h before pickup",
+    "specifications": "Specifications",
+    "features": "Features",
+    "about": "About this car",
+    "rules": "Rental Rules",
+    "pickupLocation": "Pickup Location",
+    "host": "Meet Your Host",
+    "reviews": "Reviews",
+    "verified": "Verified",
+    "superhost": "Superhost",
+    "new": "New"
+  },
+  "booking": {
+    "review": "Review",
+    "payment": "Payment",
+    "confirmed": "Confirmed",
+    "reviewTitle": "Review Your Booking",
+    "paymentTitle": "Complete Payment",
+    "confirmedTitle": "Booking Confirmed!",
+    "priceBreakdown": "Price Breakdown",
+    "proceed": "Proceed to Payment",
+    "viewBookings": "View My Bookings",
+    "messageHost": "Message Host"
+  },
+  "payment": {
+    "mtn": "MTN MoMo",
+    "airtel": "Airtel Money",
+    "card": "Card",
+    "phoneNumber": "Phone Number",
+    "pay": "Pay {amount}",
+    "processing": "Processing payment...",
+    "securedBy": "Secured by Stripe",
+    "accepted": "Accepted: Visa, Mastercard, Apple Pay, Google Pay"
+  },
+  "dashboard": {
+    "welcome": "Welcome back, {name}!",
+    "manageBookings": "Manage your bookings and account",
+    "activeBookings": "Active Bookings ({count})",
+    "pastBookings": "Past Bookings",
+    "pendingReviews": "Pending Reviews ({count})",
+    "writeReview": "Write Review",
+    "verification": "Verification Status",
+    "nida": "National ID (NIDA)",
+    "license": "Driving Licence",
+    "verified": "Verified",
+    "pending": "Pending",
+    "completeVerification": "Complete verification →",
+    "quickActions": "Quick Actions",
+    "browseCars": "Browse Cars",
+    "listCar": "List Your Car"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "back": "Back",
+    "cancel": "Cancel",
+    "save": "Save",
+    "submit": "Submit",
+    "required": "Required",
+    "optional": "Optional"
+  }
+}

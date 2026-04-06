@@ -1,0 +1,116 @@
+{
+  "nav": {
+    "browse": "Voir les voitures",
+    "host": "Devenir hôte",
+    "list": "Mettre en location",
+    "signIn": "Se connecter",
+    "getStarted": "Commencer",
+    "dashboard": "Tableau de bord",
+    "messages": "Messages",
+    "profile": "Profil",
+    "signOut": "Se déconnecter"
+  },
+  "home": {
+    "hero": {
+      "title": "Louez une voiture, à votre façon",
+      "subtitle": "La principale plateforme de location de voitures au Rwanda. Conduite autonome ou avec chauffeur.",
+      "search": "Rechercher les voitures disponibles"
+    },
+    "stats": {
+      "cars": "Voitures listées",
+      "districts": "Districts couverts",
+      "trips": "Voyages effectués"
+    }
+  },
+  "search": {
+    "title": "Trouvez votre voiture idéale",
+    "location": "Lieu",
+    "allLocations": "Tous les lieux",
+    "pickupDate": "Date de prise en charge",
+    "returnDate": "Date de retour",
+    "search": "Rechercher",
+    "filters": "Filtres",
+    "sortBy": "Trier par",
+    "bestMatch": "Meilleure correspondance",
+    "priceLow": "Prix : croissant",
+    "priceHigh": "Prix : décroissant",
+    "topRated": "Mieux notés",
+    "noResults": "Aucune voiture trouvée",
+    "noResultsDesc": "Essayez de modifier vos dates ou votre lieu",
+    "availableIn": "{count} voitures disponibles à {location}"
+  },
+  "car": {
+    "bookNow": "Réserver maintenant",
+    "requestToBook": "Demander une réservation",
+    "instantBook": "Réservation instantanée",
+    "notAvailable": "Non disponible",
+    "perDay": "/jour",
+    "addDriver": "Ajouter un chauffeur",
+    "pickup": "Prise en charge",
+    "return": "Retour",
+    "total": "Total",
+    "days": "{count} jour",
+    "days_plural": "{count} jours",
+    "platformFee": "Frais de plateforme (10%)",
+    "freeCancel": "Annulation gratuite jusqu'à 24h avant la prise en charge",
+    "specifications": "Spécifications",
+    "features": "Équipements",
+    "about": "À propos de ce véhicule",
+    "rules": "Règles de location",
+    "pickupLocation": "Lieu de prise en charge",
+    "host": "Rencontrez votre hôte",
+    "reviews": "Avis",
+    "verified": "Vérifié",
+    "superhost": "Superhôte",
+    "new": "Nouveau"
+  },
+  "booking": {
+    "review": "Vérification",
+    "payment": "Paiement",
+    "confirmed": "Confirmé",
+    "reviewTitle": "Vérifiez votre réservation",
+    "paymentTitle": "Finaliser le paiement",
+    "confirmedTitle": "Réservation confirmée !",
+    "priceBreakdown": "Détail du prix",
+    "proceed": "Passer au paiement",
+    "viewBookings": "Voir mes réservations",
+    "messageHost": "Envoyer un message à l'hôte"
+  },
+  "payment": {
+    "mtn": "MTN MoMo",
+    "airtel": "Airtel Money",
+    "card": "Carte bancaire",
+    "phoneNumber": "Numéro de téléphone",
+    "pay": "Payer {amount}",
+    "processing": "Traitement en cours...",
+    "securedBy": "Sécurisé par Stripe",
+    "accepted": "Acceptés : Visa, Mastercard, Apple Pay, Google Pay"
+  },
+  "dashboard": {
+    "welcome": "Bon retour, {name} !",
+    "manageBookings": "Gérez vos réservations et votre compte",
+    "activeBookings": "Réservations en cours ({count})",
+    "pastBookings": "Réservations passées",
+    "pendingReviews": "Avis à rédiger ({count})",
+    "writeReview": "Rédiger un avis",
+    "verification": "Statut de vérification",
+    "nida": "Carte d'identité nationale (NIDA)",
+    "license": "Permis de conduire",
+    "verified": "Vérifié",
+    "pending": "En attente",
+    "completeVerification": "Compléter la vérification →",
+    "quickActions": "Actions rapides",
+    "browseCars": "Parcourir les voitures",
+    "listCar": "Mettre ma voiture en location"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Une erreur s'est produite",
+    "back": "Retour",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "submit": "Soumettre",
+    "required": "Obligatoire",
+    "optional": "Facultatif"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "Gari — Car Rental Rwanda",
+  "short_name": "Gari",
+  "description": "Rent a car anywhere in Rwanda",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f1923",
+  "theme_color": "#1a7a4a",
+  "icons": [
+    {
+      "src": "/images/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

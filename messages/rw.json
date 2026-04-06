@@ -1,0 +1,116 @@
+{
+  "nav": {
+    "browse": "Shakisha Imodoka",
+    "host": "Kora nk'Umukiranyi",
+    "list": "Tangaza Imodoka Yawe",
+    "signIn": "Injira",
+    "getStarted": "Tangira",
+    "dashboard": "Ikibaho",
+    "messages": "Ubutumwa",
+    "profile": "Umwirondoro",
+    "signOut": "Sohoka"
+  },
+  "home": {
+    "hero": {
+      "title": "Kodesha imodoka, uburyo bwawe",
+      "subtitle": "Isoko ringoye ryiza rya kodesha imodoka mu Rwanda. Yoye wenyine cyangwa n'umushoferi.",
+      "search": "Shakisha imodoka zihari"
+    },
+    "stats": {
+      "cars": "Imodoka zaratangazwe",
+      "districts": "Uturere twakwikirwa",
+      "trips": "Ingendo zarangiye"
+    }
+  },
+  "search": {
+    "title": "Shaka imodoka ikunezereza",
+    "location": "Ahantu",
+    "allLocations": "Ahantu Hose",
+    "pickupDate": "Itariki yo kwakira",
+    "returnDate": "Itariki yo gusubiza",
+    "search": "Shakisha",
+    "filters": "Inzitizi",
+    "sortBy": "Rondora ukurikiye",
+    "bestMatch": "Ikibonerana Cyiza",
+    "priceLow": "Igiciro: Gito kugeza Kinini",
+    "priceHigh": "Igiciro: Kinini kugeza Gito",
+    "topRated": "Ibyahawe Inyenyeri Nyinshi",
+    "noResults": "Nta modoka zabonetse",
+    "noResultsDesc": "Gerageza guhindura amatariki cyangwa ahantu",
+    "availableIn": "Imodoka {count} zihari muri {location}"
+  },
+  "car": {
+    "bookNow": "Buka Ubu",
+    "requestToBook": "Saba Kubuka",
+    "instantBook": "Buka Ako Kanya",
+    "notAvailable": "Ntahari",
+    "perDay": "/ku munsi",
+    "addDriver": "Ongeraho Umushoferi",
+    "pickup": "Kwakira",
+    "return": "Gusubiza",
+    "total": "Igiteranyo",
+    "days": "Umunsi {count}",
+    "days_plural": "Iminsi {count}",
+    "platformFee": "Amafaranga ya serivisi (10%)",
+    "freeCancel": "Guhagarika ubuntu kugeza amasaha 24 mbere y'ukwakira",
+    "specifications": "Ibiranga",
+    "features": "Ibikoresho",
+    "about": "Ibyerekeye iyi modoka",
+    "rules": "Amabwiriza y'Ubukodesha",
+    "pickupLocation": "Ahantu ho Kwakira",
+    "host": "Umenyane n'Umukiranyi Wawe",
+    "reviews": "Ibitekerezo",
+    "verified": "Byemejwe",
+    "superhost": "Umukiranyi w'Ikirenga",
+    "new": "Gishya"
+  },
+  "booking": {
+    "review": "Suzuma",
+    "payment": "Kwishyura",
+    "confirmed": "Byemejwe",
+    "reviewTitle": "Suzuma Ubukodesha Bwawe",
+    "paymentTitle": "Soza Kwishyura",
+    "confirmedTitle": "Ubukodesha Bwemejwe!",
+    "priceBreakdown": "Ubusobanuro bw'Igiciro",
+    "proceed": "Komeza Kwishyura",
+    "viewBookings": "Reba Ubukodesha Bwanjye",
+    "messageHost": "Ohereza Ubutwme Umukiranyi"
+  },
+  "payment": {
+    "mtn": "MTN MoMo",
+    "airtel": "Airtel Money",
+    "card": "Ikarita",
+    "phoneNumber": "Nomero ya Telefoni",
+    "pay": "Ishyura {amount}",
+    "processing": "Birakurikirwa...",
+    "securedBy": "Bikingirwa na Stripe",
+    "accepted": "Byakiriwe: Visa, Mastercard, Apple Pay, Google Pay"
+  },
+  "dashboard": {
+    "welcome": "Murakaza neza, {name}!",
+    "manageBookings": "Genzura ubukodesha bwawe n'konti yawe",
+    "activeBookings": "Ubukodesha Bwinjira ({count})",
+    "pastBookings": "Ubukodesha Bwashize",
+    "pendingReviews": "Ibitekerezo Bisubirwa ({count})",
+    "writeReview": "Andika Igitekerezo",
+    "verification": "Imiterere y'Inyemezabuguzi",
+    "nida": "Indangamuntu (NIDA)",
+    "license": "Uruhushya rwo Gutwara",
+    "verified": "Byemejwe",
+    "pending": "Birasabwa",
+    "completeVerification": "Soza inyemezabuguzi →",
+    "quickActions": "Ibikorwa Byihuse",
+    "browseCars": "Reba Imodoka",
+    "listCar": "Tangaza Imodoka Yawe"
+  },
+  "common": {
+    "loading": "Birakurikirwa...",
+    "error": "Hari ikibazo cyabaye",
+    "back": "Subira Inyuma",
+    "cancel": "Hagarika",
+    "save": "Bika",
+    "submit": "Ohereza",
+    "required": "Birakenewe",
+    "optional": "Ntibikenewe"
+  }
+}
