@@ -8,7 +8,12 @@
     "dashboard": "Dashboard",
     "messages": "Messages",
     "profile": "Profile",
-    "signOut": "Sign Out"
+    "signOut": "Sign Out",
+    "rentCar": "Rent a Car",
+    "buyCar": "Buy a Car",
+    "sellCar": "Sell Your Car",
+    "earnCar": "Earn with Your Car",
+    "map": "Map"
   },
   "home": {
     "hero": {

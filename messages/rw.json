@@ -8,7 +8,12 @@
     "dashboard": "Ikibaho",
     "messages": "Ubutumwa",
     "profile": "Umwirondoro",
-    "signOut": "Sohoka"
+    "signOut": "Sohoka",
+    "rentCar": "Kodesha Imodoka",
+    "buyCar": "Gura Imodoka",
+    "sellCar": "Gurisha Imodoka Yawe",
+    "earnCar": "Unguka n'Imodoka Yawe",
+    "map": "Ikarita"
   },
   "home": {
     "hero": {

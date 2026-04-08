@@ -8,7 +8,12 @@
     "dashboard": "Tableau de bord",
     "messages": "Messages",
     "profile": "Profil",
-    "signOut": "Se déconnecter"
+    "signOut": "Se déconnecter",
+    "rentCar": "Louer une voiture",
+    "buyCar": "Acheter une voiture",
+    "sellCar": "Vendre votre voiture",
+    "earnCar": "Gagner avec votre voiture",
+    "map": "Carte"
   },
   "home": {
     "hero": {

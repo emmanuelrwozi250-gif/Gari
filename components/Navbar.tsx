@@ -5,16 +5,22 @@ import Image from 'next/image';
 import { useSession, signOut } from 'next-auth/react';
 import { useState } from 'react';
 import { useTheme } from './ThemeProvider';
+import { useLanguage, type Locale } from '@/lib/language';
 import {
   Car, Menu, X, Sun, Moon, User, LogOut, LayoutDashboard,
-  Bell, ChevronDown, PlusCircle, MessageSquare, Tag, TrendingUp, MapPin,
+  Bell, ChevronDown, PlusCircle, MessageSquare, Tag, TrendingUp, MapPin, Globe,
 } from 'lucide-react';
+
+const LOCALE_LABELS: Record<Locale, string> = { en: 'EN', fr: 'FR', rw: 'RW' };
+const LOCALE_FLAGS: Record<Locale, string> = { en: '🇬🇧', fr: '🇫🇷', rw: '🇷🇼' };
 
 export function Navbar() {
   const { data: session } = useSession();
   const { theme, toggleTheme } = useTheme();
+  const { locale, setLocale, t } = useLanguage();
   const [menuOpen, setMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
 
   return (
     <nav className="sticky top-0 z-50 bg-dark-bg text-white shadow-lg">
@@ -32,24 +38,50 @@ export function Navbar() {
           {/* Desktop Nav Links */}
           <div className="hidden md:flex items-center gap-1">
             <Link href="/search" className="px-3 py-2 rounded-xl text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-all flex items-center gap-1.5">
-              <Car className="w-3.5 h-3.5" /> Rent a Car
+              <Car className="w-3.5 h-3.5" /> {t('nav', 'rentCar')}
             </Link>
             <Link href="/buy" className="px-3 py-2 rounded-xl text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-all flex items-center gap-1.5">
-              <Tag className="w-3.5 h-3.5" /> Buy a Car
+              <Tag className="w-3.5 h-3.5" /> {t('nav', 'buyCar')}
             </Link>
             <Link href="/sell" className="px-3 py-2 rounded-xl text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-all flex items-center gap-1.5">
-              <PlusCircle className="w-3.5 h-3.5" /> Sell Your Car
+              <PlusCircle className="w-3.5 h-3.5" /> {t('nav', 'sellCar')}
             </Link>
             <Link href="/earn" className="px-3 py-2 rounded-xl text-sm font-medium text-accent-yellow hover:text-white hover:bg-white/10 transition-all flex items-center gap-1.5">
-              <TrendingUp className="w-3.5 h-3.5" /> Earn with Your Car
+              <TrendingUp className="w-3.5 h-3.5" /> {t('nav', 'earnCar')}
             </Link>
             <Link href="/map" className="px-3 py-2 rounded-xl text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-all flex items-center gap-1.5">
-              <MapPin className="w-3.5 h-3.5" /> Map
+              <MapPin className="w-3.5 h-3.5" /> {t('nav', 'map')}
             </Link>
           </div>
 
           {/* Right side */}
           <div className="hidden md:flex items-center gap-3">
+            {/* Language switcher */}
+            <div className="relative">
+              <button
+                onClick={() => setLangOpen(v => !v)}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-gray-300 hover:text-white hover:bg-white/10 transition-all text-sm"
+              >
+                <Globe className="w-4 h-4" />
+                <span className="font-semibold">{LOCALE_LABELS[locale]}</span>
+              </button>
+              {langOpen && (
+                <div className="absolute right-0 mt-2 w-36 bg-gray-900 border border-white/10 rounded-xl shadow-xl py-1 z-50">
+                  {(['en', 'fr', 'rw'] as Locale[]).map(l => (
+                    <button
+                      key={l}
+                      onClick={() => { setLocale(l); setLangOpen(false); }}
+                      className={`flex items-center gap-2 w-full px-3 py-2 text-sm transition-colors ${
+                        locale === l ? 'text-primary font-semibold bg-primary/10' : 'text-gray-300 hover:bg-white/10'
+                      }`}
+                    >
+                      <span>{LOCALE_FLAGS[l]}</span>
+                      <span>{{ en: 'English', fr: 'Français', rw: 'Kinyarwanda' }[l]}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
             <button
               onClick={toggleTheme}
               className="p-2 rounded-xl text-gray-400 hover:text-white hover:bg-white/10 transition-all"
@@ -120,10 +152,10 @@ export function Navbar() {
             ) : (
               <div className="flex items-center gap-2">
                 <Link href="/login" className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors">
-                  Sign In
+                  {t('nav', 'signIn')}
                 </Link>
                 <Link href="/register" className="btn-primary text-sm py-2 px-5">
-                  Get Started
+                  {t('nav', 'getStarted')}
                 </Link>
               </div>
             )}
@@ -200,6 +232,19 @@ export function Navbar() {
             <button onClick={toggleTheme} className="p-2 rounded-xl text-gray-400 hover:bg-white/10">
               {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
+          </div>
+          <div className="flex items-center gap-1 px-4 pt-1 pb-2">
+            {(['en', 'fr', 'rw'] as Locale[]).map(l => (
+              <button
+                key={l}
+                onClick={() => { setLocale(l); setMenuOpen(false); }}
+                className={`flex-1 py-2 rounded-xl text-xs font-semibold transition-colors ${
+                  locale === l ? 'bg-primary text-white' : 'bg-white/10 text-gray-300'
+                }`}
+              >
+                {LOCALE_FLAGS[l]} {LOCALE_LABELS[l]}
+              </button>
+            ))}
           </div>
         </div>
       )}
