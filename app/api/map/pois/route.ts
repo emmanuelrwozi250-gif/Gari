@@ -12,6 +12,8 @@ import { prisma } from '@/lib/prisma';
 import { fetchPOIsFromOverpass } from '@/lib/overpass';
 import { boundingBox } from '@/lib/rwandaCoords';
 
+export const dynamic = 'force-dynamic';
+
 const CACHE_TTL_HOURS = 24;
 
 export async function GET(req: NextRequest) {

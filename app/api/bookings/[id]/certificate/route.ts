@@ -11,17 +11,29 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { formatDate, formatRWF } from '@/lib/utils';
 
+export const dynamic = 'force-dynamic';
+
+function esc(str: string | null | undefined): string {
+  if (!str) return '';
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
 export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
   const session = await getServerSession(authOptions);
   if (!session?.user) return new NextResponse('Unauthorized', { status: 401 });
 
-  const booking = await prisma.booking.findUnique({
-    where: { id: params.id },
-    include: {
-      car: { include: { host: { select: { name: true, phone: true, email: true } } } },
-      renter: { select: { name: true, email: true, phone: true, nidaNumber: true } },
-    },
-  });
+  let booking;
+  try {
+    booking = await prisma.booking.findUnique({
+      where: { id: params.id },
+      include: {
+        car: { include: { host: { select: { name: true, phone: true, email: true } } } },
+        renter: { select: { name: true, email: true, phone: true, nidaNumber: true } },
+      },
+    });
+  } catch {
+    return new NextResponse('Database error', { status: 500 });
+  }
 
   if (!booking) return new NextResponse('Booking not found', { status: 404 });
 
@@ -110,19 +122,19 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
 
     <div class="section-title">Insured Party (Renter)</div>
     <div class="grid">
-      <div class="field"><div class="field-label">Full Name</div><div class="field-value">${booking.renter.name || '—'}</div></div>
-      <div class="field"><div class="field-label">Email</div><div class="field-value">${booking.renter.email}</div></div>
-      <div class="field"><div class="field-label">Phone</div><div class="field-value">${booking.renter.phone || '—'}</div></div>
-      <div class="field"><div class="field-label">National ID (NIDA)</div><div class="field-value">${booking.renter.nidaNumber || 'Not Provided'}</div></div>
+      <div class="field"><div class="field-label">Full Name</div><div class="field-value">${esc(booking.renter.name) || '—'}</div></div>
+      <div class="field"><div class="field-label">Email</div><div class="field-value">${esc(booking.renter.email)}</div></div>
+      <div class="field"><div class="field-label">Phone</div><div class="field-value">${esc(booking.renter.phone) || '—'}</div></div>
+      <div class="field"><div class="field-label">National ID (NIDA)</div><div class="field-value">${esc(booking.renter.nidaNumber) || 'Not Provided'}</div></div>
     </div>
 
     <div class="section-title">Vehicle Details</div>
     <div class="grid-3">
-      <div class="field"><div class="field-label">Vehicle</div><div class="field-value">${booking.car.year} ${booking.car.make} ${booking.car.model}</div></div>
-      <div class="field"><div class="field-label">Type</div><div class="field-value">${booking.car.type.replace(/_/g, ' ')}</div></div>
-      <div class="field"><div class="field-label">Fuel</div><div class="field-value">${booking.car.fuel}</div></div>
+      <div class="field"><div class="field-label">Vehicle</div><div class="field-value">${esc(String(booking.car.year))} ${esc(booking.car.make)} ${esc(booking.car.model)}</div></div>
+      <div class="field"><div class="field-label">Type</div><div class="field-value">${esc(booking.car.type.replace(/_/g, ' '))}</div></div>
+      <div class="field"><div class="field-label">Fuel</div><div class="field-value">${esc(booking.car.fuel)}</div></div>
       <div class="field"><div class="field-label">Seats</div><div class="field-value">${booking.car.seats}</div></div>
-      <div class="field"><div class="field-label">District</div><div class="field-value">${booking.car.district}</div></div>
+      <div class="field"><div class="field-label">District</div><div class="field-value">${esc(booking.car.district)}</div></div>
       <div class="field"><div class="field-label">With Driver</div><div class="field-value">${booking.withDriver ? 'Yes' : 'No'}</div></div>
     </div>
 
@@ -165,7 +177,7 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
       </div>
       <div class="sig-box">
         <div class="sig-line"></div>
-        <div class="sig-name">${booking.car.host.name || 'Vehicle Owner'}</div>
+        <div class="sig-name">${esc(booking.car.host.name) || 'Vehicle Owner'}</div>
         <div class="sig-role">Vehicle Host</div>
       </div>
     </div>

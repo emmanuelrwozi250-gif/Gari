@@ -11,6 +11,8 @@ import { prisma } from '@/lib/prisma';
 import { sendWhatsApp } from '@/lib/notifications/whatsapp';
 import { z } from 'zod';
 
+export const dynamic = 'force-dynamic';
+
 const schema = z.object({
   buyerName: z.string().min(2),
   buyerPhone: z.string().min(9),

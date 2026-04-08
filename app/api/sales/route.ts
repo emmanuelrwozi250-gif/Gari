@@ -10,6 +10,8 @@ import { prisma } from '@/lib/prisma';
 import { z } from 'zod';
 import { addDays } from 'date-fns';
 
+export const dynamic = 'force-dynamic';
+
 const TIER_DAYS: Record<string, number> = { BASIC: 30, STANDARD: 60, PREMIUM: 90 };
 const TIER_PRICE: Record<string, number> = { BASIC: 0, STANDARD: 5000, PREMIUM: 15000 };
 

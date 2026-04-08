@@ -21,6 +21,8 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { z } from 'zod';
 
+export const dynamic = 'force-dynamic';
+
 const submitSchema = z.object({
   saccoName: z.string().min(2).max(120),
   saccoMemberId: z.string().min(2).max(60),

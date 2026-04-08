@@ -9,6 +9,8 @@ import { prisma } from '@/lib/prisma';
 import { getDynamicMultiplier, applyMultiplier, formatMultiplier } from '@/lib/pricing';
 import { calculateBookingFees } from '@/lib/utils';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   const { searchParams } = new URL(req.url);
   const pickupDate = searchParams.get('pickupDate');
@@ -25,16 +27,26 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     return NextResponse.json({ error: 'Invalid date range' }, { status: 400 });
   }
 
-  const car = await prisma.car.findUnique({
-    where: { id: params.id },
-    select: { pricePerDay: true, driverPricePerDay: true, district: true, isAvailable: true },
-  });
+  let car;
+  try {
+    car = await prisma.car.findUnique({
+      where: { id: params.id },
+      select: { pricePerDay: true, driverPricePerDay: true, district: true, isAvailable: true },
+    });
+  } catch {
+    return NextResponse.json({ error: 'Database error' }, { status: 500 });
+  }
 
   if (!car) return NextResponse.json({ error: 'Car not found' }, { status: 404 });
 
   const totalDays = Math.max(1, Math.ceil((ret.getTime() - pickup.getTime()) / (1000 * 60 * 60 * 24)));
 
-  const pricing = await getDynamicMultiplier(pickup, ret, car.district, prisma);
+  let pricing;
+  try {
+    pricing = await getDynamicMultiplier(pickup, ret, car.district, prisma);
+  } catch {
+    pricing = { multiplier: 1, reason: 'Standard rate', factors: [] as any[] };
+  }
 
   const adjustedPricePerDay = applyMultiplier(car.pricePerDay, pricing.multiplier);
   const adjustedDriverPrice = withDriver && car.driverPricePerDay

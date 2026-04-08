@@ -5,6 +5,8 @@ import { prisma } from '@/lib/prisma';
 import { z } from 'zod';
 import { notifyUser } from '@/lib/notifications';
 
+export const dynamic = 'force-dynamic';
+
 const bookingSchema = z.object({
   carId: z.string().min(1),
   pickupDate: z.string(),

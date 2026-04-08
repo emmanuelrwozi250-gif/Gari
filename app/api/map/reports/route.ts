@@ -8,6 +8,8 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { boundingBox } from '@/lib/rwandaCoords';
 
+export const dynamic = 'force-dynamic';
+
 const EXPIRY_HOURS: Record<string, number> = {
   TRAFFIC: 2,
   ACCIDENT: 4,

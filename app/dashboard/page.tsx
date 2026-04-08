@@ -18,23 +18,28 @@ export default async function DashboardPage() {
 
   const userId = (session.user as any).id;
 
-  const [user, bookings, notifications] = await Promise.all([
-    prisma.user.findUnique({
-      where: { id: userId },
-      select: { name: true, email: true, avatar: true, role: true, nidaVerified: true, licenseVerified: true, createdAt: true },
-    }),
-    prisma.booking.findMany({
-      where: { renterId: userId },
-      include: { car: { include: { host: { select: { name: true, avatar: true } } } }, review: true },
-      orderBy: { createdAt: 'desc' },
-      take: 10,
-    }),
-    prisma.notification.findMany({
-      where: { userId, read: false },
-      orderBy: { createdAt: 'desc' },
-      take: 5,
-    }),
-  ]);
+  let user: any = null, bookings: any[] = [], notifications: any[] = [];
+  try {
+    [user, bookings, notifications] = await Promise.all([
+      prisma.user.findUnique({
+        where: { id: userId },
+        select: { name: true, email: true, avatar: true, role: true, nidaVerified: true, licenseVerified: true, createdAt: true },
+      }),
+      prisma.booking.findMany({
+        where: { renterId: userId },
+        include: { car: { include: { host: { select: { name: true, avatar: true } } } }, review: true },
+        orderBy: { createdAt: 'desc' },
+        take: 10,
+      }),
+      prisma.notification.findMany({
+        where: { userId, read: false },
+        orderBy: { createdAt: 'desc' },
+        take: 5,
+      }),
+    ]);
+  } catch {
+    // DB not connected yet — show empty dashboard
+  }
 
   if (!user) redirect('/login');
 
