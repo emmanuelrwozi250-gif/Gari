@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { formatRWF } from '@/lib/utils';
-import { Car, AlertTriangle, Layers, Navigation, X, Star, MapPin, Clock, Zap, Plus, Crosshair, WifiOff, Volume2, VolumeX } from 'lucide-react';
+import { Car, AlertTriangle, Layers, Navigation, X, Star, MapPin, Clock, Zap, Plus, Crosshair, WifiOff, Volume2, VolumeX, Search, ChevronRight, Satellite } from 'lucide-react';
 import { useLocationAwareness, type POIPreferences } from './useLocationAwareness';
 import { POIOverlay } from './POIOverlay';
 import { POISettingsPanel } from './POISettingsPanel';
@@ -76,6 +76,8 @@ export function MobilityMap() {
   const lastFetchCoordsRef = useRef<{ lat: number; lng: number } | null>(null);
   const isCenteredRef = useRef(false);
   const sseStreamCenterRef = useRef<{ lat: number; lng: number } | null>(null);
+  const tileLayerRef = useRef<any>(null);
+  const satelliteTileRef = useRef<any>(null);
 
   const [cars, setCars] = useState<MapCar[]>([]);
   const [reports, setReports] = useState<MapReport[]>([]);
@@ -92,6 +94,12 @@ export function MobilityMap() {
   const [routeDestName, setRouteDestName] = useState('');
   const [mapCenter, setMapCenter] = useState({ lat: -1.9441, lng: 30.0619 });
   const [isLoading, setIsLoading] = useState(true);
+  const [satelliteMode, setSatelliteMode] = useState(false);
+  const [showDirections, setShowDirections] = useState(false);
+  const [directionsQuery, setDirectionsQuery] = useState('');
+  const [geocodeResults, setGeoResults] = useState<{ lat: number; lng: number; name: string }[]>([]);
+  const [routeSteps, setRouteSteps] = useState<{ instruction: string; distance: number; duration: number }[]>([]);
+  const [isGeocoding, setIsGeocoding] = useState(false);
 
   // ─── Live Location Awareness state ──────────────────────────────────────────
   const [heading, setHeading] = useState(NaN);
@@ -145,7 +153,7 @@ export function MobilityMap() {
       });
 
       // OSM tiles
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      tileLayerRef.current = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
         maxZoom: 19,
       }).addTo(map);
@@ -476,53 +484,87 @@ export function MobilityMap() {
     }).catch(() => {});
   }, [layers.heatmap]);
 
-  // ─── Route to a car ──────────────────────────────────────────────────────────
-  const routeToCar = useCallback(async (car: MapCar) => {
-    if (!userLocation) {
-      alert('Enable location to get directions');
-      return;
-    }
+  const clearRoute = useCallback(() => {
+    routeLayerRef.current?.clearLayers();
+    setRouteResult(null);
+    setRouteSteps([]);
+    setLayers(l => ({ ...l, route: false }));
+  }, []);
+
+  // ─── Satellite tile toggle ───────────────────────────────────────────────────
+  useEffect(() => {
+    if (!mapInstanceRef.current) return;
+    import('leaflet').then(({ default: L }) => {
+      const map = mapInstanceRef.current;
+      if (satelliteMode) {
+        if (tileLayerRef.current) map.removeLayer(tileLayerRef.current);
+        if (!satelliteTileRef.current) {
+          satelliteTileRef.current = L.tileLayer(
+            'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+            { attribution: '© Esri World Imagery', maxZoom: 19 }
+          );
+        }
+        satelliteTileRef.current.addTo(map);
+      } else {
+        if (satelliteTileRef.current) map.removeLayer(satelliteTileRef.current);
+        if (tileLayerRef.current) tileLayerRef.current.addTo(map);
+      }
+    });
+  }, [satelliteMode]);
+
+  // ─── Geocoding (Nominatim) ───────────────────────────────────────────────────
+  const geocode = useCallback(async (query: string) => {
+    setDirectionsQuery(query);
+    if (!query.trim()) { setGeoResults([]); return; }
+    setIsGeocoding(true);
+    try {
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query + ', Rwanda')}&format=json&limit=5`,
+        { headers: { 'Accept-Language': 'en' } }
+      );
+      const data = await res.json();
+      setGeoResults(data.map((r: any) => ({
+        lat: Number(r.lat),
+        lng: Number(r.lon),
+        name: r.display_name.split(',').slice(0, 3).join(', '),
+      })));
+    } catch { /* silent */ }
+    finally { setIsGeocoding(false); }
+  }, []);
+
+  // ─── Route to any destination ────────────────────────────────────────────────
+  const routeToDestination = useCallback(async (dest: { lat: number; lng: number }, name: string) => {
+    if (!userLocation) { alert('Enable location to get directions'); return; }
     setIsRouting(true);
-    setRouteDestName(`${car.year} ${car.make} ${car.model}`);
+    setRouteDestName(name);
+    setGeoResults([]);
+    setDirectionsQuery(name);
     try {
       const res = await fetch('/api/map/routing', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          origin: userLocation,
-          destination: { lat: car.lat, lng: car.lng },
-        }),
+        body: JSON.stringify({ origin: userLocation, destination: dest }),
       });
       const data = await res.json();
       if (data.route) {
         setRouteResult(data);
+        setRouteSteps(data.steps || []);
         setLayers(l => ({ ...l, route: true }));
-        // Draw route on map
         import('leaflet').then(({ default: L }) => {
           routeLayerRef.current?.clearLayers();
           const coords = data.route.coordinates.map(([lng, lat]: [number, number]) => [lat, lng]);
-          L.polyline(coords, {
-            color: '#1a7a4a',
-            weight: 5,
-            opacity: 0.8,
-          }).addTo(routeLayerRef.current);
-          // Fit map to route
-          const bounds = L.latLngBounds(coords);
-          mapInstanceRef.current.fitBounds(bounds, { padding: [60, 60] });
+          L.polyline(coords, { color: '#1a7a4a', weight: 5, opacity: 0.8 }).addTo(routeLayerRef.current);
+          mapInstanceRef.current.fitBounds(L.latLngBounds(coords), { padding: [60, 60] });
         });
       }
-    } catch {
-      alert('Could not calculate route. Please try again.');
-    } finally {
-      setIsRouting(false);
-    }
+    } catch { alert('Could not calculate route. Please try again.'); }
+    finally { setIsRouting(false); }
   }, [userLocation]);
 
-  const clearRoute = useCallback(() => {
-    routeLayerRef.current?.clearLayers();
-    setRouteResult(null);
-    setLayers(l => ({ ...l, route: false }));
-  }, []);
+  // ─── Route to a car ──────────────────────────────────────────────────────────
+  const routeToCar = useCallback((car: MapCar) => {
+    routeToDestination({ lat: car.lat, lng: car.lng }, `${car.year} ${car.make} ${car.model}`);
+  }, [routeToDestination]);
 
   // ─── Live Location Awareness ─────────────────────────────────────────────────
   const { nearbyPOIs, currentAnnouncement, isAnnouncing, announcedCount } = useLocationAwareness({
@@ -598,6 +640,79 @@ export function MobilityMap() {
         </div>
       )}
 
+      {/* Directions search panel */}
+      {showDirections && !isLoading && (
+        <div className="absolute top-20 left-4 right-4 z-[998]">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-3">
+            <div className="flex items-center gap-2 mb-2">
+              <Navigation className="w-4 h-4 text-primary flex-shrink-0" />
+              <span className="text-xs font-semibold text-text-secondary dark:text-gray-400">From: My location</span>
+            </div>
+            <div className="relative flex items-center gap-2">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-light" />
+                <input
+                  type="text"
+                  value={directionsQuery}
+                  onChange={e => geocode(e.target.value)}
+                  placeholder="Where to? (e.g. Kigali Convention Centre)"
+                  className="w-full pl-9 pr-3 py-2.5 text-sm border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-800 dark:text-white"
+                  autoFocus
+                />
+                {isGeocoding && (
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                )}
+              </div>
+              <button
+                onClick={() => { setShowDirections(false); setGeoResults([]); clearRoute(); }}
+                className="p-2 rounded-xl bg-gray-100 dark:bg-gray-800 text-text-secondary hover:bg-gray-200 transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            {/* Geocode results */}
+            {geocodeResults.length > 0 && (
+              <div className="mt-2 space-y-1 max-h-52 overflow-y-auto">
+                {geocodeResults.map((r, i) => (
+                  <button
+                    key={i}
+                    onClick={() => routeToDestination({ lat: r.lat, lng: r.lng }, r.name)}
+                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-left"
+                  >
+                    <MapPin className="w-4 h-4 text-primary flex-shrink-0" />
+                    <span className="text-sm text-text-primary dark:text-white truncate">{r.name}</span>
+                    <ChevronRight className="w-4 h-4 text-text-light ml-auto flex-shrink-0" />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+          {/* Turn-by-turn steps */}
+          {routeSteps.length > 0 && (
+            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl mt-2 max-h-52 overflow-y-auto">
+              <div className="px-4 py-2 border-b border-border">
+                <span className="text-xs font-semibold text-text-secondary dark:text-gray-400 uppercase tracking-wide">Turn-by-turn directions</span>
+              </div>
+              {routeSteps.map((step, i) => (
+                <div key={i} className="flex items-start gap-3 px-4 py-2.5 border-b border-border/50 last:border-0">
+                  <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-primary text-xs font-bold">{i + 1}</span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm text-text-primary dark:text-white">{step.instruction}</div>
+                    <div className="text-xs text-text-light mt-0.5">
+                      {step.distance < 1000 ? `${step.distance}m` : `${(step.distance / 1000).toFixed(1)}km`}
+                      {' · '}
+                      {step.duration < 60 ? `${step.duration}s` : `${Math.ceil(step.duration / 60)}min`}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Top bar */}
       {!isLoading && (
         <div className="absolute top-4 left-4 right-4 z-[999] flex items-center gap-2">
@@ -657,6 +772,19 @@ export function MobilityMap() {
               <X className="w-4 h-4 text-text-secondary" />
             </button>
           </div>
+          {/* Satellite toggle */}
+          <label className="flex items-center justify-between py-2 cursor-pointer border-b border-border mb-1">
+            <div className="flex items-center gap-2 text-sm text-text-secondary dark:text-gray-300">
+              <Satellite className="w-4 h-4 text-blue-500" />
+              Satellite
+            </div>
+            <div
+              onClick={() => setSatelliteMode(v => !v)}
+              className={`w-10 h-5 rounded-full transition-colors relative cursor-pointer ${satelliteMode ? 'bg-blue-500' : 'bg-gray-300'}`}
+            >
+              <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${satelliteMode ? 'translate-x-5' : 'translate-x-0.5'}`} />
+            </div>
+          </label>
           {(Object.keys(layers) as (keyof MapLayers)[])
             .filter(k => k !== 'route')
             .map(key => (
@@ -707,6 +835,19 @@ export function MobilityMap() {
             </div>
           )}
         </div>
+      )}
+
+      {/* Directions button */}
+      {!isLoading && (
+        <button
+          onClick={() => { setShowDirections(v => !v); setGeoResults([]); }}
+          title="Get Directions"
+          className={`absolute bottom-64 right-4 z-[999] rounded-full p-3.5 shadow-xl transition-all active:scale-95 ${
+            showDirections ? 'bg-primary text-white' : 'bg-white dark:bg-gray-800 text-primary hover:bg-gray-50'
+          }`}
+        >
+          <Navigation className="w-5 h-5" />
+        </button>
       )}
 
       {/* Center on Me button */}

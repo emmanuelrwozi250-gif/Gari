@@ -82,13 +82,31 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    const steps = (route.legs[0]?.steps || [])
+      .filter((s: any) => s.maneuver?.type !== 'depart' || s.name)
+      .map((s: any) => {
+        const type = s.maneuver?.type || '';
+        const mod = s.maneuver?.modifier || '';
+        const name = s.name || 'the road';
+        let instruction = '';
+        if (type === 'depart') instruction = `Head ${mod} on ${name}`;
+        else if (type === 'arrive') instruction = 'Arrive at destination';
+        else if (type === 'turn') instruction = `Turn ${mod} onto ${name}`;
+        else if (type === 'roundabout' || type === 'rotary') instruction = `Take the roundabout onto ${name}`;
+        else if (type === 'continue' || type === 'new name') instruction = `Continue on ${name}`;
+        else if (type === 'merge') instruction = `Merge onto ${name}`;
+        else instruction = `${type} ${mod} ${name}`.trim();
+        return { instruction, distance: Math.round(s.distance), duration: Math.round(s.duration) };
+      });
+
     return NextResponse.json({
-      route: route.geometry,           // GeoJSON LineString
-      distance: route.distance,        // metres
-      duration: route.duration,        // seconds
+      route: route.geometry,
+      distance: route.distance,
+      duration: route.duration,
       distanceKm: (route.distance / 1000).toFixed(1),
       durationMin: Math.ceil(route.duration / 60),
       warnings,
+      steps,
     });
   } catch (err: any) {
     console.error('[routing]', err);
