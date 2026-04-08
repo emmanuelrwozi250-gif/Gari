@@ -16,17 +16,20 @@ export async function GET(req: NextRequest) {
   const type = searchParams.get('type');
   const district = searchParams.get('district');
 
-  const listings = await prisma.buyEarnListing.findMany({
-    where: {
-      isActive: true,
-      ...(type && { type: type as any }),
-      ...(district && { district }),
-    },
-    orderBy: { createdAt: 'desc' },
-    take: 24,
-  });
-
-  return NextResponse.json(listings);
+  try {
+    const listings = await prisma.buyEarnListing.findMany({
+      where: {
+        isActive: true,
+        ...(type && { type: type as any }),
+        ...(district && { district }),
+      },
+      orderBy: { createdAt: 'desc' },
+      take: 24,
+    });
+    return NextResponse.json(listings);
+  } catch {
+    return NextResponse.json([], { status: 200 });
+  }
 }
 
 export async function POST(req: NextRequest) {

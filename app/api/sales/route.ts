@@ -67,18 +67,21 @@ export async function GET(req: NextRequest) {
     : sortBy === 'price_desc' ? { askingPrice: 'desc' }
     : { createdAt: 'desc' };
 
-  const [listings, total] = await Promise.all([
-    prisma.salesListing.findMany({
-      where,
-      orderBy,
-      skip: (page - 1) * limit,
-      take: limit,
-      include: { seller: { select: { name: true, nidaVerified: true, trustScore: true } } },
-    }),
-    prisma.salesListing.count({ where }),
-  ]);
-
-  return NextResponse.json({ listings, total, page, pages: Math.ceil(total / limit) });
+  try {
+    const [listings, total] = await Promise.all([
+      prisma.salesListing.findMany({
+        where,
+        orderBy,
+        skip: (page - 1) * limit,
+        take: limit,
+        include: { seller: { select: { name: true, nidaVerified: true, trustScore: true } } },
+      }),
+      prisma.salesListing.count({ where }),
+    ]);
+    return NextResponse.json({ listings, total, page, pages: Math.ceil(total / limit) });
+  } catch {
+    return NextResponse.json({ listings: [], total: 0, page: 1, pages: 0 });
+  }
 }
 
 export async function POST(req: NextRequest) {
