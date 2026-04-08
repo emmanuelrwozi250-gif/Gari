@@ -226,3 +226,4 @@ The app includes all **30 Rwanda districts** across 5 provinces with GPS coordin
 ## License
 
 MIT © Gari Technologies Ltd
+# Gari
