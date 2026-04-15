@@ -238,6 +238,7 @@ model Booking {
   referralCode           String?   // agent referral code used at booking
   referralCommission     Int       @default(0)
   notes                  String?
+  reviewRequestSentAt    DateTime? // when review-reminder WhatsApp was sent
   createdAt              DateTime      @default(now())
   updatedAt              DateTime      @updatedAt
 

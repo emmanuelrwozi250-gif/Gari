@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Tag, MapPin, Gauge, Calendar, BadgeCheck, Search } from 'lucide-react';
 import type { Metadata } from 'next';
+import { DEMO_SALES_LISTINGS } from '@/lib/demo-sales';
 
 export const metadata: Metadata = {
   title: 'Buy a Verified Used Car in Rwanda · Gari',
@@ -56,7 +57,13 @@ export default async function BuyPage({
       prisma.salesListing.count({ where }),
     ]);
   } catch {
-    // DB not ready yet — show empty state rather than crashing
+    // DB not ready yet — fall through to demo data
+  }
+
+  // No DB records yet — show demo listings so the page is never empty
+  if (listings.length === 0 && !searchParams.make && !searchParams.district && !searchParams.minPrice && !searchParams.minYear) {
+    listings = DEMO_SALES_LISTINGS;
+    total = DEMO_SALES_LISTINGS.length;
   }
 
   return (

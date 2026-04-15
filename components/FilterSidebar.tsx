@@ -48,7 +48,7 @@ export function FilterSidebar({ searchParams, onChange }: FilterSidebarProps) {
 
       {/* Listing Type */}
       <div>
-        <label className="label">Listing Type</label>
+        <label className="label">Who owns the car?</label>
         <div className="space-y-2">
           {[
             { value: '', label: 'All' },
@@ -72,7 +72,7 @@ export function FilterSidebar({ searchParams, onChange }: FilterSidebarProps) {
 
       {/* Drive Option */}
       <div>
-        <label className="label">Drive Option</label>
+        <label className="label">Driver</label>
         <label className="flex items-center gap-2 cursor-pointer">
           <input
             type="checkbox"

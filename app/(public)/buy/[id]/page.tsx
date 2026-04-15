@@ -10,87 +10,14 @@ import {
 } from 'lucide-react';
 import { formatRWF, formatDate } from '@/lib/utils';
 import { RWANDA_DISTRICTS } from '@/lib/districts';
+import { DEMO_SALES_LISTINGS as DEMO_ARRAY } from '@/lib/demo-sales';
 import toast from 'react-hot-toast';
 
 const FALLBACK = 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=800&q=80';
 const USD_RATE = 1340;
 
-// DEMO DATA — swap for API call
-const DEMO_SALES_LISTINGS: Record<string, {
-  id: string; make: string; model: string; year: number; mileage: number;
-  condition: string; transmission: string; fuel: string; type: string;
-  colour: string; regNumber: string; askingPrice: number; description: string;
-  photos: string[]; inspectionDone: boolean; listingTier: string;
-  viewCount: number; district: string; createdAt: string; expiresAt: string;
-  seller: { name: string; phone: string; whatsappNumber: string; nidaVerified: boolean; trustScore: number };
-}> = {
-  'demo-sale-001': {
-    id: 'demo-sale-001', make: 'Toyota', model: 'Corolla', year: 2018, mileage: 87000,
-    condition: 'Good', transmission: 'AUTOMATIC', fuel: 'PETROL', type: 'SEDAN',
-    colour: 'Silver', regNumber: 'RAC 782 B', askingPrice: 12500000,
-    description: 'Single owner Toyota Corolla in excellent running condition. Full service history at Toyota Rwanda. Recently serviced with new tyres. Ready for immediate transfer.',
-    photos: ['https://images.unsplash.com/photo-1590362891991-f776e747a588?w=800', 'https://images.unsplash.com/photo-1561020469-fb4e2e20bf52?w=800', 'https://images.unsplash.com/photo-1502877338535-766e1452684a?w=800'],
-    inspectionDone: true, listingTier: 'STANDARD', viewCount: 47, district: 'gasabo',
-    createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-    expiresAt: new Date(Date.now() + 55 * 24 * 60 * 60 * 1000).toISOString(),
-    seller: { name: 'Jean-Pierre Habimana', phone: '+250788123001', whatsappNumber: '+250788123001', nidaVerified: true, trustScore: 92 },
-  },
-  'demo-sale-002': {
-    id: 'demo-sale-002', make: 'Toyota', model: 'Land Cruiser Prado', year: 2016, mileage: 112000,
-    condition: 'Good', transmission: 'AUTOMATIC', fuel: 'DIESEL', type: 'SUV_4X4',
-    colour: 'White', regNumber: 'RAE 441 A', askingPrice: 38000000,
-    description: 'Powerful Land Cruiser Prado TX 3.0L diesel, ideal for upcountry travel. Dual spare tyres, full leather interior, upgraded sound system. Serious buyers only.',
-    photos: ['https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=800', 'https://images.unsplash.com/photo-1563720223185-11003d516935?w=800', 'https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=800'],
-    inspectionDone: false, listingTier: 'PREMIUM', viewCount: 183, district: 'nyarugenge',
-    createdAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
-    expiresAt: new Date(Date.now() + 78 * 24 * 60 * 60 * 1000).toISOString(),
-    seller: { name: 'David Nkurunziza', phone: '+250788123002', whatsappNumber: '+250788123002', nidaVerified: true, trustScore: 88 },
-  },
-  'demo-sale-003': {
-    id: 'demo-sale-003', make: 'Toyota', model: 'Hiace', year: 2017, mileage: 145000,
-    condition: 'Good', transmission: 'MANUAL', fuel: 'DIESEL', type: 'MINIBUS',
-    colour: 'White', regNumber: 'RAB 219 C', askingPrice: 22000000,
-    description: '14-seater Toyota Hiace, currently operating as a shuttle between Kigali and Musanze. High earning potential. Engine overhauled 30,000km ago.',
-    photos: ['https://images.unsplash.com/photo-1570125909232-eb263c188f7e?w=800', 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800'],
-    inspectionDone: true, listingTier: 'STANDARD', viewCount: 94, district: 'kicukiro',
-    createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-    expiresAt: new Date(Date.now() + 57 * 24 * 60 * 60 * 1000).toISOString(),
-    seller: { name: 'Kigali Group Transport', phone: '+250788123003', whatsappNumber: '+250788123003', nidaVerified: true, trustScore: 95 },
-  },
-  'demo-sale-004': {
-    id: 'demo-sale-004', make: 'Toyota', model: 'Hilux', year: 2018, mileage: 98000,
-    condition: 'Excellent', transmission: 'MANUAL', fuel: 'DIESEL', type: 'PICKUP',
-    colour: 'Grey', regNumber: 'RAE 558 B', askingPrice: 28000000,
-    description: 'Well-maintained Hilux Double Cab with bull bar and canopy. One careful owner. Full service history. Price negotiable for serious buyers.',
-    photos: ['https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?w=800', 'https://images.unsplash.com/photo-1519003722824-194d4455a60c?w=800'],
-    inspectionDone: false, listingTier: 'BASIC', viewCount: 62, district: 'gasabo',
-    createdAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
-    expiresAt: new Date(Date.now() + 22 * 24 * 60 * 60 * 1000).toISOString(),
-    seller: { name: 'Immaculée Uwimana', phone: '+250788123004', whatsappNumber: '+250788123004', nidaVerified: false, trustScore: 75 },
-  },
-  'demo-sale-005': {
-    id: 'demo-sale-005', make: 'Honda', model: 'CR-V', year: 2019, mileage: 54000,
-    condition: 'Excellent', transmission: 'AUTOMATIC', fuel: 'PETROL', type: 'SUV_4X4',
-    colour: 'Red', regNumber: 'RAC 103 D', askingPrice: 32000000,
-    description: 'Imported 2019 Honda CR-V in perfect condition. Only 54,000km. All original parts. Purchased new from Rwanda Motors. Transferable warranty available.',
-    photos: ['https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=800', 'https://images.unsplash.com/photo-1526726538690-5cbf956ae2fd?w=800', 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=800'],
-    inspectionDone: true, listingTier: 'PREMIUM', viewCount: 271, district: 'nyarugenge',
-    createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-    expiresAt: new Date(Date.now() + 89 * 24 * 60 * 60 * 1000).toISOString(),
-    seller: { name: 'Mukamusoni Aline', phone: '+250788123005', whatsappNumber: '+250788123005', nidaVerified: true, trustScore: 98 },
-  },
-  'demo-sale-006': {
-    id: 'demo-sale-006', make: 'Toyota', model: 'Vitz', year: 2015, mileage: 72000,
-    condition: 'Fair', transmission: 'AUTOMATIC', fuel: 'PETROL', type: 'ECONOMY',
-    colour: 'Blue', regNumber: 'RAB 987 A', askingPrice: 7500000,
-    description: 'Budget-friendly Toyota Vitz, great for daily Kigali commuting. Minor dent on rear bumper. Engine and gearbox in good condition. AC works.',
-    photos: ['https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=800', 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=800'],
-    inspectionDone: false, listingTier: 'BASIC', viewCount: 38, district: 'kicukiro',
-    createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
-    expiresAt: new Date(Date.now() + 16 * 24 * 60 * 60 * 1000).toISOString(),
-    seller: { name: 'Nzabonimpa Thierry', phone: '+250788123006', whatsappNumber: '+250788123006', nidaVerified: false, trustScore: 70 },
-  },
-};
+// Keyed by id for O(1) lookup
+const DEMO_SALES_LISTINGS = Object.fromEntries(DEMO_ARRAY.map(l => [l.id, l]));
 
 export default function SalesListingPage() {
   const params = useParams();
