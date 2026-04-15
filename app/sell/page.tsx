@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { useSession, signIn } from 'next-auth/react';
 import Link from 'next/link';
 import {
   Tag, ChevronRight, ChevronLeft, CheckCircle, Loader2,
@@ -23,7 +23,7 @@ const TIERS = [
 const STEPS = ['Vehicle Details', 'Photos', 'Verification', 'Listing Tier', 'Review'];
 
 export default function SellPage() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -74,18 +74,85 @@ export default function SellPage() {
     }
   }
 
-  if (!session) {
-    return (
-      <div className="min-h-screen flex items-center justify-center px-4">
-        <div className="text-center max-w-sm">
-          <Tag className="w-12 h-12 text-primary mx-auto mb-4" />
-          <h2 className="text-xl font-bold mb-2">Sign in to sell your car</h2>
-          <p className="text-text-secondary text-sm mb-6">List your car on Rwanda's largest automotive marketplace.</p>
-          <Link href="/login?callbackUrl=/sell" className="btn-primary">Sign In</Link>
+  if (status === 'loading') return <div className="min-h-screen flex items-center justify-center"><div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" /></div>;
+
+  if (!session) return (
+    <div className="min-h-screen bg-white dark:bg-gray-950">
+      {/* Hero */}
+      <section className="bg-gradient-to-br from-emerald-600 to-emerald-800 text-white py-20 px-4">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-1.5 text-sm font-medium mb-6">
+            🚗 Free basic listing
+          </div>
+          <h1 className="text-4xl md:text-5xl font-extrabold mb-4">Sell Your Car Fast in Rwanda</h1>
+          <p className="text-emerald-100 text-lg mb-8 max-w-2xl mx-auto">
+            Reach thousands of verified buyers across all 30 districts. Basic listing is completely free.
+          </p>
+          <button onClick={() => signIn()}
+            className="inline-flex items-center gap-2 bg-accent-yellow text-gray-900 font-bold px-8 py-4 rounded-2xl text-lg hover:bg-yellow-400 transition-colors">
+            List Your Car — It&apos;s Free →
+          </button>
         </div>
-      </div>
-    );
-  }
+      </section>
+
+      {/* How it works */}
+      <section className="py-16 px-4 max-w-4xl mx-auto">
+        <h2 className="text-2xl font-extrabold text-text-primary dark:text-white text-center mb-10">How It Works</h2>
+        <div className="grid md:grid-cols-3 gap-8">
+          {[
+            { step: '01', emoji: '📸', title: 'Create Your Listing', desc: 'Add photos, set your price, and describe your car. Takes less than 10 minutes.' },
+            { step: '02', emoji: '🔔', title: 'Get Notified', desc: 'Receive WhatsApp messages when verified buyers show interest in your car.' },
+            { step: '03', emoji: '🤝', title: 'Complete the Sale', desc: 'Meet at a safe location, inspect together, and transfer ownership via RRA.' },
+          ].map(s => (
+            <div key={s.step} className="text-center">
+              <div className="text-4xl mb-3">{s.emoji}</div>
+              <div className="text-xs font-bold text-primary mb-1">STEP {s.step}</div>
+              <h3 className="font-bold text-lg text-text-primary dark:text-white mb-2">{s.title}</h3>
+              <p className="text-text-secondary text-sm">{s.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Why Gari */}
+      <section className="py-12 bg-gray-bg dark:bg-gray-900 px-4">
+        <div className="max-w-3xl mx-auto">
+          <h2 className="text-2xl font-extrabold text-text-primary dark:text-white text-center mb-8">Why Sell on Gari?</h2>
+          <div className="grid sm:grid-cols-2 gap-4">
+            {[
+              { icon: '✅', title: 'NIDA-verified buyers only', desc: 'Every buyer is identity-verified before they can contact you.' },
+              { icon: '🆓', title: 'Free basic listing', desc: 'List for free and pay only when you upgrade to Premium or Standard.' },
+              { icon: '🌍', title: 'Reach all 30 districts', desc: 'Your listing is visible to buyers across the entire country.' },
+              { icon: '📱', title: 'WhatsApp enquiry system', desc: 'All buyer enquiries come directly to your WhatsApp — no middleman.' },
+            ].map(b => (
+              <div key={b.title} className="card p-5 flex items-start gap-3">
+                <div className="text-2xl flex-shrink-0">{b.icon}</div>
+                <div>
+                  <div className="font-bold text-text-primary dark:text-white text-sm">{b.title}</div>
+                  <div className="text-text-secondary text-xs mt-0.5">{b.desc}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Bottom CTA */}
+      <section className="py-16 px-4 text-center">
+        <h2 className="text-2xl font-extrabold text-text-primary dark:text-white mb-3">Ready to sell your car?</h2>
+        <p className="text-text-secondary mb-6">Create a free account and list in minutes.</p>
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <button onClick={() => signIn()}
+            className="btn-primary px-8 py-3 text-base font-bold">
+            Sign In to List Your Car
+          </button>
+          <Link href="/register" className="btn-secondary px-8 py-3 text-base font-bold">
+            Create Free Account
+          </Link>
+        </div>
+      </section>
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-gray-bg dark:bg-gray-950 py-8 px-4">

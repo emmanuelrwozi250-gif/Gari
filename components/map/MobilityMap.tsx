@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { formatRWF } from '@/lib/utils';
-import { Car, AlertTriangle, Layers, Navigation, X, Star, MapPin, Clock, Zap, Plus, Crosshair, WifiOff, Volume2, VolumeX, Search, ChevronRight, Satellite } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { Car, AlertTriangle, Layers, Navigation, X, Star, MapPin, Clock, Zap, Plus, Crosshair, Volume2, VolumeX, Search, ChevronRight, Satellite } from 'lucide-react';
 import { useLocationAwareness, type POIPreferences } from './useLocationAwareness';
 import { POIOverlay } from './POIOverlay';
 import { POISettingsPanel } from './POISettingsPanel';
@@ -100,6 +101,8 @@ export function MobilityMap() {
   const [geocodeResults, setGeoResults] = useState<{ lat: number; lng: number; name: string }[]>([]);
   const [routeSteps, setRouteSteps] = useState<{ instruction: string; distance: number; duration: number }[]>([]);
   const [isGeocoding, setIsGeocoding] = useState(false);
+  const [locationDeniedDismissed, setLocationDeniedDismissed] = useState(false);
+  const geocodeDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // ─── Live Location Awareness state ──────────────────────────────────────────
   const [heading, setHeading] = useState(NaN);
@@ -512,29 +515,35 @@ export function MobilityMap() {
     });
   }, [satelliteMode]);
 
-  // ─── Geocoding (Nominatim) ───────────────────────────────────────────────────
-  const geocode = useCallback(async (query: string) => {
+  // ─── Geocoding (Nominatim) with debounce ────────────────────────────────────
+  const geocode = useCallback((query: string) => {
     setDirectionsQuery(query);
     if (!query.trim()) { setGeoResults([]); return; }
-    setIsGeocoding(true);
-    try {
-      const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query + ', Rwanda')}&format=json&limit=5`,
-        { headers: { 'Accept-Language': 'en' } }
-      );
-      const data = await res.json();
-      setGeoResults(data.map((r: any) => ({
-        lat: Number(r.lat),
-        lng: Number(r.lon),
-        name: r.display_name.split(',').slice(0, 3).join(', '),
-      })));
-    } catch { /* silent */ }
-    finally { setIsGeocoding(false); }
+    if (geocodeDebounceRef.current) clearTimeout(geocodeDebounceRef.current);
+    geocodeDebounceRef.current = setTimeout(async () => {
+      setIsGeocoding(true);
+      try {
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query + ', Rwanda')}&format=json&limit=5`,
+          { headers: { 'Accept-Language': 'en' } }
+        );
+        const data = await res.json();
+        setGeoResults(data.map((r: any) => ({
+          lat: Number(r.lat),
+          lng: Number(r.lon),
+          name: r.display_name.split(',').slice(0, 3).join(', '),
+        })));
+      } catch { /* silent */ }
+      finally { setIsGeocoding(false); }
+    }, 400);
   }, []);
 
   // ─── Route to any destination ────────────────────────────────────────────────
   const routeToDestination = useCallback(async (dest: { lat: number; lng: number }, name: string) => {
-    if (!userLocation) { alert('Enable location to get directions'); return; }
+    if (!userLocation) {
+      toast.error('Enable location to get directions');
+      return;
+    }
     setIsRouting(true);
     setRouteDestName(name);
     setGeoResults([]);
@@ -556,8 +565,11 @@ export function MobilityMap() {
           L.polyline(coords, { color: '#1a7a4a', weight: 5, opacity: 0.8 }).addTo(routeLayerRef.current);
           mapInstanceRef.current.fitBounds(L.latLngBounds(coords), { padding: [60, 60] });
         });
+        toast.success(`Route to ${name} found`);
+      } else {
+        toast.error(data.error || 'No route found');
       }
-    } catch { alert('Could not calculate route. Please try again.'); }
+    } catch { toast.error('Could not calculate route. Please try again.'); }
     finally { setIsRouting(false); }
   }, [userLocation]);
 
@@ -630,13 +642,16 @@ export function MobilityMap() {
       )}
 
       {/* GPS denied banner — sits below the top bar */}
-      {!isLoading && gpsStatus === 'denied' && (
+      {!isLoading && gpsStatus === 'denied' && !locationDeniedDismissed && (
         <div className="absolute top-20 left-4 right-4 z-[998] bg-red-500/90 backdrop-blur-sm text-white rounded-2xl shadow-xl px-4 py-2.5 flex items-center gap-3">
-          <WifiOff className="w-4 h-4 flex-shrink-0" />
+          <MapPin className="w-4 h-4 flex-shrink-0" />
           <div className="flex-1 min-w-0 text-xs">
             <span className="font-bold">Location denied — </span>
             tap the 🔒 lock icon in your browser → Allow Location
           </div>
+          <button onClick={() => setLocationDeniedDismissed(true)} className="flex-shrink-0 hover:opacity-70">
+            <X className="w-4 h-4" />
+          </button>
         </div>
       )}
 
@@ -687,6 +702,14 @@ export function MobilityMap() {
               </div>
             )}
           </div>
+          {/* Active route summary */}
+          {routeResult && routeSteps.length === 0 && (
+            <div className="mt-2 flex items-center gap-3 px-3 py-2 bg-primary/10 rounded-xl">
+              <Navigation className="w-4 h-4 text-primary flex-shrink-0" />
+              <span className="text-sm font-semibold text-primary">{routeResult.distanceKm} km · {routeResult.durationMin} min</span>
+              <button onClick={clearRoute} className="ml-auto text-text-secondary hover:text-red-500"><X className="w-4 h-4" /></button>
+            </div>
+          )}
           {/* Turn-by-turn steps */}
           {routeSteps.length > 0 && (
             <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl mt-2 max-h-52 overflow-y-auto">
@@ -809,8 +832,8 @@ export function MobilityMap() {
         </div>
       )}
 
-      {/* Route result banner */}
-      {routeResult && (
+      {/* Route result banner — shown below directions panel when directions open */}
+      {routeResult && !showDirections && (
         <div className="absolute top-20 left-4 right-4 z-[998] bg-primary text-white rounded-2xl shadow-xl px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -842,7 +865,7 @@ export function MobilityMap() {
         <button
           onClick={() => { setShowDirections(v => !v); setGeoResults([]); }}
           title="Get Directions"
-          className={`absolute bottom-64 right-4 z-[999] rounded-full p-3.5 shadow-xl transition-all active:scale-95 ${
+          className={`absolute bottom-40 right-4 z-[999] rounded-full p-3.5 shadow-xl transition-all active:scale-95 ${
             showDirections ? 'bg-primary text-white' : 'bg-white dark:bg-gray-800 text-primary hover:bg-gray-50'
           }`}
         >
@@ -867,7 +890,7 @@ export function MobilityMap() {
             );
           }}
           title={gpsStatus === 'active' ? 'Centre on my location' : 'Enable GPS'}
-          className={`absolute bottom-52 right-4 z-[999] rounded-full p-3.5 shadow-xl transition-all active:scale-95 ${
+          className={`absolute bottom-24 right-4 z-[999] rounded-full p-3.5 shadow-xl transition-all active:scale-95 ${
             gpsStatus === 'active'
               ? 'bg-primary text-white hover:bg-primary-dark'
               : gpsStatus === 'requesting'
@@ -891,7 +914,7 @@ export function MobilityMap() {
             }
             setShowReportModal(true);
           }}
-          className="absolute bottom-36 right-4 z-[999] bg-red-500 hover:bg-red-600 text-white rounded-full p-4 shadow-xl flex items-center gap-2 transition-all active:scale-95"
+          className="absolute bottom-10 right-4 z-[999] bg-red-500 hover:bg-red-600 text-white rounded-full p-4 shadow-xl flex items-center gap-2 transition-all active:scale-95"
         >
           <Plus className="w-5 h-5" />
         </button>
@@ -899,7 +922,7 @@ export function MobilityMap() {
 
       {/* Car count badge */}
       {!isLoading && cars.length > 0 && (
-        <div className="absolute bottom-36 left-4 z-[999] bg-white dark:bg-gray-900 rounded-2xl shadow-lg px-3 py-2 flex items-center gap-2">
+        <div className="absolute bottom-10 left-4 z-[999] bg-white dark:bg-gray-900 rounded-2xl shadow-lg px-3 py-2 flex items-center gap-2">
           <Car className="w-4 h-4 text-primary" />
           <span className="text-xs font-semibold text-text-primary dark:text-white">{cars.length} cars</span>
           <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
@@ -1061,9 +1084,10 @@ function ReportModal({ coords, onClose, onSubmitted }: ReportModalProps) {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
+      toast.success('Report submitted — thanks for keeping roads safe!');
       onSubmitted(data);
     } catch (e: any) {
-      alert(e.message || 'Failed to submit report');
+      toast.error(e.message || 'Failed to submit report');
     } finally {
       setLoading(false);
     }

@@ -3,12 +3,13 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Star, MapPin, Users, Fuel, BadgeCheck, Zap, Award } from 'lucide-react';
-import { formatRWF, getCarTypeLabel, getFuelLabel } from '@/lib/utils';
+import { formatRWF, toUSD, getCarTypeLabel, getFuelLabel } from '@/lib/utils';
 import { RWANDA_DISTRICTS } from '@/lib/districts';
 
 interface CarCardProps {
   car: {
     id: string;
+    slug?: string | null;
     make: string;
     model: string;
     year: number;
@@ -43,7 +44,7 @@ export function CarCard({ car, compact = false }: CarCardProps) {
   const isSuperhost = !!car.host?.superhostSince;
 
   return (
-    <Link href={`/cars/${car.id}`} className="card block group overflow-hidden hover:shadow-lg transition-shadow duration-300">
+    <Link href={`/cars/${car.slug ?? car.id}`} className="card block group overflow-hidden hover:shadow-lg transition-shadow duration-300">
       {/* Photo */}
       <div className={`relative overflow-hidden ${compact ? 'h-40' : 'h-52'}`}>
         <Image
@@ -51,8 +52,8 @@ export function CarCard({ car, compact = false }: CarCardProps) {
           alt={`${car.make} ${car.model}`}
           fill
           className="object-cover group-hover:scale-105 transition-transform duration-300"
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          priority={false}
+          sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(50vw - 24px), 400px"
+          quality={60}
         />
         {/* Overlay gradient */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
@@ -83,6 +84,7 @@ export function CarCard({ car, compact = false }: CarCardProps) {
           <span className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm text-primary font-bold text-sm px-2.5 py-1 rounded-lg shadow">
             {formatRWF(car.pricePerDay)}<span className="text-text-light font-normal text-xs">/day</span>
           </span>
+          <span className="block text-[10px] text-white/80 mt-0.5 pl-0.5">{toUSD(car.pricePerDay)}</span>
         </div>
       </div>
 

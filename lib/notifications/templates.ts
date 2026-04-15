@@ -1,14 +1,15 @@
 import { formatRWF, formatDate } from '@/lib/utils';
 
 export type NotificationEvent =
-  | 'booking.created'    // → host: new request
-  | 'booking.confirmed'  // → renter: host accepted
-  | 'booking.declined'   // → renter: host declined
-  | 'booking.paid'       // → host: payment received
-  | 'trip.starting'      // → renter: 1hr before pickup
-  | 'trip.ending'        // → renter: return reminder
-  | 'dispute.opened'     // → both parties
-  | 'damage.reported';   // → renter
+  | 'booking.created'         // → host: new request
+  | 'booking.confirmed'       // → renter: host accepted
+  | 'booking.declined'        // → renter: host declined
+  | 'booking.paid'            // → host: payment received
+  | 'booking.review_reminder' // → renter: leave a review after trip
+  | 'trip.starting'           // → renter: 1hr before pickup
+  | 'trip.ending'             // → renter: return reminder
+  | 'dispute.opened'          // → both parties
+  | 'damage.reported';        // → renter
 
 export interface BookingTemplateData {
   bookingId: string;
@@ -211,6 +212,30 @@ const en = {
     },
   }),
 
+  'booking.review_reminder': (d: BookingTemplateData): Template => ({
+    subject: `How was your trip? Leave a review for ${d.carMake} ${d.carModel}`,
+    whatsapp: [
+      `⭐ *How was your Gari trip?*`,
+      ``,
+      `You recently rented a *${d.carYear} ${d.carMake} ${d.carModel}*.`,
+      ``,
+      `Leaving a review takes 30 seconds and helps other Rwandans make better decisions.`,
+      ``,
+      `👉 Leave your review: ${bookingUrl(d.bookingId, d.appUrl!)}`,
+      ``,
+      `Thank you, ${d.renterName?.split(' ')[0]}! 🙏`,
+    ].join('\n'),
+    email: `<p>Hi ${d.renterName?.split(' ')[0]},</p>
+<p>We hope you enjoyed your <b>${d.carYear} ${d.carMake} ${d.carModel}</b> rental.</p>
+<p>Would you take 30 seconds to leave a review? It helps other renters and rewards great hosts.</p>
+<p><a href="${bookingUrl(d.bookingId, d.appUrl!)}">Leave a review →</a></p>
+<p>Thank you! 🙏<br/>The Gari Team</p>`,
+    inApp: {
+      title: 'How was your trip? ⭐',
+      message: `You just completed your ${d.carMake} ${d.carModel} rental. Tap to leave a review.`,
+    },
+  }),
+
   'damage.reported': (d: BookingTemplateData): Template => ({
     subject: `Damage report filed — Booking ${shortRef(d.bookingId)}`,
     whatsapp: [
@@ -373,6 +398,26 @@ const rw = {
     inApp: {
       title: 'Ikibazo cyafunguwe',
       message: `Ikibazo cyafunguwe ku nyandiko ${shortRef(d.bookingId)}. Inkunga izatumanahana nawe.`,
+    },
+  }),
+
+  'booking.review_reminder': (d: BookingTemplateData): Template => ({
+    subject: `Urugendo rwagenze bite? Tanga igitekerezo ku ${d.carMake} ${d.carModel}`,
+    whatsapp: [
+      `⭐ *Urugendo rwawe rwa Gari rwagenze bite?*`,
+      ``,
+      `Wakodeshe *${d.carYear} ${d.carMake} ${d.carModel}* vuba aha.`,
+      ``,
+      `Gutanga igitekerezo bitwara amasegonda 30 kandi bifasha abandi Banyarwanda guhitamo neza.`,
+      ``,
+      `👉 Tanga igitekerezo: ${bookingUrl(d.bookingId, d.appUrl!)}`,
+      ``,
+      `Murakoze, ${d.renterName?.split(' ')[0]}! 🙏`,
+    ].join('\n'),
+    email: en['booking.review_reminder'](d).email,
+    inApp: {
+      title: 'Urugendo rwagenze bite? ⭐',
+      message: `Warangije gukodesha ${d.carMake} ${d.carModel}. Kanda hano gutanga igitekerezo.`,
     },
   }),
 

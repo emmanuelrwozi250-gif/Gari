@@ -52,8 +52,8 @@ export function FilterSidebar({ searchParams, onChange }: FilterSidebarProps) {
         <div className="space-y-2">
           {[
             { value: '', label: 'All' },
-            { value: 'P2P', label: 'Peer-to-Peer (P2P)' },
-            { value: 'FLEET', label: 'Fleet / Professional' },
+            { value: 'P2P', label: 'Private owner' },
+            { value: 'FLEET', label: 'Rental company' },
           ].map(opt => (
             <label key={opt.value} className="flex items-center gap-2 cursor-pointer">
               <input
@@ -80,7 +80,7 @@ export function FilterSidebar({ searchParams, onChange }: FilterSidebarProps) {
             onChange={e => onChange('driver', e.target.checked ? 'true' : null)}
             className="rounded text-primary"
           />
-          <span className="text-sm text-text-secondary dark:text-gray-400">Driver available</span>
+          <span className="text-sm text-text-secondary dark:text-gray-400">Include a driver</span>
         </label>
       </div>
 

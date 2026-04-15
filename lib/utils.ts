@@ -10,8 +10,14 @@ export function cn(...inputs: ClassValue[]) {
     .trim();
 }
 
+const RWF_TO_USD = 1100;
+
 export function formatRWF(amount: number): string {
   return `RWF ${amount.toLocaleString('en-RW')}`;
+}
+
+export function toUSD(rwfAmount: number): string {
+  return `≈ $${Math.round(rwfAmount / RWF_TO_USD).toLocaleString()}`;
 }
 
 export function formatDate(date: Date | string): string {
@@ -87,6 +93,26 @@ export function getBookingStatusColor(status: string): string {
     CANCELLED: 'bg-red-100 text-red-700',
   };
   return colors[status] || 'bg-gray-100 text-gray-700';
+}
+
+export function generateReferralCode(userId: string): string {
+  // GARI-XXXXXX — 6 chars derived from userId + random salt for uniqueness
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const seed = userId.slice(-4);
+  let code = 'GARI-';
+  for (let i = 0; i < 6; i++) {
+    const idx = (seed.charCodeAt(i % seed.length) + i * 17 + Math.floor(Math.random() * 32)) % chars.length;
+    code += chars[idx];
+  }
+  return code;
+}
+
+export function generateCarSlug(make: string, model: string, year: number, district: string, id: string): string {
+  const base = `${year}-${make}-${model}-${district}`
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+  return `${base}-${id.slice(-4)}`;
 }
 
 export function generateBookingRef(): string {

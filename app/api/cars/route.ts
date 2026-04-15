@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { generateCarSlug } from '@/lib/utils';
 import { z } from 'zod';
 
 export const dynamic = 'force-dynamic';
@@ -68,6 +69,7 @@ const createCarSchema = z.object({
   transmission: z.enum(['MANUAL', 'AUTOMATIC']),
   fuel: z.enum(['PETROL', 'DIESEL', 'HYBRID', 'ELECTRIC']),
   pricePerDay: z.number().min(5000),
+  depositAmount: z.number().min(0).default(0),
   driverAvailable: z.boolean().default(false),
   driverPricePerDay: z.number().optional(),
   description: z.string().min(20),
@@ -98,6 +100,10 @@ export async function POST(req: NextRequest) {
     const car = await prisma.car.create({
       data: { ...data, hostId: (session.user as any).id },
     });
+
+    // Generate and store slug
+    const slug = generateCarSlug(car.make, car.model, car.year, car.district, car.id);
+    await prisma.car.update({ where: { id: car.id }, data: { slug } });
 
     // Update user role to HOST if RENTER
     const user = await prisma.user.findUnique({ where: { id: (session.user as any).id }, select: { role: true } });

@@ -28,6 +28,37 @@ const SORT_OPTIONS = [
   { value: 'newest', label: 'Newest First' },
 ];
 
+export function SearchSkeleton() {
+  return (
+    <div className="min-h-screen bg-gray-bg dark:bg-gray-950">
+      <div className="bg-white dark:bg-gray-900 border-b border-border shadow-sm sticky top-16 z-30 h-[60px]" />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="flex gap-6">
+          <aside className="hidden lg:block w-64 flex-shrink-0">
+            <div className="space-y-4 bg-white dark:bg-gray-900 rounded-card p-4 border border-border">
+              {[100, 80, 120, 90, 100].map((w, i) => (
+                <div key={i} className="space-y-2">
+                  <div className={`skeleton h-4 w-${w === 100 ? 'full' : w === 80 ? '4/5' : w === 120 ? 'full' : '3/4'}`} />
+                  <div className="skeleton h-8 w-full" />
+                </div>
+              ))}
+            </div>
+          </aside>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center justify-between mb-4">
+              <div className="skeleton h-6 w-48" />
+              <div className="skeleton h-9 w-32" />
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+              {Array.from({ length: 9 }).map((_, i) => <CarCardSkeleton key={i} />)}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function SearchResults({ cars, total, page, searchParams }: SearchResultsProps) {
   const router = useRouter();
   const pathname = usePathname();

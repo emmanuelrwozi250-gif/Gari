@@ -11,7 +11,7 @@ import { LocationSelector } from '@/components/LocationSelector';
 import { POPULAR_LOCATIONS } from '@/lib/districts';
 import {
   Car, Camera, MapPin, DollarSign, FileText, CheckCircle,
-  ChevronRight, ChevronLeft, Upload, X, Loader2
+  ChevronRight, ChevronLeft, Upload, X, Loader2, Shield
 } from 'lucide-react';
 
 const STEPS = ['Car Details', 'Location', 'Photos', 'Pricing', 'Rules & Submit'];
@@ -33,6 +33,7 @@ const schema = z.object({
   lng: z.number().optional(),
   photos: z.array(z.string()).min(1, 'Add at least 1 photo'),
   pricePerDay: z.number().min(5000, 'Minimum RWF 5,000/day'),
+  depositAmount: z.number().min(0).default(0),
   driverAvailable: z.boolean().default(false),
   driverPricePerDay: z.number().optional(),
   instantBooking: z.boolean().default(false),
@@ -66,7 +67,7 @@ export function ListCarForm() {
       year: 2020, seats: 5, transmission: 'AUTOMATIC', fuel: 'PETROL',
       type: 'SEDAN', listingType: 'P2P', driverAvailable: false,
       instantBooking: false, hasAC: true, photos: [], features: [],
-      fuelPolicy: 'Return Full', smokingAllowed: false,
+      fuelPolicy: 'Return Full', smokingAllowed: false, depositAmount: 0,
     },
   });
 
@@ -369,6 +370,31 @@ export function ListCarForm() {
                   >
                     <span className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${watch('instantBooking') ? 'translate-x-5' : 'translate-x-0.5'}`} />
                   </button>
+                </div>
+
+                {/* Deposit */}
+                <div className="border-t border-border pt-4 mt-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <div>
+                      <label className="font-semibold text-text-primary dark:text-white text-sm">Security Deposit</label>
+                      <p className="text-xs text-text-secondary mt-0.5">Held by Gari and refunded when car is returned in good condition</p>
+                    </div>
+                    <button type="button" onClick={() => setValue('depositAmount', watch('depositAmount') > 0 ? 0 : 50000)}
+                      className={`relative w-11 h-6 rounded-full transition-colors ${watch('depositAmount') > 0 ? 'bg-primary' : 'bg-gray-300'}`}
+                      aria-label="Toggle deposit">
+                      <span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${watch('depositAmount') > 0 ? 'translate-x-5' : ''}`} />
+                    </button>
+                  </div>
+                  {watch('depositAmount') > 0 && (
+                    <div>
+                      <label className="label">Deposit Amount (RWF)*</label>
+                      <input type="number" {...register('depositAmount', { valueAsNumber: true })}
+                        min={10000} step={5000} className="input"
+                        placeholder="e.g. 50000" />
+                      <p className="text-xs text-text-light mt-1">Minimum RWF 10,000. Renter pays this on top of the rental fee.</p>
+                      {errors.depositAmount && <p className="text-red-500 text-xs mt-1">{errors.depositAmount.message}</p>}
+                    </div>
+                  )}
                 </div>
               </div>
             )}

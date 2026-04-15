@@ -1,33 +1,79 @@
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { prisma } from '@/lib/prisma';
-import { SearchResults } from './SearchResults';
+import { SearchResults, SearchSkeleton } from './SearchResults';
+import { DEMO_RENTAL_CARS } from '@/lib/demo-data';
 
 export const metadata: Metadata = {
-  title: 'Search Cars — Gari',
-  description: 'Find and book cars across all 30 districts of Rwanda.',
+  title: 'Browse Cars for Rent in Rwanda · Gari',
+  description: 'Find economy cars, SUVs, minibuses and executive vehicles. Filter by district, price and car type.',
+};
+
+type SearchParamsShape = {
+  district?: string;
+  pickup?: string;
+  return?: string;
+  driver?: string;
+  type?: string;
+  listingType?: string;
+  minPrice?: string;
+  maxPrice?: string;
+  seats?: string;
+  transmission?: string;
+  sort?: string;
+  page?: string;
 };
 
 interface SearchPageProps {
-  searchParams: {
-    district?: string;
-    pickup?: string;
-    return?: string;
-    driver?: string;
-    type?: string;
-    listingType?: string;
-    minPrice?: string;
-    maxPrice?: string;
-    seats?: string;
-    transmission?: string;
-    sort?: string;
-    page?: string;
-  };
+  searchParams: Promise<SearchParamsShape>;
 }
 
-async function getCars(params: SearchPageProps['searchParams']) {
+// DEMO DATA — swap for API call
+function filterDemoCars(params: SearchParamsShape) {
+  let cars = DEMO_RENTAL_CARS.map(c => ({
+    id: c.id,
+    make: c.make,
+    model: c.model,
+    year: c.year,
+    type: c.type.toUpperCase().replace(/ \/ /g, '_').replace(/ /g, '_'),
+    pricePerDay: c.pricePerDay,
+    district: c.district,
+    seats: c.seats,
+    transmission: c.transmission === 'Auto' ? 'AUTOMATIC' : 'MANUAL',
+    driverAvailable: c.drivingOption !== 'Self-Drive',
+    listingType: c.listingType,
+    rating: c.rating,
+    totalTrips: c.reviewCount,
+    photos: c.images,
+    isAvailable: true,
+    isVerified: c.hostVerified,
+    instantBooking: c.listingType === 'Fleet',
+    hasAC: true,
+    fuel: c.fuel.toUpperCase(),
+    host: { name: c.hostName, avatar: c.hostAvatar },
+    createdAt: new Date(),
+  }));
+
+  if (params.district) cars = cars.filter(c => c.district === params.district);
+  if (params.driver === 'true') cars = cars.filter(c => c.driverAvailable);
+  if (params.type) cars = cars.filter(c => c.type === params.type);
+  if (params.listingType) cars = cars.filter(c => c.listingType === params.listingType);
+  if (params.transmission) cars = cars.filter(c => c.transmission === params.transmission);
+  if (params.seats) cars = cars.filter(c => c.seats >= parseInt(params.seats!));
+  if (params.minPrice) cars = cars.filter(c => c.pricePerDay >= parseInt(params.minPrice!));
+  if (params.maxPrice) cars = cars.filter(c => c.pricePerDay <= parseInt(params.maxPrice!));
+
+  if (params.sort === 'price_asc') cars.sort((a, b) => a.pricePerDay - b.pricePerDay);
+  else if (params.sort === 'price_desc') cars.sort((a, b) => b.pricePerDay - a.pricePerDay);
+  else if (params.sort === 'newest') cars.reverse();
+  else cars.sort((a, b) => b.rating - a.rating);
+
+  return cars;
+}
+
+async function getCars(params: SearchParamsShape) {
   try {
-    const where: any = { isAvailable: true };
+    const where: Record<string, unknown> = { isAvailable: true };
     if (params.district) where.district = params.district;
     if (params.driver === 'true') where.driverAvailable = true;
     if (params.type) where.type = params.type;
@@ -35,12 +81,13 @@ async function getCars(params: SearchPageProps['searchParams']) {
     if (params.transmission) where.transmission = params.transmission;
     if (params.seats) where.seats = { gte: parseInt(params.seats) };
     if (params.minPrice || params.maxPrice) {
-      where.pricePerDay = {};
-      if (params.minPrice) where.pricePerDay.gte = parseInt(params.minPrice);
-      if (params.maxPrice) where.pricePerDay.lte = parseInt(params.maxPrice);
+      const priceFilter: Record<string, number> = {};
+      if (params.minPrice) priceFilter.gte = parseInt(params.minPrice);
+      if (params.maxPrice) priceFilter.lte = parseInt(params.maxPrice);
+      where.pricePerDay = priceFilter;
     }
 
-    const orderBy: any =
+    const orderBy: Record<string, string> =
       params.sort === 'price_asc' ? { pricePerDay: 'asc' } :
       params.sort === 'price_desc' ? { pricePerDay: 'desc' } :
       params.sort === 'rating' ? { rating: 'desc' } :
@@ -51,10 +98,10 @@ async function getCars(params: SearchPageProps['searchParams']) {
     const take = 12;
     const skip = (page - 1) * take;
 
-    const [cars, total] = await Promise.all([
+    const [dbCars, total] = await Promise.all([
       prisma.car.findMany({
         where,
-        include: { host: { select: { name: true, avatar: true } } },
+        include: { host: { select: { name: true, avatar: true, superhostSince: true } } },
         orderBy,
         take,
         skip,
@@ -62,23 +109,35 @@ async function getCars(params: SearchPageProps['searchParams']) {
       prisma.car.count({ where }),
     ]);
 
-    return { cars, total, page };
+    if (dbCars.length > 0) {
+      return { cars: dbCars, total, page };
+    }
+    // DEMO DATA fallback
+    const demoCars = filterDemoCars(params);
+    return { cars: demoCars, total: demoCars.length, page: 1 };
   } catch {
-    return { cars: [], total: 0, page: 1 };
+    const demoCars = filterDemoCars(params);
+    return { cars: demoCars, total: demoCars.length, page: 1 };
   }
 }
 
-export default async function SearchPage({ searchParams }: SearchPageProps) {
-  const { cars, total, page } = await getCars(searchParams);
-
+async function SearchResultsFetcher({ searchParams }: { searchParams: Promise<SearchParamsShape> }) {
+  const resolved = await searchParams;
+  const { cars, total, page } = await getCars(resolved);
   return (
-    <Suspense fallback={<div className="flex items-center justify-center h-96"><div className="animate-spin rounded-full h-8 w-8 border-t-2 border-primary" /></div>}>
-      <SearchResults
-        cars={cars as any[]}
-        total={total}
-        page={page}
-        searchParams={searchParams}
-      />
+    <SearchResults
+      cars={cars as unknown[]}
+      total={total}
+      page={page}
+      searchParams={resolved}
+    />
+  );
+}
+
+export default async function SearchPage({ searchParams }: SearchPageProps) {
+  return (
+    <Suspense fallback={<SearchSkeleton />}>
+      <SearchResultsFetcher searchParams={searchParams} />
     </Suspense>
   );
 }

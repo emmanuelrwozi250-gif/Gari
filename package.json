@@ -23,6 +23,7 @@
     "@stripe/react-stripe-js": "^2.8.1",
     "@stripe/stripe-js": "^4.9.0",
     "@types/bcryptjs": "^2.4.6",
+    "@vercel/blob": "^2.3.3",
     "bcryptjs": "^3.0.3",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",

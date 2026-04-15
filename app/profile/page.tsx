@@ -11,6 +11,8 @@ import {
   ShieldCheck, Tag, Building2, Bell, Loader2,
 } from 'lucide-react';
 
+type KYCStatus = 'UNVERIFIED' | 'PENDING' | 'VERIFIED' | 'REJECTED';
+
 interface UserProfile {
   id: string;
   name: string;
@@ -66,6 +68,7 @@ export default function ProfilePage() {
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({ name: '', phone: '', whatsappNumber: '', preferredLanguage: 'en' });
+  const [kycStatus, setKycStatus] = useState<KYCStatus>('UNVERIFIED');
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -73,16 +76,19 @@ export default function ProfilePage() {
       return;
     }
     if (status === 'authenticated') {
-      fetch('/api/user/profile')
-        .then(r => r.json())
-        .then(data => {
-          setProfile(data);
+      Promise.all([
+        fetch('/api/user/profile').then(r => r.json()),
+        fetch('/api/verification').then(r => r.json()).catch(() => ({ status: 'UNVERIFIED' })),
+      ])
+        .then(([profileData, kycData]: [UserProfile, { status: KYCStatus }]) => {
+          setProfile(profileData);
           setForm({
-            name: data.name || '',
-            phone: data.phone || '',
-            whatsappNumber: data.whatsappNumber || '',
-            preferredLanguage: data.preferredLanguage || 'en',
+            name: profileData.name || '',
+            phone: profileData.phone || '',
+            whatsappNumber: profileData.whatsappNumber || '',
+            preferredLanguage: profileData.preferredLanguage || 'en',
           });
+          setKycStatus((kycData?.status as KYCStatus) ?? 'UNVERIFIED');
         })
         .catch(() => toast.error('Failed to load profile'))
         .finally(() => setLoading(false));
@@ -186,6 +192,49 @@ export default function ProfilePage() {
               </div>
             ))}
           </div>
+        </div>
+
+        {/* Identity Verification (KYC) */}
+        <div className="card p-5 mb-4">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="font-bold text-text-primary dark:text-white flex items-center gap-2">
+              <Shield className="w-4 h-4 text-primary" /> Identity Verification
+            </h2>
+            {kycStatus === 'VERIFIED' && (
+              <span className="inline-flex items-center gap-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                <BadgeCheck className="w-3.5 h-3.5" /> Verified
+              </span>
+            )}
+            {kycStatus === 'PENDING' && (
+              <span className="inline-flex items-center gap-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                <Loader2 className="w-3.5 h-3.5 animate-spin" /> Under Review
+              </span>
+            )}
+            {kycStatus === 'REJECTED' && (
+              <span className="inline-flex items-center gap-1 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                <X className="w-3.5 h-3.5" /> Rejected
+              </span>
+            )}
+            {kycStatus === 'UNVERIFIED' && (
+              <span className="inline-flex items-center gap-1 bg-gray-100 dark:bg-gray-800 text-gray-500 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                Not submitted
+              </span>
+            )}
+          </div>
+          <p className="text-sm text-text-secondary mb-3">
+            {kycStatus === 'VERIFIED'   && 'Your identity has been verified. You can book any car on Gari.'}
+            {kycStatus === 'PENDING'    && 'Your documents are being reviewed. We\'ll notify you within 24 hours.'}
+            {kycStatus === 'REJECTED'   && 'Your verification was rejected. Please re-submit your documents.'}
+            {kycStatus === 'UNVERIFIED' && 'Upload your ID and driving permit to unlock bookings.'}
+          </p>
+          {kycStatus !== 'VERIFIED' && (
+            <Link
+              href="/profile/verification"
+              className="block w-full text-center py-2.5 text-sm text-white bg-primary rounded-xl hover:bg-primary-dark transition-colors font-semibold"
+            >
+              {kycStatus === 'REJECTED' ? 'Re-submit Documents' : kycStatus === 'PENDING' ? 'View Submission' : 'Verify Identity →'}
+            </Link>
+          )}
         </div>
 
         {/* Verification status */}

@@ -14,6 +14,7 @@ interface BookingCardProps {
   car: {
     id: string;
     pricePerDay: number;
+    depositAmount?: number;
     driverAvailable: boolean;
     driverPricePerDay?: number | null;
     instantBooking?: boolean;
@@ -160,7 +161,7 @@ export function BookingCard({ car }: BookingCardProps) {
       )}
 
       {/* Price breakdown — live dynamic pricing */}
-      <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-3 mb-4 text-sm">
+      <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-3 mb-1 text-sm">
         <PricingWidget
           carId={car.id}
           pickupDate={pickupDate}
@@ -174,7 +175,21 @@ export function BookingCard({ car }: BookingCardProps) {
             totalDays: d.totalDays,
           })}
         />
+        {(car.depositAmount ?? 0) > 0 && (
+          <div className="flex justify-between items-center text-sm mt-2 pt-2 border-t border-border">
+            <span className="text-text-secondary flex items-center gap-1">
+              <Shield className="w-3.5 h-3.5 text-primary" />
+              Security Deposit
+            </span>
+            <span className="font-medium text-text-primary dark:text-white">{formatRWF(car.depositAmount!)}</span>
+          </div>
+        )}
       </div>
+      {(car.depositAmount ?? 0) > 0 && (
+        <p className="text-xs text-text-light mb-4 mt-1">
+          🔒 Deposit held by Gari. Refunded within 24h after car is returned in good condition.
+        </p>
+      )}
 
       {/* Payment method */}
       <div className="mb-4">

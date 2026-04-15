@@ -6,6 +6,7 @@ import { Footer } from '@/components/Footer';
 import { MobileNav } from '@/components/MobileNav';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
 import { PushNotificationInit } from '@/components/PushNotificationInit';
+import PWABanner from '@/components/PWABanner';
 import { Toaster } from 'react-hot-toast';
 
 export const metadata: Metadata = {
@@ -53,6 +54,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <MobileNav />
           <WhatsAppButton />
           <PushNotificationInit />
+          <PWABanner />
           <Toaster
             position="top-right"
             toastOptions={{

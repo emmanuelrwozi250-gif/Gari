@@ -2,35 +2,47 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Car, Tag, TrendingUp, User, Map } from 'lucide-react';
+import { useSession } from 'next-auth/react';
+import { Car, Tag, PlusCircle, TrendingUp, User } from 'lucide-react';
 
 const navItems = [
   { href: '/search', icon: Car, label: 'Rent' },
   { href: '/buy', icon: Tag, label: 'Buy' },
-  { href: '/map', icon: Map, label: 'Map' },
+  { href: '/sell', icon: PlusCircle, label: 'Sell' },
   { href: '/earn', icon: TrendingUp, label: 'Earn' },
   { href: '/profile', icon: User, label: 'Profile' },
 ];
 
 export function MobileNav() {
   const pathname = usePathname();
+  const { data: session } = useSession();
 
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-t border-border shadow-lg">
       <div className="flex items-center justify-around h-16">
         {navItems.map(({ href, icon: Icon, label }) => {
           const active = pathname === href || (href !== '/' && pathname.startsWith(href));
+          const isProfile = href === '/profile';
           return (
             <Link
               key={href}
-              href={href}
-              className={`flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-colors min-w-[44px] ${
+              href={isProfile && !session ? '/login' : href}
+              className={`flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-colors min-w-[44px] ${
                 active ? 'text-primary' : 'text-text-light'
               }`}
             >
-              <Icon className="w-5 h-5" strokeWidth={active ? 2.5 : 2} />
+              {isProfile && session?.user?.image ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={session.user.image}
+                  alt=""
+                  className="w-5 h-5 rounded-full object-cover"
+                />
+              ) : (
+                <Icon className="w-5 h-5" strokeWidth={active ? 2.5 : 2} />
+              )}
               <span className={`text-xs font-medium ${active ? 'text-primary' : 'text-text-light'}`}>
-                {label}
+                {isProfile && !session ? 'Sign In' : label}
               </span>
             </Link>
           );

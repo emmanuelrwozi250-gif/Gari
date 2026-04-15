@@ -21,6 +21,7 @@ const bookingSchema = z.object({
   driverFee: z.number().default(0),
   totalAmount: z.number().min(0),
   paymentMethod: z.enum(['MTN_MOMO', 'AIRTEL_MONEY', 'CARD']),
+  referralCode: z.string().optional(),
   notes: z.string().optional(),
 });
 
@@ -83,6 +84,59 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'This car is not available' }, { status: 400 });
     }
 
+    // Double-booking prevention: check for date overlaps with existing bookings
+    const pickupDt = new Date(data.pickupDate);
+    const returnDt = new Date(data.returnDate);
+
+    const [overlappingBookings, blockedDates] = await Promise.all([
+      prisma.booking.count({
+        where: {
+          carId: data.carId,
+          status: { in: ['PENDING', 'CONFIRMED', 'ACTIVE'] },
+          AND: [
+            { pickupDate: { lt: returnDt } },
+            { returnDate: { gt: pickupDt } },
+          ],
+        },
+      }),
+      prisma.carAvailability.count({
+        where: {
+          carId: data.carId,
+          AND: [
+            { startDate: { lt: returnDt } },
+            { endDate: { gt: pickupDt } },
+          ],
+        },
+      }),
+    ]);
+
+    if (overlappingBookings > 0) {
+      return NextResponse.json(
+        { error: 'Car is already booked for the selected dates. Please choose different dates.' },
+        { status: 409 }
+      );
+    }
+    if (blockedDates > 0) {
+      return NextResponse.json(
+        { error: 'Car is unavailable for the selected dates (blocked by host).' },
+        { status: 409 }
+      );
+    }
+
+    // Validate referral code and calculate agent commission (5% of platform fee)
+    let referralCommission = 0;
+    let validReferralCode: string | undefined;
+    if (data.referralCode) {
+      const referrer = await prisma.user.findUnique({
+        where: { referralCode: data.referralCode },
+        select: { id: true },
+      });
+      if (referrer && referrer.id !== (session.user as any).id) {
+        validReferralCode = data.referralCode;
+        referralCommission = Math.round(data.platformFee * 0.05);
+      }
+    }
+
     const booking = await prisma.booking.create({
       data: {
         carId: data.carId,
@@ -99,6 +153,8 @@ export async function POST(req: NextRequest) {
         driverFee: data.driverFee,
         totalAmount: data.totalAmount,
         paymentMethod: data.paymentMethod,
+        referralCode: validReferralCode,
+        referralCommission,
         notes: data.notes,
         status: 'PENDING',
         paymentStatus: 'UNPAID',

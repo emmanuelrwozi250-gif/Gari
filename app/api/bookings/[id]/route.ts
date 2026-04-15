@@ -68,6 +68,34 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
       },
     });
 
+    // When a trip completes, increment counters and send review reminder
+    if (status === 'COMPLETED' && booking.status !== 'COMPLETED') {
+      await Promise.all([
+        prisma.car.update({
+          where: { id: booking.carId },
+          data: { totalTrips: { increment: 1 } },
+        }),
+        prisma.user.update({
+          where: { id: booking.car.hostId },
+          data: { totalHostTrips: { increment: 1 } },
+        }),
+      ]);
+
+      // Send WhatsApp/in-app review reminder to renter
+      void notifyUser('booking.review_reminder', booking.renterId, {
+        bookingId: booking.id,
+        renterName: booking.renter.name || 'there',
+        carMake: booking.car.make,
+        carModel: booking.car.model,
+        carYear: booking.car.year,
+        pickupDate: booking.pickupDate,
+        returnDate: booking.returnDate,
+        totalDays: booking.totalDays,
+        totalAmount: booking.totalAmount,
+        pickupLocation: booking.pickupLocation,
+      });
+    }
+
     // Notify renter when host changes booking status
     const notifData = {
       bookingId: booking.id,

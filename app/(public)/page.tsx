@@ -1,8 +1,10 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { SearchBar } from '@/components/SearchBar';
-import { CarCard, CarCardSkeleton } from '@/components/CarCard';
+import { CarCard } from '@/components/CarCard';
+import { EarningsCalculator } from '@/components/EarningsCalculator';
 import { prisma } from '@/lib/prisma';
+import { DEMO_RENTAL_CARS, DEMO_STATS, DEMO_TESTIMONIALS } from '@/lib/demo-data';
 import {
   Shield, BadgeCheck, Phone, Star, ArrowRight,
   TrendingUp, Car, Users, Globe, CheckCircle,
@@ -10,61 +12,57 @@ import {
 } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Gari — Car Rental in Rwanda | Drive on Your Own Terms',
+  title: 'Gari — Rent a Car Anywhere in Rwanda',
+  description: 'Book verified cars across all 30 Rwanda districts. Pay with MTN MoMo or card. Self-drive or with a professional driver.',
 };
 
 async function getFeaturedCars() {
   try {
-    return await prisma.car.findMany({
+    const cars = await prisma.car.findMany({
       where: { isAvailable: true, isVerified: true },
       include: { host: { select: { name: true, avatar: true } } },
       orderBy: [{ rating: 'desc' }, { totalTrips: 'desc' }],
-      take: 8,
+      take: 4,
     });
+    return cars;
   } catch {
     return [];
   }
 }
 
+// Map DemoRentalCar shape → CarCard prop shape
+function demoToCard(c: typeof DEMO_RENTAL_CARS[number]) {
+  return {
+    id: c.id,
+    make: c.make,
+    model: c.model,
+    year: c.year,
+    type: c.type,
+    listingType: c.listingType,
+    seats: c.seats,
+    fuel: c.fuel,
+    pricePerDay: c.pricePerDay,
+    driverAvailable: c.drivingOption !== 'Self-Drive',
+    photos: c.images,
+    district: c.district,
+    isVerified: c.hostVerified,
+    rating: c.rating,
+    totalTrips: c.reviewCount,
+    hasAC: c.features.includes('Air Conditioning'),
+    host: { name: c.hostName, avatar: c.hostAvatar },
+  };
+}
+
+const STAT_ICONS = [Car, Users, Globe, Star];
+
 const HOW_IT_WORKS = [
-  { icon: Search, step: '01', title: 'Find Your Car', desc: 'Search across 30 districts. Filter by type, budget, and whether you want a driver.' },
+  { icon: SearchIcon, step: '01', title: 'Find Your Car', desc: 'Search across 30 districts. Filter by type, budget, and whether you want a driver.' },
   { icon: BadgeCheck, step: '02', title: 'Book Instantly', desc: 'Confirm your dates, choose MTN MoMo, Airtel Money, or card. No hidden fees.' },
   { icon: Car, step: '03', title: 'Pick Up & Go', desc: 'Meet the host, inspect the car together, and start your journey.' },
   { icon: Star, step: '04', title: 'Rate & Review', desc: 'Share your experience and help build trust in the community.' },
 ];
 
-const STATS = [
-  { label: 'Active Listings', value: '500+', icon: Car },
-  { label: 'Happy Renters', value: '12,000+', icon: Users },
-  { label: 'Districts Covered', value: '30', icon: Globe },
-  { label: 'Avg. Rating', value: '4.8★', icon: Star },
-];
-
-const TESTIMONIALS = [
-  {
-    name: 'Jean-Pierre M.',
-    role: 'Host — Gasabo',
-    avatar: 'https://i.pravatar.cc/60?img=11',
-    text: 'I listed my Toyota RAV4 on Gari and earned over RWF 800,000 last month. The platform handles everything — bookings, payments, even insurance.',
-    rating: 5,
-  },
-  {
-    name: 'Amina K.',
-    role: 'Renter — Musanze',
-    avatar: 'https://i.pravatar.cc/60?img=48',
-    text: 'Found a beautiful Prado 4x4 for our Volcanoes National Park trip in minutes. MTN MoMo payment was instant. Highly recommend!',
-    rating: 5,
-  },
-  {
-    name: 'David N.',
-    role: 'Host — Rubavu',
-    avatar: 'https://i.pravatar.cc/60?img=22',
-    text: 'As a fleet operator in Rubavu, Gari gave us a digital presence overnight. Our Hiace minibuses are booked weeks in advance now.',
-    rating: 5,
-  },
-];
-
-function Search(props: any) {
+function SearchIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg {...props} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -73,13 +71,20 @@ function Search(props: any) {
 }
 
 export default async function HomePage() {
-  const featuredCars = await getFeaturedCars();
+  const dbCars = await getFeaturedCars();
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const featuredCars: any[] = dbCars.length > 0
+    ? dbCars
+    : [...DEMO_RENTAL_CARS]
+        .sort((a, b) => b.rating - a.rating)
+        .slice(0, 4)
+        .map(demoToCard);
 
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
       <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-dark-bg">
-        {/* Background pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
             backgroundImage: `radial-gradient(circle at 20% 80%, #1a7a4a 0%, transparent 50%), radial-gradient(circle at 80% 20%, #f5c518 0%, transparent 50%)`,
@@ -87,40 +92,41 @@ export default async function HomePage() {
         </div>
         <div className="absolute inset-0 bg-gradient-to-b from-dark-bg/50 via-transparent to-dark-bg/80" />
 
-        {/* Hero car silhouette */}
         <div className="absolute right-0 bottom-0 opacity-5 pointer-events-none hidden lg:block">
           <Car className="w-[600px] h-[300px] text-white" />
         </div>
 
-        <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center">
-          <div className="inline-flex items-center gap-2 bg-primary/20 border border-primary/30 rounded-full px-4 py-2 text-primary-light text-sm font-medium mb-6">
-            <Globe className="w-4 h-4" />
-            Now available across all 30 Rwanda districts
+        <div className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14 md:py-24 text-center">
+          <div className="inline-flex items-center gap-2 bg-primary/20 border border-primary/30 rounded-full px-3 py-1.5 text-primary-light text-xs sm:text-sm font-medium mb-6 max-w-[90vw]">
+            <Globe className="w-3.5 h-3.5 flex-shrink-0" />
+            <span>Now available across all 30 Rwanda districts</span>
           </div>
 
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight mb-6">
-            Rent a Car <br />
+          <h1 className="text-[1.85rem] sm:text-4xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight mb-4 sm:mb-6">
+            Rent a Car{' '}
             <span className="text-primary">Anywhere in</span>{' '}
             <span className="text-accent-yellow">Rwanda</span>
           </h1>
-          <p className="text-lg md:text-xl text-gray-400 mb-10 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg md:text-xl text-gray-400 mb-8 sm:mb-10 max-w-2xl mx-auto px-2">
             Connecting Africa to the world — peer-to-peer car sharing and fleet rentals, with or without a driver. Pay with MTN MoMo, Airtel Money, or card.
           </p>
 
-          {/* Search Bar */}
           <div className="max-w-5xl mx-auto">
             <SearchBar />
           </div>
 
-          {/* Quick stats */}
-          <div className="flex flex-wrap items-center justify-center gap-6 mt-10">
-            {STATS.map(({ label, value, icon: Icon }) => (
-              <div key={label} className="flex items-center gap-2 text-gray-400">
-                <Icon className="w-4 h-4 text-primary" />
-                <span className="font-bold text-white">{value}</span>
-                <span className="text-sm">{label}</span>
-              </div>
-            ))}
+          {/* Stats from demo-data */}
+          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 mt-8 sm:mt-10">
+            {DEMO_STATS.map(({ label, value }, i) => {
+              const Icon = STAT_ICONS[i];
+              return (
+                <div key={label} className="flex items-center gap-2 text-gray-400">
+                  <Icon className="w-4 h-4 text-primary" />
+                  <span className="font-bold text-white">{value}</span>
+                  <span className="text-sm">{label}</span>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -137,18 +143,16 @@ export default async function HomePage() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {featuredCars.length > 0
-            ? featuredCars.map((car) => <CarCard key={car.id} car={car as any} />)
-            : Array.from({ length: 8 }).map((_, i) => <CarCardSkeleton key={i} />)
-          }
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {featuredCars.map((car) => (
+            <CarCard key={car.id} car={car} />
+          ))}
         </div>
       </section>
 
-      {/* ── Marketplace Callouts (Buy / Sell) ─────────────────────── */}
+      {/* Marketplace Callouts */}
       <section className="py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="grid sm:grid-cols-2 gap-4">
-          {/* Buy a Car */}
           <Link href="/buy" className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 to-blue-800 p-6 text-white hover:shadow-xl transition-shadow">
             <div className="absolute right-4 top-1/2 -translate-y-1/2 opacity-10 group-hover:opacity-20 transition-opacity">
               <Tag className="w-28 h-28" />
@@ -163,7 +167,6 @@ export default async function HomePage() {
             </div>
           </Link>
 
-          {/* Sell Your Car */}
           <Link href="/sell" className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-600 to-emerald-800 p-6 text-white hover:shadow-xl transition-shadow">
             <div className="absolute right-4 top-1/2 -translate-y-1/2 opacity-10 group-hover:opacity-20 transition-opacity">
               <Building2 className="w-28 h-28" />
@@ -217,52 +220,29 @@ export default async function HomePage() {
                 List your car on Gari and earn passive income. Hosts typically earn RWF 400,000 – 1,200,000 per month.
               </p>
               <div className="space-y-3 mb-8">
-                <div className="flex items-center gap-3">
-                  <CheckCircle className="w-5 h-5 text-accent-yellow flex-shrink-0" />
-                  <span>No listing fees — only 10% per completed booking</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <CheckCircle className="w-5 h-5 text-accent-yellow flex-shrink-0" />
-                  <span>Insurance coverage on every trip</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <CheckCircle className="w-5 h-5 text-accent-yellow flex-shrink-0" />
-                  <span>Payout via MTN MoMo within 24h</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <CheckCircle className="w-5 h-5 text-accent-yellow flex-shrink-0" />
-                  <span>NIDA-verified renters only</span>
-                </div>
+                {[
+                  'No listing fees — only 10% per completed booking',
+                  'Insurance coverage on every trip',
+                  'Payout via MTN MoMo within 24h',
+                  'NIDA-verified renters only',
+                ].map(point => (
+                  <div key={point} className="flex items-center gap-3">
+                    <CheckCircle className="w-5 h-5 text-accent-yellow flex-shrink-0" />
+                    <span>{point}</span>
+                  </div>
+                ))}
               </div>
               <Link href="/host/new" className="inline-flex items-center gap-2 bg-accent-yellow text-gray-900 font-bold px-8 py-3 rounded-pill hover:bg-yellow-400 transition-colors">
                 List Your Car <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
 
-            <div className="bg-white/10 backdrop-blur rounded-2xl p-6 space-y-4">
-              <h3 className="font-bold text-lg text-accent-yellow">Earnings Estimator</h3>
-              <div className="space-y-3 text-sm">
-                {[
-                  { type: 'Economy (Vitz, Fielder)', price: 'RWF 30,000', days: 20, est: 'RWF 552,000' },
-                  { type: 'SUV (RAV4, Vitara)', price: 'RWF 75,000', days: 18, est: 'RWF 1,242,000' },
-                  { type: 'Minibus (Hiace)', price: 'RWF 120,000', days: 22, est: 'RWF 2,428,800' },
-                ].map(row => (
-                  <div key={row.type} className="flex items-center justify-between bg-white/10 rounded-xl px-4 py-3">
-                    <div>
-                      <div className="font-medium">{row.type}</div>
-                      <div className="text-primary-light text-xs">{row.price}/day × {row.days} days</div>
-                    </div>
-                    <div className="text-accent-yellow font-bold">{row.est}</div>
-                  </div>
-                ))}
-              </div>
-              <p className="text-xs text-primary-light">* After 10% platform fee. Based on average host performance.</p>
-            </div>
+            <EarningsCalculator />
           </div>
         </div>
       </section>
 
-      {/* ── Buy & Earn Teaser ─────────────────────────────────────── */}
+      {/* Buy & Earn Teaser */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 bg-accent-yellow/10 border border-accent-yellow/30 rounded-full px-4 py-1.5 text-accent-yellow text-sm font-semibold mb-4">
@@ -278,24 +258,9 @@ export default async function HomePage() {
 
         <div className="grid md:grid-cols-3 gap-6 mb-8">
           {[
-            {
-              icon: Banknote,
-              stat: '18–30%',
-              label: 'Typical Annual ROI',
-              desc: 'Based on comparable cars listed on Gari at Rwanda market rates.',
-            },
-            {
-              icon: Clock,
-              label: '24–36 Month Payback',
-              stat: '2–3 years',
-              desc: 'Earn rental income that progressively covers your vehicle purchase cost.',
-            },
-            {
-              icon: Shield,
-              stat: 'Fully Insured',
-              label: 'Every Trip',
-              desc: 'Comprehensive insurance on all rentals — your asset is protected from day one.',
-            },
+            { icon: Banknote, stat: '18–30%', label: 'Typical Annual ROI', desc: 'Based on comparable cars listed on Gari at Rwanda market rates.' },
+            { icon: Clock, stat: '2–3 years', label: '24–36 Month Payback', desc: 'Earn rental income that progressively covers your vehicle purchase cost.' },
+            { icon: Shield, stat: 'Fully Insured', label: 'Every Trip', desc: 'Comprehensive insurance on all rentals — your asset is protected from day one.' },
           ].map(({ icon: Icon, stat, label, desc }) => (
             <div key={label} className="card p-6 text-center">
               <div className="w-12 h-12 rounded-2xl bg-accent-yellow/10 flex items-center justify-center mx-auto mb-4">
@@ -350,14 +315,14 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Testimonials */}
+      {/* Testimonials — from DEMO_TESTIMONIALS */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <h2 className="section-title">What Our Community Says</h2>
           <p className="section-subtitle">Real stories from hosts and renters across Rwanda</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {TESTIMONIALS.map((t) => (
+          {DEMO_TESTIMONIALS.slice(0, 3).map((t) => (
             <div key={t.name} className="card p-6">
               <div className="flex mb-3">
                 {Array.from({ length: t.rating }).map((_, i) => (

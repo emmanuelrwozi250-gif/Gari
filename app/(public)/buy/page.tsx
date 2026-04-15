@@ -8,8 +8,8 @@ import { Tag, MapPin, Gauge, Calendar, BadgeCheck, Search } from 'lucide-react';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Buy a Car in Rwanda — Gari',
-  description: 'Browse verified cars for sale across Rwanda. Private sellers, dealers, and Gari-inspected listings.',
+  title: 'Buy a Verified Used Car in Rwanda · Gari',
+  description: 'Browse NIDA-verified used cars for sale across Rwanda. Transparent pricing, direct from owners.',
 };
 
 const FALLBACK = 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=600&q=80';

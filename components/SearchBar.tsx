@@ -68,11 +68,11 @@ export function SearchBar({ compact = false, defaultValues = {} }: SearchBarProp
       <div className="flex-1 min-w-0 p-2">
         <label className="text-xs font-semibold text-text-light uppercase tracking-wide block mb-1">Location</label>
         <div className="flex gap-2 items-center">
-          <div className="relative flex-1">
+          <div className="relative flex-1 min-w-0">
             <select
               value={district}
               onChange={e => setDistrict(e.target.value)}
-              className="w-full text-sm font-medium text-text-primary dark:text-gray-100 bg-transparent appearance-none pr-6 cursor-pointer outline-none"
+              className="w-full text-sm font-medium text-text-primary dark:text-gray-100 bg-transparent appearance-none pr-6 cursor-pointer outline-none truncate"
             >
               <option value="">Any district in Rwanda</option>
               {Object.entries(DISTRICTS_BY_PROVINCE).map(([province, districts]) => (
@@ -83,10 +83,10 @@ export function SearchBar({ compact = false, defaultValues = {} }: SearchBarProp
             </select>
             <ChevronDown className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 text-text-light pointer-events-none" />
           </div>
-          <GPSButton onLocationFound={handleGPS} label="📍" className="text-xs py-1 px-2" />
+          <GPSButton onLocationFound={handleGPS} label="📍" className="text-xs py-1 px-2 flex-shrink-0" />
         </div>
         {/* Popular locations chips */}
-        <div className="flex gap-1.5 overflow-x-auto mt-2 pb-0.5">
+        <div className="flex gap-1.5 overflow-x-auto mt-2 pb-0.5 scrollbar-hide">
           {POPULAR_LOCATIONS.slice(0, 4).map(loc => (
             <button
               key={loc.name}
@@ -102,71 +102,76 @@ export function SearchBar({ compact = false, defaultValues = {} }: SearchBarProp
 
       <div className="hidden md:block w-px bg-border self-stretch" />
 
-      {/* Pick-up date */}
-      <div className="flex-1 min-w-0 p-2">
-        <label className="text-xs font-semibold text-text-light uppercase tracking-wide block mb-1">Pick-up Date</label>
-        <div className="flex items-center gap-2">
-          <Calendar className="w-4 h-4 text-primary flex-shrink-0" />
-          <input
-            type="date"
-            value={pickupDate}
-            onChange={e => {
-              setPickupDate(e.target.value);
-              if (e.target.value >= returnDate) {
-                setReturnDate(format(new Date(new Date(e.target.value).getTime() + 86400000), 'yyyy-MM-dd'));
-              }
-            }}
-            min={today}
-            className="text-sm font-medium text-text-primary dark:text-gray-100 bg-transparent outline-none w-full cursor-pointer"
-          />
+      {/* Dates: side-by-side on mobile, each takes half width */}
+      <div className="grid grid-cols-2 md:contents gap-2">
+        {/* Pick-up date */}
+        <div className="min-w-0 p-2 md:flex-1">
+          <label className="text-xs font-semibold text-text-light uppercase tracking-wide block mb-1">Pick-up</label>
+          <div className="flex items-center gap-1.5">
+            <Calendar className="w-4 h-4 text-primary flex-shrink-0" />
+            <input
+              type="date"
+              value={pickupDate}
+              onChange={e => {
+                setPickupDate(e.target.value);
+                if (e.target.value >= returnDate) {
+                  setReturnDate(format(new Date(new Date(e.target.value).getTime() + 86400000), 'yyyy-MM-dd'));
+                }
+              }}
+              min={today}
+              className="text-sm font-medium text-text-primary dark:text-gray-100 bg-transparent outline-none w-full cursor-pointer min-w-0"
+            />
+          </div>
+        </div>
+
+        <div className="hidden md:block w-px bg-border self-stretch" />
+
+        {/* Return date */}
+        <div className="min-w-0 p-2 md:flex-1">
+          <label className="text-xs font-semibold text-text-light uppercase tracking-wide block mb-1">Return</label>
+          <div className="flex items-center gap-1.5">
+            <Calendar className="w-4 h-4 text-primary flex-shrink-0" />
+            <input
+              type="date"
+              value={returnDate}
+              onChange={e => setReturnDate(e.target.value)}
+              min={pickupDate}
+              className="text-sm font-medium text-text-primary dark:text-gray-100 bg-transparent outline-none w-full cursor-pointer min-w-0"
+            />
+          </div>
         </div>
       </div>
 
       <div className="hidden md:block w-px bg-border self-stretch" />
 
-      {/* Return date */}
-      <div className="flex-1 min-w-0 p-2">
-        <label className="text-xs font-semibold text-text-light uppercase tracking-wide block mb-1">Return Date</label>
-        <div className="flex items-center gap-2">
-          <Calendar className="w-4 h-4 text-primary flex-shrink-0" />
-          <input
-            type="date"
-            value={returnDate}
-            onChange={e => setReturnDate(e.target.value)}
-            min={pickupDate}
-            className="text-sm font-medium text-text-primary dark:text-gray-100 bg-transparent outline-none w-full cursor-pointer"
-          />
+      {/* Driver toggle + Search: side-by-side on mobile */}
+      <div className="flex gap-2 p-2 md:contents">
+        <div className="flex-1 md:p-2">
+          <label className="text-xs font-semibold text-text-light uppercase tracking-wide block mb-1">Drive Option</label>
+          <div className="flex rounded-xl border border-border overflow-hidden text-xs font-medium">
+            <button
+              type="button"
+              onClick={() => setWithDriver(false)}
+              className={`flex-1 px-3 py-2 transition-colors whitespace-nowrap ${!withDriver ? 'bg-primary text-white' : 'text-text-secondary hover:bg-gray-50 dark:hover:bg-gray-800'}`}
+            >
+              Self-Drive
+            </button>
+            <button
+              type="button"
+              onClick={() => setWithDriver(true)}
+              className={`flex-1 px-3 py-2 transition-colors whitespace-nowrap ${withDriver ? 'bg-primary text-white' : 'text-text-secondary hover:bg-gray-50 dark:hover:bg-gray-800'}`}
+            >
+              With Driver
+            </button>
+          </div>
         </div>
-      </div>
 
-      <div className="hidden md:block w-px bg-border self-stretch" />
-
-      {/* Driver toggle */}
-      <div className="p-2">
-        <label className="text-xs font-semibold text-text-light uppercase tracking-wide block mb-1">Drive Option</label>
-        <div className="flex rounded-xl border border-border overflow-hidden text-xs font-medium">
-          <button
-            type="button"
-            onClick={() => setWithDriver(false)}
-            className={`flex-1 px-3 py-2 transition-colors whitespace-nowrap ${!withDriver ? 'bg-primary text-white' : 'text-text-secondary hover:bg-gray-50 dark:hover:bg-gray-800'}`}
-          >
-            Self-Drive
-          </button>
-          <button
-            type="button"
-            onClick={() => setWithDriver(true)}
-            className={`flex-1 px-3 py-2 transition-colors whitespace-nowrap ${withDriver ? 'bg-primary text-white' : 'text-text-secondary hover:bg-gray-50 dark:hover:bg-gray-800'}`}
-          >
-            With Driver
+        {/* Search button */}
+        <div className="flex items-end md:p-2">
+          <button type="submit" className="btn-primary h-[42px] md:h-12 px-5 md:px-8 text-sm md:text-base whitespace-nowrap">
+            <Search className="w-4 h-4 md:w-5 md:h-5" /> Search
           </button>
         </div>
-      </div>
-
-      {/* Search button */}
-      <div className="p-2 flex items-end">
-        <button type="submit" className="btn-primary w-full md:w-auto h-12 px-8 text-base">
-          <Search className="w-5 h-5" /> Search
-        </button>
       </div>
     </form>
   );

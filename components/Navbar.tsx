@@ -52,6 +52,11 @@ export function Navbar() {
             <Link href="/map" className="px-3 py-2 rounded-xl text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-all flex items-center gap-1.5">
               <MapPin className="w-3.5 h-3.5" /> {t('nav', 'map')}
             </Link>
+            {session && (session.user.role === 'HOST' || session.user.role === 'BOTH' || session.user.role === 'ADMIN') && (
+              <Link href="/dashboard/host" className="px-3 py-2 rounded-xl text-sm font-medium text-primary hover:text-white hover:bg-white/10 transition-all flex items-center gap-1.5">
+                <LayoutDashboard className="w-3.5 h-3.5" /> Dashboard
+              </Link>
+            )}
           </div>
 
           {/* Right side */}
@@ -202,6 +207,12 @@ export function Navbar() {
                 className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10">
                 <LayoutDashboard className="w-4 h-4" /> Dashboard
               </Link>
+              {(session.user.role === 'HOST' || session.user.role === 'BOTH' || session.user.role === 'ADMIN') && (
+                <Link href="/dashboard/host" onClick={() => setMenuOpen(false)}
+                  className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium text-primary hover:text-white hover:bg-white/10">
+                  <Car className="w-4 h-4" /> Host Dashboard
+                </Link>
+              )}
               <Link href="/messages" onClick={() => setMenuOpen(false)}
                 className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10">
                 <MessageSquare className="w-4 h-4" /> Messages

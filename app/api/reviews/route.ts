@@ -45,12 +45,15 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // Update car rating
-    const allReviews = await prisma.review.findMany({ where: { carId: booking.carId }, select: { rating: true } });
+    // Update car rating and sync totalTrips from actual completed bookings (not review count)
+    const [allReviews, completedTrips] = await Promise.all([
+      prisma.review.findMany({ where: { carId: booking.carId }, select: { rating: true } }),
+      prisma.booking.count({ where: { carId: booking.carId, status: 'COMPLETED' } }),
+    ]);
     const avg = allReviews.reduce((s, r) => s + r.rating, 0) / allReviews.length;
     await prisma.car.update({
       where: { id: booking.carId },
-      data: { rating: Math.round(avg * 10) / 10, totalTrips: allReviews.length },
+      data: { rating: Math.round(avg * 10) / 10, totalTrips: completedTrips },
     });
 
     return NextResponse.json(review, { status: 201 });

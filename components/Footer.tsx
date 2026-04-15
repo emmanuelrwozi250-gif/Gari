@@ -22,11 +22,11 @@ export function Footer() {
             <div className="space-y-2 text-sm">
               <div className="flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-primary flex-shrink-0" />
-                <span>Kigali, Rwanda</span>
+                <span>KG 11 Ave, Kigali, Rwanda</span>
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-primary flex-shrink-0" />
-                <span>+250 788 000 000</span>
+                <span>+250 788 123 000</span>
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-primary flex-shrink-0" />

@@ -134,10 +134,10 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              <label className="label">National ID (NIDA) — Optional</label>
+              <label className="label">Rwanda National ID (NIDA)</label>
               <input type="text" value={form.nidaNumber} onChange={e => setForm({ ...form, nidaNumber: e.target.value })}
                 placeholder="1 XXXX X XXXXXXX X XX" className="input" maxLength={20} />
-              <p className="text-xs text-text-light mt-1">Speeds up verification. Required to rent or host.</p>
+              <p className="text-xs text-text-light mt-1">Required before your first booking or listing. You can add it now or later in your profile.</p>
             </div>
 
             <div>

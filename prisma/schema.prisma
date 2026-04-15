@@ -72,6 +72,9 @@ model User {
   trustScore        Int       @default(50)
   communityVerified Boolean   @default(false)
   trustCircleId     String?
+  // Referral / agent system
+  referralCode      String?   @unique
+  referralEarnings  Int       @default(0)
   // Platform roles (can hold multiple)
   isSeller          Boolean   @default(false)
   isInvestor        Boolean   @default(false)
@@ -93,6 +96,7 @@ model User {
   mapReports            MapReport[]            @relation("UserMapReports")
   poiInteractions       POIInteraction[]       @relation("UserPOIInteractions")
   mapPreferences        UserMapPreferences?    @relation("UserMapPreferences")
+  kycVerification       RenterVerification?    @relation("UserKYC")
 }
 
 enum Role {
@@ -125,6 +129,7 @@ model Car {
   exactLocation     String?
   lat               Float?
   lng               Float?
+  slug              String?       @unique
   isAvailable       Boolean       @default(true)
   isVerified        Boolean       @default(false)
   instantBooking    Boolean       @default(false)
@@ -231,6 +236,8 @@ model Booking {
   damageDescription      String?
   cancellationReason     String?
   referralCircleId       String?
+  referralCode           String?   // agent referral code used at booking
+  referralCommission     Int       @default(0)
   notes                  String?
   createdAt              DateTime      @default(now())
   updatedAt              DateTime      @updatedAt
@@ -507,6 +514,13 @@ model PricingSuggestion {
 
 // ─── MOBILITY INTELLIGENCE MAP ────────────────────────────────────────────────
 
+enum KYCStatus {
+  UNVERIFIED
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
 enum MapReportType {
   TRAFFIC
   ACCIDENT
@@ -573,4 +587,25 @@ model UserMapPreferences {
   language     String   @default("en")
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+}
+
+// ─── RENTER KYC VERIFICATION ──────────────────────────────────────────────────
+
+model RenterVerification {
+  id               String    @id @default(cuid())
+  userId           String    @unique
+  user             User      @relation("UserKYC", fields: [userId], references: [id], onDelete: Cascade)
+  idType           String    @default("NATIONAL_ID") // NATIONAL_ID or PASSPORT
+  idPhotoFrontUrl  String?   // front of ID/passport
+  idPhotoBackUrl   String?   // back of ID (not needed for passport)
+  drivingPermitUrl String?   // driving permit photo
+  selfieUrl        String?   // selfie with ID held up
+  fullNameOnId     String?   // name as it appears on ID
+  idNumber         String?   // ID or passport number
+  status           KYCStatus @default(UNVERIFIED)
+  rejectionReason  String?
+  adminNotes       String?
+  verifiedAt       DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 }

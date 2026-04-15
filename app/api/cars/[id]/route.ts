@@ -7,16 +7,18 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const car = await prisma.car.findUnique({
-      where: { id: params.id },
-      include: {
-        host: { select: { id: true, name: true, avatar: true, createdAt: true, nidaVerified: true } },
-        reviews: {
-          include: { reviewer: { select: { name: true, avatar: true } } },
-          orderBy: { createdAt: 'desc' },
-        },
+    const include = {
+      host: { select: { id: true, name: true, avatar: true, createdAt: true, nidaVerified: true } },
+      reviews: {
+        include: { reviewer: { select: { name: true, avatar: true } } },
+        orderBy: { createdAt: 'desc' as const },
       },
-    });
+    };
+    // Try by id first, then fall back to slug for SEO-friendly URLs
+    let car = await prisma.car.findUnique({ where: { id: params.id }, include });
+    if (!car) {
+      car = await prisma.car.findUnique({ where: { slug: params.id }, include });
+    }
     if (!car) return NextResponse.json({ error: 'Car not found' }, { status: 404 });
     return NextResponse.json(car);
   } catch {

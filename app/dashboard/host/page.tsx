@@ -6,7 +6,8 @@ import Link from 'next/link';
 import { formatRWF, formatDate, getBookingStatusColor, getCarTypeLabel } from '@/lib/utils';
 import {
   TrendingUp, Car, Users, Star, PlusCircle, ChevronRight,
-  CheckCircle, X, Clock, Banknote, ArrowRight, BarChart3, Lightbulb
+  CheckCircle, X, Clock, Banknote, ArrowRight, BarChart3, Lightbulb,
+  Lock, AlertTriangle,
 } from 'lucide-react';
 import { EarningsDashboard } from '@/components/EarningsDashboard';
 
@@ -57,6 +58,79 @@ export default async function HostDashboardPage() {
   const pendingBookings = allBookings.filter(b => b.status === 'PENDING');
   const completedBookings = allBookings.filter(b => b.status === 'COMPLETED');
   const avgRating = cars.length > 0 ? cars.reduce((s, c) => s + c.rating, 0) / cars.length : 0;
+
+  // A) Total lifetime earnings — query all paid bookings (not limited to take: 50)
+  const lifetimeAgg = await prisma.booking.aggregate({
+    where: { carId: { in: carIds }, paymentStatus: 'PAID' },
+    _sum: { totalAmount: true },
+  });
+  const lifetimeEarnings = Math.round((lifetimeAgg._sum.totalAmount ?? 0) * 0.9);
+
+  // C) Deposit status summary — direct aggregates to cover all bookings
+  const depositsHeldAgg = await prisma.booking.aggregate({
+    where: { carId: { in: carIds }, depositStatus: 'HELD' },
+    _sum: { depositAmount: true },
+  });
+  const depositsHeld = depositsHeldAgg._sum.depositAmount ?? 0;
+
+  const depositsReleasedAgg = await prisma.booking.aggregate({
+    where: { carId: { in: carIds }, depositStatus: 'RELEASED', updatedAt: { gte: thisMonthStart } },
+    _sum: { depositAmount: true },
+  });
+  const depositsReleasedThisMonth = depositsReleasedAgg._sum.depositAmount ?? 0;
+
+  // D) Unverified renter check — pending bookings where renter hasn't verified NIDA
+  const pendingRenterIds = Array.from(new Set(pendingBookings.map(b => b.renterId)));
+  const unverifiedRenters = pendingRenterIds.length > 0
+    ? await prisma.user.count({
+        where: { id: { in: pendingRenterIds }, nidaVerified: false },
+      })
+    : 0;
+
+  // B) Per-car revenue table data — use groupBy aggregates so we aren't limited by take: 50
+  const carAllTimeAgg = await prisma.booking.groupBy({
+    by: ['carId'],
+    where: { carId: { in: carIds }, paymentStatus: 'PAID' },
+    _sum: { totalAmount: true },
+  });
+  const carCompletedAgg = await prisma.booking.groupBy({
+    by: ['carId'],
+    where: { carId: { in: carIds }, paymentStatus: 'PAID', status: 'COMPLETED' },
+    _count: { id: true },
+  });
+  const carAllTimeMap = new Map(carAllTimeAgg.map(r => [r.carId, r._sum.totalAmount ?? 0]));
+  const carCompletedMap = new Map(carCompletedAgg.map(r => [r.carId, r._count.id]));
+
+  type CarRevenueRow = {
+    id: string;
+    name: string;
+    isAvailable: boolean;
+    bookingsCount: number;
+    thisMonthRevenue: number;
+    allTimeRevenue: number;
+    avgPerBooking: number;
+  };
+  const carRevenueRows: CarRevenueRow[] = cars.map(car => {
+    // This-month revenue still uses allBookings (recent 50 records) — acceptable for monthly view
+    const carBookingsThisMonth = allBookings.filter(
+      b => b.carId === car.id && b.paymentStatus === 'PAID' && b.createdAt >= thisMonthStart
+    );
+    const thisMonthCarRevenue = Math.round(
+      carBookingsThisMonth.reduce((s, b) => s + b.totalAmount * 0.9, 0)
+    );
+    const completedCount = carCompletedMap.get(car.id) ?? 0;
+    const allTimeCarRevenue = Math.round((carAllTimeMap.get(car.id) ?? 0) * 0.9);
+    const avgPerBooking = Math.round(allTimeCarRevenue / Math.max(completedCount, 1));
+    return {
+      id: car.id,
+      name: `${car.year} ${car.make} ${car.model}`,
+      isAvailable: car.isAvailable,
+      bookingsCount: completedCount,
+      thisMonthRevenue: thisMonthCarRevenue,
+      allTimeRevenue: allTimeCarRevenue,
+      avgPerBooking,
+    };
+  });
 
   const monthlyEarnings = Array.from({ length: 6 }, (_, i) => {
     const date = subMonths(now, 5 - i);
@@ -126,16 +200,38 @@ export default async function HostDashboardPage() {
           </Link>
         </div>
 
+        {/* D) Unverified renter banner */}
+        {unverifiedRenters > 0 && (
+          <div className="mb-6 flex items-start gap-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-300 dark:border-amber-700 rounded-xl px-4 py-3">
+            <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+            <div className="flex-1 text-sm">
+              <span className="font-semibold text-amber-800 dark:text-amber-300">
+                Some pending renters haven&apos;t verified their identity.
+              </span>{' '}
+              <span className="text-amber-700 dark:text-amber-400">
+                Check verification status before confirming their bookings.
+              </span>
+            </div>
+            <Link
+              href="/dashboard/host/renters"
+              className="flex-shrink-0 text-xs font-semibold text-amber-700 dark:text-amber-300 hover:underline whitespace-nowrap"
+            >
+              Review renters &rarr;
+            </Link>
+          </div>
+        )}
+
         {/* Stats Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
           {[
             { icon: Banknote, label: 'Earned This Month', value: formatRWF(thisMonthEarnings), color: 'text-primary' },
+            { icon: TrendingUp, label: 'Total Earned', value: formatRWF(lifetimeEarnings), color: 'text-emerald-600' },
             { icon: Car, label: 'Total Listings', value: String(cars.length), color: 'text-blue-600' },
             { icon: Users, label: 'Completed Trips', value: String(completedBookings.length), color: 'text-purple-600' },
             { icon: Star, label: 'Average Rating', value: avgRating > 0 ? `${avgRating.toFixed(1)}★` : 'N/A', color: 'text-accent-yellow' },
           ].map(({ icon: Icon, label, value, color }) => (
             <div key={label} className="card p-5">
-              <div className={`w-10 h-10 rounded-xl bg-gray-50 dark:bg-gray-800 flex items-center justify-center mb-3`}>
+              <div className="w-10 h-10 rounded-xl bg-gray-50 dark:bg-gray-800 flex items-center justify-center mb-3">
                 <Icon className={`w-5 h-5 ${color}`} />
               </div>
               <div className={`text-2xl font-extrabold ${color}`}>{value}</div>
@@ -246,6 +342,47 @@ export default async function HostDashboardPage() {
                 </div>
               )}
             </div>
+
+            {/* B) Revenue by Car */}
+            {carRevenueRows.length > 0 && (
+              <div className="card p-6 overflow-x-auto">
+                <h2 className="font-bold text-text-primary dark:text-white mb-4 flex items-center gap-2">
+                  <BarChart3 className="w-5 h-5 text-primary" /> Revenue by Car
+                </h2>
+                <table className="w-full text-sm min-w-[520px]">
+                  <thead>
+                    <tr className="text-xs text-text-secondary border-b border-border">
+                      <th className="text-left pb-2 font-semibold">Car</th>
+                      <th className="text-right pb-2 font-semibold">Bookings</th>
+                      <th className="text-right pb-2 font-semibold">This Month</th>
+                      <th className="text-right pb-2 font-semibold">All Time</th>
+                      <th className="text-right pb-2 font-semibold">Avg / Booking</th>
+                      <th className="text-right pb-2 font-semibold">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {carRevenueRows.map(row => (
+                      <tr key={row.id} className="border-b border-border last:border-0 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                        <td className="py-2.5 pr-3 font-medium text-text-primary dark:text-white">
+                          <Link href={`/cars/${row.id}`} className="hover:text-primary transition-colors">
+                            {row.name}
+                          </Link>
+                        </td>
+                        <td className="py-2.5 text-right tabular-nums text-text-secondary">{row.bookingsCount}</td>
+                        <td className="py-2.5 text-right tabular-nums text-text-secondary">{formatRWF(row.thisMonthRevenue)}</td>
+                        <td className="py-2.5 text-right tabular-nums font-semibold text-text-primary dark:text-white">{formatRWF(row.allTimeRevenue)}</td>
+                        <td className="py-2.5 text-right tabular-nums text-text-secondary">{formatRWF(row.avgPerBooking)}</td>
+                        <td className="py-2.5 text-right">
+                          <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${row.isAvailable ? 'bg-primary-light text-primary' : 'bg-gray-100 dark:bg-gray-800 text-gray-500'}`}>
+                            {row.isAvailable ? 'Available' : 'Unavailable'}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
 
           {/* Right sidebar */}
@@ -266,9 +403,19 @@ export default async function HostDashboardPage() {
                     </div>
                     <div className="text-xs text-text-light">{formatDate(booking.createdAt)}</div>
                   </div>
-                  <span className={`badge text-xs flex-shrink-0 ${getBookingStatusColor(booking.status)}`}>
-                    {booking.status}
-                  </span>
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <span className={`badge text-xs ${getBookingStatusColor(booking.status)}`}>
+                      {booking.status}
+                    </span>
+                    {booking.status === 'ACTIVE' && (
+                      <Link
+                        href={`/dashboard/inspect/${booking.id}`}
+                        className="text-xs text-primary font-semibold hover:underline"
+                      >
+                        Inspect
+                      </Link>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
@@ -285,6 +432,23 @@ export default async function HostDashboardPage() {
               <Link href="/profile/payout" className="btn-secondary text-sm py-2 w-full justify-center">
                 Configure Payout
               </Link>
+            </div>
+
+            {/* C) Deposit Status Summary */}
+            <div className="card p-5">
+              <h3 className="font-bold mb-3 text-text-primary dark:text-white flex items-center gap-2">
+                <Lock className="w-4 h-4 text-blue-500" /> Security Deposits
+              </h3>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-text-secondary">Currently held</span>
+                  <span className="font-bold text-text-primary dark:text-white">{formatRWF(depositsHeld)}</span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-text-secondary">Released this month</span>
+                  <span className="font-semibold text-primary">{formatRWF(depositsReleasedThisMonth)}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
