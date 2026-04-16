@@ -229,6 +229,8 @@ model Booking {
   paymentStatus          PaymentStatus @default(UNPAID)
   momoTransactionId      String?
   stripePaymentIntentId  String?
+  tipAmount              Int           @default(0)
+  tipPaymentIntentId     String?
   inspectionPhotosPickup String[]
   inspectionPhotosReturn String[]
   inspectionReport       Json?

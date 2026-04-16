@@ -25,17 +25,20 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Only hosts can request payouts' }, { status: 403 });
   }
 
-  // Calculate available balance: sum of completed paid bookings - platform fee - already-paid payouts
+  // Calculate available balance: sum of completed paid bookings - platform fee + tips - already-paid payouts
   const earnings = await prisma.booking.aggregate({
     where: {
       car: { hostId: userId },
       paymentStatus: 'PAID',
       status: 'COMPLETED',
     },
-    _sum: { totalAmount: true, platformFee: true },
+    _sum: { totalAmount: true, platformFee: true, tipAmount: true },
   });
 
-  const grossEarnings = (earnings._sum.totalAmount || 0) - (earnings._sum.platformFee || 0);
+  const grossEarnings =
+    (earnings._sum.totalAmount || 0) -
+    (earnings._sum.platformFee || 0) +
+    (earnings._sum.tipAmount || 0);
   const previousPayouts = await prisma.payoutRequest.aggregate({
     where: { hostId: userId, status: { in: ['PAID', 'PROCESSING'] } },
     _sum: { amount: true },
@@ -89,7 +92,7 @@ export async function GET(req: NextRequest) {
     }),
     prisma.booking.aggregate({
       where: { car: { hostId: userId }, paymentStatus: 'PAID', status: 'COMPLETED' },
-      _sum: { totalAmount: true, platformFee: true },
+      _sum: { totalAmount: true, platformFee: true, tipAmount: true },
     }),
     prisma.payoutRequest.aggregate({
       where: { hostId: userId, status: { in: ['PAID', 'PROCESSING'] } },
@@ -97,7 +100,10 @@ export async function GET(req: NextRequest) {
     }),
   ]);
 
-  const gross = (earnings._sum.totalAmount || 0) - (earnings._sum.platformFee || 0);
+  const gross =
+    (earnings._sum.totalAmount || 0) -
+    (earnings._sum.platformFee || 0) +
+    (earnings._sum.tipAmount || 0);
   const available = gross - (previousPayouts._sum.amount || 0);
 
   return NextResponse.json({ payouts, available, gross });

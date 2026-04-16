@@ -11,6 +11,7 @@ import {
 import toast from 'react-hot-toast';
 import Link from 'next/link';
 import { StripePaymentForm } from '@/components/StripePaymentForm';
+import { TipWidget } from '@/components/TipWidget';
 import { FileText } from 'lucide-react';
 
 type BookingStep = 'review' | 'payment' | 'confirmed';
@@ -27,6 +28,7 @@ export default function BookingPage({ params }: { params: { carId: string } }) {
   const [step, setStep] = useState<BookingStep>('review');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [paying, setPaying] = useState(false);
+  const [tipDismissed, setTipDismissed] = useState(false);
 
   useEffect(() => {
     if (!bookingId) { router.push(`/cars/${params.carId}`); return; }
@@ -278,6 +280,17 @@ export default function BookingPage({ params }: { params: { carId: string } }) {
                 <span>Host contact will be shared 1h before pickup</span>
               </div>
             </div>
+
+            {/* Tip the host */}
+            {!tipDismissed && (
+              <TipWidget
+                bookingId={bookingId!}
+                hostName={booking.car?.host?.name || 'your host'}
+                paymentMethod={booking.paymentMethod}
+                onSkip={() => setTipDismissed(true)}
+                onTipSent={() => setTipDismissed(true)}
+              />
+            )}
 
             <div className="flex flex-col sm:flex-row gap-3 justify-center flex-wrap">
               <Link href={`/messages?bookingId=${bookingId}`} className="btn-secondary">
