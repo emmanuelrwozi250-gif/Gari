@@ -140,6 +140,7 @@ export default function CarDetailPage() {
   const [customLocation, setCustomLocation] = useState('');
   const [showCustomInput, setShowCustomInput] = useState(false);
   const [guaranteeOpen, setGuaranteeOpen] = useState(true);
+  const [withInsurance, setWithInsurance] = useState(false);
 
   const today = new Date().toISOString().split('T')[0];
 
@@ -189,7 +190,9 @@ export default function CarDetailPage() {
     hostMemberSince: 'January 2025',
     hostResponseRate: '95%',
     rating: Number(dbCar.rating || 4.5),
-    reviewCount: Number(dbCar.totalTrips || 0),
+    // BUG-05: separate completed trips from written reviews
+    tripCount: Number(dbCar.totalTrips || 0),
+    reviewCount: Array.isArray(dbCar.reviews) ? (dbCar.reviews as unknown[]).length : 0,
     features: ['Air Conditioning', 'USB Charging'],
     description: String(dbCar.description || 'Well-maintained vehicle available for rental.'),
     fuel: String(dbCar.fuel || 'Petrol'),
@@ -210,7 +213,8 @@ export default function CarDetailPage() {
   const days = daysBetween(pickup, returnDate);
   const subtotal = data.pricePerDay * Math.max(days, 1);
   const platformFee = Math.round(subtotal * PLATFORM_FEE_RATE);
-  const total = subtotal + platformFee;
+  const insuranceFee = withInsurance ? 5000 * Math.max(days, 1) : 0;
+  const total = subtotal + platformFee + insuranceFee;
   const similar = DEMO_RENTAL_CARS.filter(c => c.id !== data.id && (c.type === data.type || c.district === data.district)).slice(0, 3);
 
   async function requestBooking() {
@@ -280,7 +284,12 @@ export default function CarDetailPage() {
                 {data.rating > 0 && (
                   <span className="flex items-center gap-0.5 text-accent-yellow font-semibold">
                     <Star className="w-3.5 h-3.5 fill-accent-yellow" /> {data.rating.toFixed(1)}
-                    <span className="text-text-secondary font-normal ml-1">({data.reviewCount} trips)</span>
+                    <span className="text-text-secondary font-normal ml-1">
+                      {/* BUG-05: show trips completed separately from written reviews */}
+                      {(data as Record<string, unknown>).tripCount != null
+                        ? `(${(data as Record<string, unknown>).tripCount} trips · ${data.reviewCount} reviews)`
+                        : `(${data.reviewCount} reviews)`}
+                    </span>
                   </span>
                 )}
               </div>
@@ -451,6 +460,25 @@ export default function CarDetailPage() {
                 )}
               </div>
 
+              {/* MONEY-01: Gari Protect insurance upsell */}
+              <div className="flex items-start justify-between gap-3 bg-primary/5 border border-primary/20 rounded-xl px-4 py-3 mb-3">
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold text-text-primary dark:text-white flex items-center gap-1.5">
+                    <Shield className="w-4 h-4 text-primary flex-shrink-0" />
+                    Gari Protect
+                  </p>
+                  <p className="text-xs text-text-secondary mt-0.5">Comprehensive cover up to RWF 2,000,000 · +RWF 5,000/day</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setWithInsurance(i => !i)}
+                  className={`relative w-11 h-6 rounded-full transition-colors flex-shrink-0 mt-0.5 ${withInsurance ? 'bg-primary' : 'bg-gray-300 dark:bg-gray-600'}`}
+                  aria-label="Toggle Gari Protect"
+                >
+                  <span className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${withInsurance ? 'translate-x-5' : 'translate-x-0.5'}`} />
+                </button>
+              </div>
+
               {/* Price breakdown */}
               {pickup && returnDate ? (
                 <div className="bg-gray-bg dark:bg-gray-800 rounded-xl p-4 mb-4 space-y-2 text-sm">
@@ -462,6 +490,12 @@ export default function CarDetailPage() {
                     <span>Service fee (10%)</span>
                     <span>{formatRWF(platformFee)}</span>
                   </div>
+                  {withInsurance && (
+                    <div className="flex justify-between text-primary font-medium">
+                      <span>Gari Protect</span>
+                      <span>{formatRWF(insuranceFee)}</span>
+                    </div>
+                  )}
                   <div className="flex justify-between font-bold text-text-primary dark:text-white border-t border-border pt-2 mt-2">
                     <span>Total</span>
                     <div className="text-right">

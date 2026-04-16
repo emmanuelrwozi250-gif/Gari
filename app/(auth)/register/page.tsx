@@ -15,7 +15,7 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [role, setRole] = useState<Role>('RENTER');
   const [form, setForm] = useState({
-    name: '', email: '', phone: '', password: '', nidaNumber: '',
+    name: '', email: '', phone: '', password: '',
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -131,13 +131,6 @@ export default function RegisterPage() {
                 <input type="tel" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })}
                   placeholder="7XX XXX XXX" className="input pl-20" />
               </div>
-            </div>
-
-            <div>
-              <label className="label">Rwanda National ID (NIDA)</label>
-              <input type="text" value={form.nidaNumber} onChange={e => setForm({ ...form, nidaNumber: e.target.value })}
-                placeholder="1 XXXX X XXXXXXX X XX" className="input" maxLength={20} />
-              <p className="text-xs text-text-light mt-1">Required before your first booking or listing. You can add it now or later in your profile.</p>
             </div>
 
             <div>

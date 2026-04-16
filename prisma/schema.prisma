@@ -158,6 +158,7 @@ model Car {
   reviews           Review[]
   availability      CarAvailability[]
   pricingSuggestions PricingSuggestion[]
+  holds             BookingHold[]
 }
 
 enum CarType {
@@ -354,6 +355,22 @@ enum PayoutStatus {
   PROCESSING
   PAID
   FAILED
+}
+
+// ─── BOOKING HOLD — 10-minute slot lock to prevent double-bookings ─────────────
+
+model BookingHold {
+  id         String   @id @default(cuid())
+  carId      String
+  car        Car      @relation(fields: [carId], references: [id], onDelete: Cascade)
+  sessionId  String   // anonymous client session identifier
+  pickupDate DateTime
+  returnDate DateTime
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+
+  @@index([carId, pickupDate, returnDate])
+  @@index([expiresAt])
 }
 
 // ─── BUY & SELL MARKETPLACE ────────────────────────────────────────────────────

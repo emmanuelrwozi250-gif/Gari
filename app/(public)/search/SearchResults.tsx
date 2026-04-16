@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic';
 import { CarCard, CarCardSkeleton } from '@/components/CarCard';
 import { SearchBar } from '@/components/SearchBar';
 import { FilterSidebar } from '@/components/FilterSidebar';
-import { MapPin, List, Map, SlidersHorizontal, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { MapPin, List, Map, SlidersHorizontal, ChevronLeft, ChevronRight, X, CalendarCheck, Tent } from 'lucide-react';
 import { RWANDA_DISTRICTS } from '@/lib/districts';
 
 const MapView = dynamic(() => import('@/components/MapView').then(m => ({ default: m.MapView })), {
@@ -146,6 +146,32 @@ export function SearchResults({ cars, total, page, searchParams }: SearchResults
                     ))}
                   </div>
                 )}
+                {/* UX-04: Quick-filter chips */}
+                <div className="flex flex-wrap gap-2 mt-2">
+                  <button
+                    onClick={() => {
+                      const today = new Date().toISOString().split('T')[0];
+                      const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+                      const current = new URLSearchParams(Array.from(params.entries()));
+                      current.set('pickup', today);
+                      current.set('return', tomorrow);
+                      router.push(`${pathname}?${current.toString()}`);
+                    }}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-accent-yellow/15 hover:bg-accent-yellow/25 text-amber-700 dark:text-accent-yellow text-xs font-semibold rounded-full border border-accent-yellow/30 transition-colors"
+                  >
+                    <CalendarCheck className="w-3.5 h-3.5" /> Need a car today?
+                  </button>
+                  <button
+                    onClick={() => updateParam('type', searchParams.type === 'SUV_4X4' ? null : 'SUV_4X4')}
+                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-full border transition-colors ${
+                      searchParams.type === 'SUV_4X4'
+                        ? 'bg-green-600 text-white border-green-600'
+                        : 'bg-green-50 hover:bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400 border-green-200 dark:border-green-700'
+                    }`}
+                  >
+                    <Tent className="w-3.5 h-3.5" /> Safari / 4x4
+                  </button>
+                </div>
               </div>
 
               <div className="flex items-center gap-2">
