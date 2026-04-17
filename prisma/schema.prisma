@@ -151,14 +151,22 @@ model Car {
   pricingMode       String        @default("static")
   earlyBirdPct      Int           @default(0)
   minTrustScore     Int           @default(0)
+  // New listing features
+  isSafariCapable   Boolean       @default(false)
+  isFeatured        Boolean       @default(false)
+  featuredUntil     DateTime?
+  minDays           Int           @default(1)
+  advanceNotice     Int           @default(0)
   createdAt         DateTime      @default(now())
   updatedAt         DateTime      @updatedAt
 
-  bookings          Booking[]
-  reviews           Review[]
-  availability      CarAvailability[]
+  bookings           Booking[]
+  reviews            Review[]
+  availability       CarAvailability[]
   pricingSuggestions PricingSuggestion[]
-  holds             BookingHold[]
+  holds              BookingHold[]
+  images             CarImage[]
+  blockedDates       BlockedDate[]
 }
 
 enum CarType {
@@ -242,12 +250,40 @@ model Booking {
   referralCommission     Int       @default(0)
   notes                  String?
   reviewRequestSentAt    DateTime? // when review-reminder WhatsApp was sent
+  // Host response tracking
+  hostId                 String?
+  hostResponseAt         DateTime?
+  hostResponseDeadline   DateTime?
+  hostRejectionReason    String?
+  // Trip lifecycle
+  tripStartedAt          DateTime?
+  tripEndedAt            DateTime?
+  carReturnedSafelyAt    DateTime?
+  carReturnedSafelyBy    String?
+  // Deposit tracking
+  depositHeldAt          DateTime?
+  depositRefundedAt      DateTime?
+  depositRefundAmount    Int?
+  depositWithheldAmount  Int?
+  depositDisputeReason   String?
+  // Cancellation & refund
+  cancelledAt            DateTime?
+  cancelledBy            String?
+  refundAmount           Int?
+  refundedAt             DateTime?
+  completedAt            DateTime?
+  totalWithDeposit       Int?
+  insuranceFee           Int           @default(0)
+  pickupLocationLabel    String?
   createdAt              DateTime      @default(now())
   updatedAt              DateTime      @updatedAt
 
-  review    Review?
-  messages  Message[]
-  insurance Insurance?
+  review           Review?
+  messages         Message[]
+  insurance        Insurance?
+  refunds          Refund[]
+  dispute          Dispute?
+  inspectionPhotos InspectionPhoto[]
 }
 
 enum BookingStatus {
@@ -256,6 +292,8 @@ enum BookingStatus {
   ACTIVE
   COMPLETED
   CANCELLED
+  REJECTED
+  DISPUTED
 }
 
 enum PaymentMethod {
@@ -268,12 +306,19 @@ enum PaymentStatus {
   UNPAID
   PAID
   REFUNDED
+  PARTIALLY_REFUNDED
+  FULLY_REFUNDED
 }
 
 enum DepositStatus {
   HELD
   RELEASED
   CLAIMED
+  NOT_APPLICABLE
+  REFUNDED
+  PARTIALLY_HELD
+  WITHHELD
+  DISPUTED
 }
 
 // Insurance certificate linked to a confirmed booking
@@ -606,6 +651,88 @@ model UserMapPreferences {
   language     String   @default("en")
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+}
+
+// ─── REFUNDS ──────────────────────────────────────────────────────────────────
+
+model Refund {
+  id           String   @id @default(cuid())
+  bookingId    String
+  booking      Booking  @relation(fields: [bookingId], references: [id])
+  amount       Int
+  reason       String
+  description  String?
+  initiatedBy  String
+  processedAt  DateTime?
+  momoReference String?
+  status       String   @default("PENDING")
+  createdAt    DateTime @default(now())
+}
+
+// ─── DISPUTES ─────────────────────────────────────────────────────────────────
+
+model Dispute {
+  id              String    @id @default(cuid())
+  bookingId       String    @unique
+  booking         Booking   @relation(fields: [bookingId], references: [id])
+  raisedBy        String
+  reason          String
+  description     String    @db.Text
+  evidenceUrls    String[]  @default([])
+  responseUrls    String[]  @default([])
+  hostResponse    String?
+  renterResponse  String?
+  status          String    @default("OPEN")
+  resolution      String?
+  resolvedBy      String?
+  resolvedAt      DateTime?
+  depositDecision String?
+  partialAmount   Int?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+// ─── INSPECTION PHOTOS ────────────────────────────────────────────────────────
+
+model InspectionPhoto {
+  id        String   @id @default(cuid())
+  bookingId String
+  booking   Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  type      String   // pickup | return | damage
+  position  String   // front | rear | left | right | interior | other
+  imageUrl  String
+  takenAt   DateTime @default(now())
+  lat       Float?
+  lng       Float?
+
+  @@index([bookingId])
+}
+
+// ─── CAR IMAGES ───────────────────────────────────────────────────────────────
+
+model CarImage {
+  id        String   @id @default(cuid())
+  carId     String
+  car       Car      @relation(fields: [carId], references: [id], onDelete: Cascade)
+  url       String
+  alt       String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([carId])
+}
+
+// ─── BLOCKED DATES ────────────────────────────────────────────────────────────
+
+model BlockedDate {
+  id        String   @id @default(cuid())
+  carId     String
+  car       Car      @relation(fields: [carId], references: [id], onDelete: Cascade)
+  date      DateTime
+  reason    String?
+  createdAt DateTime @default(now())
+
+  @@index([carId, date])
 }
 
 // ─── RENTER KYC VERIFICATION ──────────────────────────────────────────────────
