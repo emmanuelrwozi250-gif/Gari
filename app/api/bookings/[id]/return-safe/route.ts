@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { recordLateReturn } from '@/lib/reputation';
 
 export const dynamic = 'force-dynamic';
 
@@ -58,6 +59,13 @@ export async function POST(
       ]);
     } else {
       await updateBooking;
+    }
+
+    // Record late return against renter reputation (non-blocking)
+    if ((booking as any).lateFeeAccrued > 0) {
+      void recordLateReturn(booking.renterId).catch(e =>
+        console.error('[return-safe] recordLateReturn failed:', e)
+      );
     }
 
     // WhatsApp link to thank the renter

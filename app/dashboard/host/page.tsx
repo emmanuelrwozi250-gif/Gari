@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { EarningsDashboard } from '@/components/EarningsDashboard';
 import { BookingActionButtons } from '@/components/BookingActionButtons';
+import { LateReturnPanel } from '@/components/LateReturnPanel';
 
 export const metadata: Metadata = { title: 'Host Dashboard — Gari' };
 
@@ -46,7 +47,7 @@ export default async function HostDashboardPage() {
 
   const allBookings = await prisma.booking.findMany({
     where: { carId: { in: carIds } },
-    include: { renter: { select: { name: true, avatar: true, email: true } }, car: true },
+    include: { renter: { select: { name: true, avatar: true, email: true, phone: true, whatsappNumber: true } }, car: true },
     orderBy: { createdAt: 'desc' },
     take: 50,
   });
@@ -349,6 +350,17 @@ export default async function HostDashboardPage() {
                         pickupDate={booking.pickupDate.toISOString()}
                         depositAmount={booking.depositAmount}
                       />
+                      {booking.returnDate < now && (
+                        <LateReturnPanel
+                          bookingId={booking.id}
+                          renterName={booking.renter.name ?? 'Renter'}
+                          renterPhone={(booking.renter as any).whatsappNumber ?? (booking.renter as any).phone ?? null}
+                          returnDate={booking.returnDate.toISOString()}
+                          lateFeeAccrued={(booking as any).lateFeeAccrued ?? 0}
+                          notif1hSentAt={(booking as any).notif1hLateSentAt?.toISOString() ?? null}
+                          lateReturnReportedAt={(booking as any).lateReturnReportedAt?.toISOString() ?? null}
+                        />
+                      )}
                     </div>
                   ))}
                 </div>
