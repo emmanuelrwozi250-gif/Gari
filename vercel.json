@@ -7,6 +7,14 @@
     {
       "path": "/api/cron/send-review-requests",
       "schedule": "0 8 * * *"
+    },
+    {
+      "path": "/api/cron/process-refunds",
+      "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/api/cron/auto-reject-expired",
+      "schedule": "0 9 * * *"
     }
   ]
 }
