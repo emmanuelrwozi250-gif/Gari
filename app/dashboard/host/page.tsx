@@ -10,6 +10,7 @@ import {
   Lock, AlertTriangle,
 } from 'lucide-react';
 import { EarningsDashboard } from '@/components/EarningsDashboard';
+import { BookingActionButtons } from '@/components/BookingActionButtons';
 
 export const metadata: Metadata = { title: 'Host Dashboard — Gari' };
 
@@ -56,6 +57,8 @@ export default async function HostDashboardPage() {
   );
   const thisMonthEarnings = Math.round(thisMonthBookings.reduce((s, b) => s + b.totalAmount * 0.90, 0));
   const pendingBookings = allBookings.filter(b => b.status === 'PENDING');
+  const confirmedBookings = allBookings.filter(b => b.status === 'CONFIRMED');
+  const activeBookings = allBookings.filter(b => b.status === 'ACTIVE');
   const completedBookings = allBookings.filter(b => b.status === 'COMPLETED');
   const avgRating = cars.length > 0 ? cars.reduce((s, c) => s + c.rating, 0) / cars.length : 0;
 
@@ -271,25 +274,81 @@ export default async function HostDashboardPage() {
             {/* Pending Booking Requests */}
             {pendingBookings.length > 0 && (
               <div className="card p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="font-bold text-text-primary dark:text-white flex items-center gap-2">
-                    <Clock className="w-5 h-5 text-accent-yellow" />
-                    Pending Requests ({pendingBookings.length})
-                  </h2>
-                </div>
+                <h2 className="font-bold text-text-primary dark:text-white flex items-center gap-2 mb-4">
+                  <Clock className="w-5 h-5 text-accent-yellow" />
+                  Pending Requests ({pendingBookings.length})
+                </h2>
                 <div className="space-y-4">
                   {pendingBookings.slice(0, 5).map(booking => (
-                    <div key={booking.id} className="flex items-center gap-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-xl">
-                      <div className="flex-1 min-w-0">
-                        <div className="font-medium text-sm">{booking.renter.name} → {booking.car.make} {booking.car.model}</div>
-                        <div className="text-xs text-text-secondary">
-                          {formatDate(booking.pickupDate)} — {formatDate(booking.returnDate)} • {formatRWF(booking.totalAmount)}
+                    <div key={booking.id} className="p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-xl">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="min-w-0">
+                          <div className="font-medium text-sm">{booking.renter.name} → {booking.car.make} {booking.car.model}</div>
+                          <div className="text-xs text-text-secondary">
+                            {formatDate(booking.pickupDate)} — {formatDate(booking.returnDate)} · {formatRWF(booking.totalAmount)}
+                            {booking.depositAmount > 0 && ` + RWF ${booking.depositAmount.toLocaleString()} deposit`}
+                          </div>
                         </div>
                       </div>
-                      <div className="flex gap-2">
-                        <ConfirmBookingButton bookingId={booking.id} action="CONFIRMED" />
-                        <ConfirmBookingButton bookingId={booking.id} action="CANCELLED" decline />
+                      <BookingActionButtons
+                        bookingId={booking.id}
+                        status={booking.status}
+                        pickupDate={booking.pickupDate.toISOString()}
+                        depositAmount={booking.depositAmount}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Confirmed Bookings — ready to start */}
+            {confirmedBookings.length > 0 && (
+              <div className="card p-6">
+                <h2 className="font-bold text-text-primary dark:text-white flex items-center gap-2 mb-4">
+                  <CheckCircle className="w-5 h-5 text-blue-500" />
+                  Confirmed Trips ({confirmedBookings.length})
+                </h2>
+                <div className="space-y-4">
+                  {confirmedBookings.slice(0, 5).map(booking => (
+                    <div key={booking.id} className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
+                      <div className="font-medium text-sm">{booking.renter.name} → {booking.car.make} {booking.car.model}</div>
+                      <div className="text-xs text-text-secondary mb-1">
+                        Pickup: {formatDate(booking.pickupDate)} · {formatRWF(booking.totalAmount)}
                       </div>
+                      <BookingActionButtons
+                        bookingId={booking.id}
+                        status={booking.status}
+                        pickupDate={booking.pickupDate.toISOString()}
+                        depositAmount={booking.depositAmount}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Active Trips */}
+            {activeBookings.length > 0 && (
+              <div className="card p-6">
+                <h2 className="font-bold text-text-primary dark:text-white flex items-center gap-2 mb-4">
+                  <ArrowRight className="w-5 h-5 text-primary" />
+                  Active Trips ({activeBookings.length})
+                </h2>
+                <div className="space-y-4">
+                  {activeBookings.slice(0, 5).map(booking => (
+                    <div key={booking.id} className="p-3 bg-primary/5 rounded-xl">
+                      <div className="font-medium text-sm">{booking.renter.name} → {booking.car.make} {booking.car.model}</div>
+                      <div className="text-xs text-text-secondary mb-1">
+                        Return: {formatDate(booking.returnDate)}
+                        {booking.depositAmount > 0 && ` · Deposit held: RWF ${booking.depositAmount.toLocaleString()}`}
+                      </div>
+                      <BookingActionButtons
+                        bookingId={booking.id}
+                        status={booking.status}
+                        pickupDate={booking.pickupDate.toISOString()}
+                        depositAmount={booking.depositAmount}
+                      />
                     </div>
                   ))}
                 </div>
@@ -499,22 +558,3 @@ export default async function HostDashboardPage() {
   );
 }
 
-// Inline action component (simplified — would use server actions in real app)
-function ConfirmBookingButton({ bookingId, action, decline = false }: { bookingId: string; action: string; decline?: boolean }) {
-  return (
-    <form action={`/api/bookings/${bookingId}`} method="POST">
-      <input type="hidden" name="status" value={action} />
-      <button
-        type="submit"
-        className={`p-2 rounded-xl transition-colors ${
-          decline
-            ? 'bg-red-100 text-red-600 hover:bg-red-200'
-            : 'bg-primary-light text-primary hover:bg-primary/20'
-        }`}
-        title={decline ? 'Decline' : 'Confirm'}
-      >
-        {decline ? <X className="w-4 h-4" /> : <CheckCircle className="w-4 h-4" />}
-      </button>
-    </form>
-  );
-}

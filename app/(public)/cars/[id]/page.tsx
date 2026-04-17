@@ -521,12 +521,19 @@ export default function CarDetailPage() {
                 )}
               </button>
 
-              {pickup && (
-                <p className="text-xs text-text-light text-center mt-2">
-                  Free cancellation before{' '}
-                  {new Date(new Date(pickup).getTime() - 86400000).toLocaleDateString('en-RW', { day: 'numeric', month: 'short' })}
-                </p>
-              )}
+              {pickup && (() => {
+                const deadline = new Date(new Date(pickup).getTime() - 86400000);
+                return (
+                  <p className="text-xs text-text-light text-center mt-2">
+                    Free cancellation before{' '}
+                    <strong className="text-text-secondary">
+                      {deadline.toLocaleDateString('en-RW', { weekday: 'short', day: 'numeric', month: 'short' })}{' '}
+                      {deadline.toLocaleTimeString('en-RW', { hour: '2-digit', minute: '2-digit' })}
+                    </strong>
+                    . 50% refund after that.
+                  </p>
+                );
+              })()}
 
               <a href={waLink} target="_blank" rel="noopener noreferrer"
                 className="mt-3 flex items-center justify-center gap-2 w-full border border-primary text-primary py-2.5 rounded-xl text-sm font-semibold hover:bg-primary hover:text-white transition-colors">
