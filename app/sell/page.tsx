@@ -146,7 +146,7 @@ export default function SellPage() {
             className="btn-primary px-8 py-3 text-base font-bold">
             Sign In to List Your Car
           </button>
-          <Link href="/register" className="btn-secondary px-8 py-3 text-base font-bold">
+          <Link href="/register?intent=sell" className="btn-secondary px-8 py-3 text-base font-bold">
             Create Free Account
           </Link>
         </div>

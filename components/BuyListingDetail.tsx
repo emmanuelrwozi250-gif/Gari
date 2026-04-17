@@ -26,7 +26,7 @@ export function BuyListingDetail({ listing }: Props) {
   const [form, setForm] = useState({ buyerName: '', buyerPhone: '', buyerWA: '', offerAmount: '', message: '' });
 
   const district = RWANDA_DISTRICTS.find(d => d.id === listing.district);
-  const photos = listing.photos.length > 0 ? listing.photos : [FALLBACK];
+  const photos = (listing.photos ?? []).length > 0 ? listing.photos : [FALLBACK];
   const usd = Math.round(listing.askingPrice / USD_RATE);
   const daysOnMarket = Math.floor((Date.now() - new Date(listing.createdAt).getTime()) / (1000 * 60 * 60 * 24));
   const waPhone = (listing.seller.whatsappNumber || listing.seller.phone || '').replace(/\D/g, '');
@@ -141,7 +141,7 @@ export function BuyListingDetail({ listing }: Props) {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold text-base">
-                    {listing.seller.name[0]}
+                    {(listing.seller.name || 'S')[0]}
                   </div>
                   <div>
                     <div className="font-semibold text-text-primary dark:text-white text-sm flex items-center gap-1.5">
