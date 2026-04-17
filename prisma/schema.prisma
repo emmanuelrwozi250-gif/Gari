@@ -77,6 +77,11 @@ model User {
   // Platform roles (can hold multiple)
   isSeller          Boolean   @default(false)
   isInvestor        Boolean   @default(false)
+  // Repeat-offender / reputation
+  lateReturnCount   Int       @default(0)
+  lateReturnFlaggedAt DateTime?
+  suspendedUntil    DateTime?
+  suspensionReason  String?
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 
@@ -275,6 +280,25 @@ model Booking {
   totalWithDeposit       Int?
   insuranceFee           Int           @default(0)
   pickupLocationLabel    String?
+  // ── late return tracking ────────────────────────────────────────
+  gracePeriodMinutes     Int           @default(30)
+  lateFeePerHour         Int           @default(5000)
+  lateFeeAccrued         Int           @default(0)
+  lateReturnReportedAt   DateTime?
+  lateReturnResolvedAt   DateTime?
+  // ── booking extension ───────────────────────────────────────────
+  originalReturnDate     DateTime?
+  extensions             BookingExtension[]
+  // ── notification dedup sentAt timestamps ───────────────────────
+  notif2hSentAt          DateTime?
+  notif30mSentAt         DateTime?
+  notifAtReturnSentAt    DateTime?
+  notif30mLateSentAt     DateTime?
+  notif1hLateSentAt      DateTime?
+  hostNotifLateSentAt    DateTime?
+  // ── renter on-my-way signal ─────────────────────────────────────
+  renterOnMyWayAt        DateTime?
+  renterOnMyWayMessage   String?
   createdAt              DateTime      @default(now())
   updatedAt              DateTime      @updatedAt
 
@@ -284,6 +308,7 @@ model Booking {
   refunds          Refund[]
   dispute          Dispute?
   inspectionPhotos InspectionPhoto[]
+  notificationLogs NotificationLog[]
 }
 
 enum BookingStatus {
@@ -754,4 +779,59 @@ model RenterVerification {
   verifiedAt       DateTime?
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
+}
+
+// ─── BOOKING EXTENSIONS ────────────────────────────────────────────────────────
+
+model BookingExtension {
+  id            String   @id @default(cuid())
+  bookingId     String
+  booking       Booking  @relation(fields: [bookingId], references: [id])
+  requestedBy   String
+  hoursAdded    Int
+  newReturnDate DateTime
+  feeCharged    Int
+  paymentMethod String
+  paymentRef    String?
+  status        String   @default("CONFIRMED")
+  createdAt     DateTime @default(now())
+
+  @@index([bookingId])
+}
+
+// ─── NOTIFICATION LOG (audit trail) ───────────────────────────────────────────
+
+enum NotifType {
+  REMINDER_2H
+  REMINDER_30M
+  REMINDER_AT_TIME
+  LATE_30M
+  LATE_1H
+  LATE_ESCALATION
+  EXTENSION_CONFIRMED
+  EXTENSION_HOST_NOTIF
+  HOST_LATE_WARNING
+  HOST_NO_SHOW_UNLOCK
+  DEPOSIT_RELEASED
+  DEPOSIT_DISPUTED
+  BOOKING_ACCEPTED
+  BOOKING_REJECTED
+  DAMAGE_REPORTED
+  DISPUTE_RESOLVED
+}
+
+model NotificationLog {
+  id        String    @id @default(cuid())
+  bookingId String?
+  booking   Booking?  @relation(fields: [bookingId], references: [id])
+  userId    String
+  type      NotifType
+  channel   String
+  message   String    @db.Text
+  sentAt    DateTime  @default(now())
+  delivered Boolean   @default(false)
+  errorMsg  String?
+
+  @@index([bookingId])
+  @@index([userId])
 }

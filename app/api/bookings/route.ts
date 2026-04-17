@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { z } from 'zod';
 import { notifyUser } from '@/lib/notifications';
+import { checkSuspension } from '@/lib/reputation';
 
 export const dynamic = 'force-dynamic';
 
@@ -66,6 +67,17 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const data = bookingSchema.parse(body);
+
+    // Check if renter is suspended
+    const suspension = await checkSuspension((session.user as any).id);
+    if (suspension.suspended) {
+      return NextResponse.json(
+        {
+          error: `Your account is suspended until ${suspension.until?.toLocaleDateString('en-RW', { day: 'numeric', month: 'long', year: 'numeric' })}. Reason: ${suspension.reason}`,
+        },
+        { status: 403 }
+      );
+    }
 
     // Verify car is available
     const car = await prisma.car.findUnique({

@@ -572,14 +572,20 @@ export default function CarDetailPage() {
               {pickup && (() => {
                 const deadline = new Date(new Date(pickup).getTime() - 86400000);
                 return (
-                  <p className="text-xs text-text-light text-center mt-2">
-                    Free cancellation before{' '}
-                    <strong className="text-text-secondary">
-                      {deadline.toLocaleDateString('en-RW', { weekday: 'short', day: 'numeric', month: 'short' })}{' '}
-                      {deadline.toLocaleTimeString('en-RW', { hour: '2-digit', minute: '2-digit' })}
-                    </strong>
-                    . 50% refund after that.
-                  </p>
+                  <div className="mt-2 space-y-1">
+                    <p className="text-xs text-text-light text-center">
+                      Free cancellation before{' '}
+                      <strong className="text-text-secondary">
+                        {deadline.toLocaleDateString('en-RW', { weekday: 'short', day: 'numeric', month: 'short' })}{' '}
+                        {deadline.toLocaleTimeString('en-RW', { hour: '2-digit', minute: '2-digit' })}
+                      </strong>
+                      . 50% refund after that.
+                    </p>
+                    <p className="text-xs text-text-light text-center">
+                      Late returns: RWF 5,000/hr after 30-min grace ·{' '}
+                      <a href="/policy" className="text-primary hover:underline">View full policy →</a>
+                    </p>
+                  </div>
                 );
               })()}
 

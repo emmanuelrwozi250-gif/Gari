@@ -4,13 +4,13 @@
     {
       "name": "Next.js Dev Server",
       "runtimeExecutable": "/Users/emmanuelrwozi/.nvm/versions/node/v24.14.0/bin/node",
-      "runtimeArgs": ["/Users/emmanuelrwozi/Documents/Personal Documents  /Car Rental /Gari App/node_modules/.bin/next", "dev"],
+      "runtimeArgs": ["/Users/emmanuelrwozi/GariApp/node_modules/.bin/next", "dev"],
       "port": 3000
     },
     {
       "name": "Prisma Studio",
       "runtimeExecutable": "/Users/emmanuelrwozi/.nvm/versions/node/v24.14.0/bin/node",
-      "runtimeArgs": ["/Users/emmanuelrwozi/Documents/Personal Documents  /Car Rental /Gari App/node_modules/.bin/prisma", "studio"],
+      "runtimeArgs": ["/Users/emmanuelrwozi/GariApp/node_modules/.bin/prisma", "studio"],
       "port": 5555
     }
   ]

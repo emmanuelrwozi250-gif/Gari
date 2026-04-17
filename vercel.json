@@ -15,6 +15,22 @@
     {
       "path": "/api/cron/auto-reject-expired",
       "schedule": "0 9 * * *"
+    },
+    {
+      "path": "/api/cron/booking-notifications",
+      "schedule": "0 8 * * *"
+    },
+    {
+      "path": "/api/cron/booking-notifications",
+      "schedule": "0 12 * * *"
+    },
+    {
+      "path": "/api/cron/booking-notifications",
+      "schedule": "0 16 * * *"
+    },
+    {
+      "path": "/api/cron/booking-notifications",
+      "schedule": "0 20 * * *"
     }
   ]
 }
