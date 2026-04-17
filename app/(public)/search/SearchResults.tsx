@@ -121,6 +121,13 @@ export function SearchResults({ cars, total, page, searchParams }: SearchResults
         <div className="flex gap-6">
           {/* Filter Sidebar — desktop */}
           <aside className="hidden lg:block w-64 flex-shrink-0">
+            <a
+              href="/map"
+              className="flex items-center justify-between w-full px-4 py-2.5 mb-3 rounded-xl border border-primary/30 text-primary text-sm font-medium hover:bg-primary/5 transition-colors"
+            >
+              <span>View cars on map</span>
+              <span aria-hidden>→</span>
+            </a>
             <FilterSidebar searchParams={searchParams} onChange={updateParam} />
           </aside>
 
