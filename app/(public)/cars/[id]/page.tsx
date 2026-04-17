@@ -197,6 +197,9 @@ export default function CarDetailPage() {
     description: String(dbCar.description || 'Well-maintained vehicle available for rental.'),
     fuel: String(dbCar.fuel || 'Petrol'),
     available: Boolean(dbCar.isAvailable),
+    depositAmount: Number(dbCar.depositAmount || 0),
+    instantBooking: Boolean(dbCar.instantBooking),
+    driverPricePerDay: Number(dbCar.driverPricePerDay || 0),
   } : car;
 
   if (!data) return (
@@ -215,14 +218,42 @@ export default function CarDetailPage() {
   const platformFee = Math.round(subtotal * PLATFORM_FEE_RATE);
   const insuranceFee = withInsurance ? 5000 * Math.max(days, 1) : 0;
   const total = subtotal + platformFee + insuranceFee;
+  const depositAmount = (data as any).depositAmount ?? 0;
+  const grandTotal = total + depositAmount;
   const similar = DEMO_RENTAL_CARS.filter(c => c.id !== data.id && (c.type === data.type || c.district === data.district)).slice(0, 3);
 
   async function requestBooking() {
     if (!pickup || !returnDate) { toast.error('Please select pick-up and return dates'); return; }
+    if (!pickupLocation) { toast.error('Please select a pickup location'); return; }
     setBooking(true);
-    await new Promise(r => setTimeout(r, 1200));
-    toast.success(`Booking request sent! ${data!.hostName} will confirm via WhatsApp within 1 hour.`);
-    setBooking(false);
+    try {
+      const driverFee = withDriver ? (data as any).driverPricePerDay * days : 0;
+      const res = await fetch('/api/bookings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          carId: data!.id,
+          pickupDate: pickup,
+          returnDate,
+          withDriver,
+          pickupLocation,
+          totalDays: days,
+          subtotal,
+          platformFee,
+          driverFee: driverFee || 0,
+          totalAmount: total,
+          paymentMethod: 'MTN_MOMO',
+        }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || 'Failed to create booking');
+      toast.success('Booking request sent! The host will confirm via WhatsApp within 1 hour.');
+      router.push('/dashboard');
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to create booking');
+    } finally {
+      setBooking(false);
+    }
   }
 
   const waLink = `https://wa.me/250788123000?text=Hi%2C%20I%27m%20interested%20in%20the%20${encodeURIComponent(`${data.year} ${data.make} ${data.model}`)}%20listed%20on%20Gari%20(ID%3A%20${data.id})`;
@@ -497,12 +528,27 @@ export default function CarDetailPage() {
                     </div>
                   )}
                   <div className="flex justify-between font-bold text-text-primary dark:text-white border-t border-border pt-2 mt-2">
-                    <span>Total</span>
+                    <span>{depositAmount > 0 ? 'Rental total' : 'Total'}</span>
                     <div className="text-right">
                       <span className="text-primary">{formatRWF(total)}</span>
-                      <span className="block text-xs text-text-light font-normal">{toUSD(total)}</span>
+                      {depositAmount === 0 && <span className="block text-xs text-text-light font-normal">{toUSD(total)}</span>}
                     </div>
                   </div>
+                  {depositAmount > 0 && (
+                    <>
+                      <div className="flex justify-between text-text-secondary text-xs">
+                        <span>Security deposit <span className="text-green-600 font-medium">(refundable)</span></span>
+                        <span>{formatRWF(depositAmount)}</span>
+                      </div>
+                      <div className="flex justify-between font-bold text-text-primary dark:text-white border-t border-border pt-2 mt-1">
+                        <span>Total due today</span>
+                        <div className="text-right">
+                          <span className="text-primary">{formatRWF(grandTotal)}</span>
+                          <span className="block text-xs text-text-light font-normal">{toUSD(grandTotal)}</span>
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </div>
               ) : (
                 <div className="bg-gray-bg dark:bg-gray-800 rounded-xl p-3 mb-4 text-center text-xs text-text-light">
@@ -515,7 +561,9 @@ export default function CarDetailPage() {
                 {booking ? (
                   <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" /> Sending...</>
                 ) : pickup && returnDate ? (
-                  `Reserve for ${formatRWF(total)} →`
+                  (data as any).instantBooking
+                    ? `Reserve now — ${formatRWF(grandTotal)}`
+                    : `Request booking — ${formatRWF(grandTotal)}`
                 ) : (
                   'Select dates to book'
                 )}
