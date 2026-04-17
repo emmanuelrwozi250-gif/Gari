@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { SearchBar } from '@/components/SearchBar';
 import { CarCard } from '@/components/CarCard';
 import { EarningsCalculator } from '@/components/EarningsCalculator';
+import { STATS } from '@/config/social-proof';
 import { prisma } from '@/lib/prisma';
 import { DEMO_RENTAL_CARS, DEMO_STATS, DEMO_TESTIMONIALS } from '@/lib/demo-data';
 import {
@@ -347,7 +348,7 @@ export default async function HomePage() {
         <div className="max-w-2xl mx-auto">
           <HeartHandshake className="w-12 h-12 text-primary mx-auto mb-4" />
           <h2 className="text-3xl font-extrabold mb-4">Ready to Drive on Your Own Terms?</h2>
-          <p className="text-gray-400 mb-8">Join thousands of Rwandans already renting and hosting on Gari.</p>
+          <p className="text-gray-400 mb-8">Join {STATS.tripsCompleted} Rwandans already renting and hosting on Gari.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/search" className="btn-primary text-base px-10 py-4">
               Browse Cars <ArrowRight className="w-5 h-5" />

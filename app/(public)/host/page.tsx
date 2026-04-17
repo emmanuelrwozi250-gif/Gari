@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { CheckCircle, Car, Banknote, Shield, Star, ArrowRight, Users, Globe } from 'lucide-react';
+import { STATS } from '@/config/social-proof';
 
 export const metadata: Metadata = {
   title: 'Become a Host — Earn with Your Car | Gari',
@@ -118,7 +119,7 @@ export default function BeAHostPage() {
         <div className="max-w-xl mx-auto">
           <CheckCircle className="w-12 h-12 mx-auto mb-4" />
           <h2 className="text-3xl font-extrabold mb-4">Ready to Start Earning?</h2>
-          <p className="text-primary-light mb-8">Join 500+ hosts already earning on Gari. No listing fees.</p>
+          <p className="text-primary-light mb-8">Join {STATS.hosts} hosts already earning on Gari. No listing fees.</p>
           <Link href="/host/new" className="inline-flex items-center gap-2 bg-accent-yellow text-gray-900 font-bold px-10 py-4 rounded-pill hover:bg-yellow-400 transition-colors text-lg">
             List Your Car for Free <ArrowRight className="w-5 h-5" />
           </Link>

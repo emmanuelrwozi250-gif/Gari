@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Car, Mail, Lock, User, Phone, Eye, EyeOff, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { STATS } from '@/config/social-proof';
 
 type Role = 'RENTER' | 'HOST' | 'BOTH';
 
@@ -57,7 +58,7 @@ export default function RegisterPage() {
             </span>
           </Link>
           <h1 className="text-2xl font-bold text-text-primary dark:text-white">Create your account</h1>
-          <p className="text-text-secondary mt-1">Join thousands of Rwandans on Gari</p>
+          <p className="text-text-secondary mt-1">Join {STATS.tripsCompleted} Rwandans already on Gari</p>
         </div>
 
         <div className="card p-8">
