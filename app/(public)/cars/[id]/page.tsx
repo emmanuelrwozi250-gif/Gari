@@ -248,7 +248,7 @@ export default function CarDetailPage() {
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || 'Failed to create booking');
       toast.success('Booking request sent! The host will confirm via WhatsApp within 1 hour.');
-      router.push('/dashboard');
+      router.push(`/bookings/${json.id}/confirmed`);
     } catch (err: any) {
       toast.error(err.message || 'Failed to create booking');
     } finally {
