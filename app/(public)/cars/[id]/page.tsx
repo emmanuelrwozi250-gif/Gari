@@ -362,9 +362,15 @@ export default function CarDetailPage() {
             <div className="card p-5">
               <h2 className="font-bold text-text-primary dark:text-white mb-4">Your Host</h2>
               <div className="flex items-center gap-4">
-                <div className="relative w-14 h-14 rounded-full overflow-hidden flex-shrink-0">
-                  <Image src={data.hostAvatar || 'https://i.pravatar.cc/60?img=11'} alt={data.hostName}
-                    fill className="object-cover" sizes="56px" quality={80} />
+                <div className="relative w-14 h-14 rounded-full overflow-hidden flex-shrink-0 bg-primary/20">
+                  {data.hostAvatar ? (
+                    <Image src={data.hostAvatar} alt={data.hostName}
+                      fill className="object-cover" sizes="56px" quality={80} />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-primary font-bold text-lg">
+                      {data.hostName?.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase() || '?'}
+                    </div>
+                  )}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">

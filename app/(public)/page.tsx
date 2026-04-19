@@ -332,7 +332,12 @@ export default async function HomePage() {
               </div>
               <p className="text-text-secondary dark:text-gray-400 text-sm leading-relaxed mb-4">"{t.text}"</p>
               <div className="flex items-center gap-3">
-                <img src={t.avatar} alt={t.name} className="w-10 h-10 rounded-full object-cover" />
+                {/* Initials avatar — no external image dependency */}
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm flex-shrink-0 ${
+                  ['bg-blue-100 text-blue-700','bg-green-100 text-green-700','bg-purple-100 text-purple-700','bg-amber-100 text-amber-700'][t.name.charCodeAt(0) % 4]
+                }`}>
+                  {t.name.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}
+                </div>
                 <div>
                   <div className="font-semibold text-sm text-text-primary dark:text-white">{t.name}</div>
                   <div className="text-xs text-text-light">{t.role}</div>

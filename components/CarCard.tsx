@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Star, MapPin, Users, Fuel, BadgeCheck, Zap, Award } from 'lucide-react';
@@ -40,7 +41,8 @@ const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1544636331-e26879cd4d9
 
 export function CarCard({ car, compact = false }: CarCardProps) {
   const district = RWANDA_DISTRICTS.find(d => d.id === car.district);
-  const mainPhoto = car.photos[0] || FALLBACK_IMAGE;
+  const rawPhoto = car.photos[0] || FALLBACK_IMAGE;
+  const [imgSrc, setImgSrc] = useState(rawPhoto.startsWith('http') ? rawPhoto : FALLBACK_IMAGE);
   const isSuperhost = !!car.host?.superhostSince;
 
   return (
@@ -48,12 +50,14 @@ export function CarCard({ car, compact = false }: CarCardProps) {
       {/* Photo */}
       <div className={`relative overflow-hidden ${compact ? 'h-40' : 'h-52'}`}>
         <Image
-          src={mainPhoto.startsWith('http') ? mainPhoto : FALLBACK_IMAGE}
+          src={imgSrc}
           alt={`${car.make} ${car.model}`}
           fill
           className="object-cover group-hover:scale-105 transition-transform duration-300"
           sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(50vw - 24px), 400px"
           quality={60}
+          onError={() => setImgSrc('/images/car-placeholder.svg')}
+          unoptimized={imgSrc === '/images/car-placeholder.svg'}
         />
         {/* Overlay gradient */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />

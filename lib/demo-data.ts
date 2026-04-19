@@ -31,7 +31,7 @@ export interface DemoRentalCar {
 export interface DemoTestimonial {
   name: string;
   role: string;
-  avatar: string;
+  avatar: string | null;
   text: string;
   rating: number;
 }
@@ -358,35 +358,35 @@ export const DEMO_TESTIMONIALS: DemoTestimonial[] = [
   {
     name: 'Jean-Pierre Habimana',
     role: 'Host — Gasabo, Kigali',
-    avatar: 'https://i.pravatar.cc/60?img=11',
+    avatar: null,
     text: 'I listed my Toyota RAV4 on Gari and earned over RWF 800,000 in my first month. The platform handles bookings, payments, and even insurance. I just hand over the keys.',
     rating: 5,
   },
   {
     name: 'Amina Kalisa',
     role: 'Renter — Musanze',
-    avatar: 'https://i.pravatar.cc/60?img=48',
+    avatar: null,
     text: 'Found a beautiful Prado 4x4 for our Volcanoes National Park gorilla trekking trip in minutes. MTN MoMo payment was instant. Best car rental experience in Rwanda.',
     rating: 5,
   },
   {
     name: 'David Nkurunziza',
     role: 'Fleet Owner — Rubavu',
-    avatar: 'https://i.pravatar.cc/60?img=22',
+    avatar: null,
     text: 'As a fleet operator in Rubavu, Gari gave us a digital presence overnight. Our Hiace minibuses are now booked weeks in advance for Lake Kivu tours.',
     rating: 5,
   },
   {
     name: 'Immaculée Uwimana',
     role: 'Renter — Nyarugenge',
-    avatar: 'https://i.pravatar.cc/60?img=49',
+    avatar: null,
     text: 'Used Gari for the Kigali Convention Centre Summit transfers. The Mercedes was immaculate and the chauffeur was punctual and professional. Highly recommended.',
     rating: 5,
   },
   {
     name: 'Eric Murenzi',
     role: 'Host — Huye',
-    avatar: 'https://i.pravatar.cc/60?img=33',
+    avatar: null,
     text: 'Listed my Corolla on Gari to cover loan repayments. It now earns enough to pay itself off while I use it on weekends. Smart platform for Rwandan car owners.',
     rating: 4,
   },
