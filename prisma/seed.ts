@@ -9,33 +9,39 @@ import { addDays, subDays } from 'date-fns';
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
 const prisma = new PrismaClient({ adapter });
 
-// ─── Unsplash photo helpers ────────────────────────────────────────────────
+// ─── Photo helpers ────────────────────────────────────────────────────────
 function u(id: string) {
   return `https://images.unsplash.com/photo-${id}?w=800&auto=format&fit=crop&q=60`;
 }
+function p(id: number) {
+  return `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=800`;
+}
 
-// All 20 primary IDs are unique — verified before writing
+// 5 Unsplash IDs confirmed working; 15 replaced with verified Pexels photos
 const photos = {
-  rav4:       [u('1581540222194-0def2dda95b8'), u('1633707173820-8a9f0cb32b69')],
+  // ✓ Confirmed-working Unsplash IDs — keep as-is
   sportage:   [u('1617469767053-d3b523a0b982'), u('1621007947382-bb3c3994e3fb')],
-  prado:      [u('1605559424843-9073c6e99773')],
-  fielder:    [u('1590362891991-f776e747a588')],
-  corollacx:  [u('1623005329814-de5f4b962891')],
-  tucson:     [u('1552519507-da3b142c6e3d'), u('1494976388531-d1058494cdd8')],
   pajero:     [u('1519641471654-76ce0107ad1b')],
   polo:       [u('1471444928139-48c5bf5173f8')],
-  tiguan:     [u('1625231337355-a8a4c2cfc8f4')],
-  c200:       [u('1618843479313-40f8afb4b4d8'), u('1617531653332-bd46c16f4d68')],
-  lcv8:       [u('1563720223185-11003d516935')],
-  hilux:      [u('1558618666-fcd25c85cd64'), u('1571987502227-9231b837d92a')],
-  forester:   [u('1592840496694-26d035b52b48')],
-  xtrail:     [u('1609619385002-f40f1df9b7eb')],
-  byd:        [u('1666227892655-2cfe1f2e6b7f'), u('1593941707882-a5bba14938c7')],
   hiace:      [u('1570125909232-eb263c188f7e')],
   coaster:    [u('1544620347-c4fd4a3d5957')],
-  crv:        [u('1568844293986-ca9c5c0b8ab7')],
-  outlander:  [u('1630631792377-5b0f19a25c74')],
-  axio:       [u('1533473359331-0135ef1b58bf')],
+
+  // ✓ Replaced 15 broken/wrong Unsplash IDs with verified Pexels photos
+  rav4:       [p(9615358)],               // "A Blue Toyota RAV4"
+  prado:      [p(19758141)],              // "Black Toyota Land Cruiser Prado on Road"
+  fielder:    [p(11329085)],              // "Side View White Car Parked on Road"
+  corollacx:  [p(30486410)],              // "Toyota SUV in Oregon Desert Landscape"
+  tucson:     [p(12007134), p(1134857)],  // "Hyundai Tucson Dirt Road" + "Tucson Golden Hour"
+  tiguan:     [p(14038277)],              // "Back View of Volkswagen Tiguan"
+  c200:       [p(10224502)],              // "A Black Mercedes Benz C Class on Road"
+  lcv8:       [p(9420592)],               // "A Black Toyota Land Cruiser LC80"
+  hilux:      [p(19143577)],              // "Close up of Toyota Hilux at Sunset"
+  forester:   [p(19868891)],              // "Black Subaru Forester"
+  xtrail:     [p(14776590)],              // "White SUV Car on the Road"
+  byd:        [p(9800029)],               // "Electric Cars Charging on Stations"
+  crv:        [p(13885915)],              // "Honda CR-V on Road among Sequoias"
+  outlander:  [p(9927972)],               // "Black SUV Parked Beside Palm Trees"
+  axio:       [p(9544521)],               // "White Car on the Roadside"
 };
 
 async function main() {
