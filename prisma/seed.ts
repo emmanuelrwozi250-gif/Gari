@@ -20,27 +20,27 @@ function p(id: number) {
 // 5 Unsplash IDs confirmed working; 15 replaced with verified Pexels photos
 const photos = {
   // ✓ Confirmed-working Unsplash IDs — keep as-is
-  sportage:   [u('1617469767053-d3b523a0b982'), u('1621007947382-bb3c3994e3fb')],
   pajero:     [u('1519641471654-76ce0107ad1b')],
   polo:       [u('1471444928139-48c5bf5173f8')],
   hiace:      [u('1570125909232-eb263c188f7e')],
   coaster:    [u('1544620347-c4fd4a3d5957')],
 
-  // ✓ Replaced 15 broken/wrong Unsplash IDs with verified Pexels photos
+  // ✓ Verified Pexels photos
   rav4:       [p(9615358)],               // "A Blue Toyota RAV4"
   prado:      [p(19758141)],              // "Black Toyota Land Cruiser Prado on Road"
-  fielder:    [p(11329085)],              // "Side View White Car Parked on Road"
+  fielder:    [p(5421969)],               // "A Green Toyota Corolla Parked Near Houses" (Fielder = Corolla wagon)
   corollacx:  [p(30486410)],              // "Toyota SUV in Oregon Desert Landscape"
+  sportage:   [p(30587817), p(20400581)], // "Stylish Kia Sportage SUV at Sunset" + "Kia Sportage Cars Offroad"
   tucson:     [p(12007134), p(1134857)],  // "Hyundai Tucson Dirt Road" + "Tucson Golden Hour"
   tiguan:     [p(14038277)],              // "Back View of Volkswagen Tiguan"
   c200:       [p(10224502)],              // "A Black Mercedes Benz C Class on Road"
   lcv8:       [p(9420592)],               // "A Black Toyota Land Cruiser LC80"
   hilux:      [p(19143577)],              // "Close up of Toyota Hilux at Sunset"
   forester:   [p(19868891)],              // "Black Subaru Forester"
-  xtrail:     [p(14776590)],              // "White SUV Car on the Road"
+  xtrail:     [p(11798451)],              // "A Parked Red Nissan Rogue" (Rogue = X-Trail globally)
   byd:        [p(9800029)],               // "Electric Cars Charging on Stations"
   crv:        [p(13885915)],              // "Honda CR-V on Road among Sequoias"
-  outlander:  [p(9927972)],               // "Black SUV Parked Beside Palm Trees"
+  outlander:  [p(2676096)],               // "Mitsubishi Montero Sport Parked on Grass Field"
   axio:       [p(9544521)],               // "White Car on the Roadside"
 };
 

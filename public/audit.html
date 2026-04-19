@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Gari Image Audit</title>
+<style>
+  body { font-family: sans-serif; background: #111; color: #fff; margin: 0; padding: 16px; }
+  h1 { font-size: 18px; margin-bottom: 16px; }
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .card { background: #222; border-radius: 8px; overflow: hidden; }
+  .card img { width: 100%; height: 160px; object-fit: cover; display: block; }
+  .info { padding: 8px; }
+  .num { font-size: 11px; color: #888; }
+  .name { font-size: 12px; font-weight: bold; margin: 2px 0; }
+  .detail { font-size: 10px; color: #aaa; }
+  .src { font-size: 9px; color: #555; margin-top: 2px; }
+  .badge { display: inline-block; font-size: 9px; padding: 1px 5px; border-radius: 3px; margin-top: 3px; }
+  .suv { background: #1a4; }
+  .eco { background: #346; }
+  .exe { background: #a41; }
+  .pic { background: #441; }
+  .bus { background: #414; }
+  .ev  { background: #14a; }
+  .ok  { border: 2px solid #2a4; }
+  .new { border: 2px solid #48f; }
+</style>
+</head>
+<body>
+<h1>Gari Seed Data — Image Audit (all 20 rental cars) · green=Unsplash kept · blue=Pexels new</h1>
+<div class="grid" id="grid"></div>
+<script>
+// Helper functions matching seed.ts
+const u = id => `https://images.unsplash.com/photo-${id}?w=400&auto=format&fit=crop&q=60`;
+const p = id => `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=400`;
+
+const cars = [
+  { num:'01', name:'Toyota RAV4',         detail:'2021 · PETROL · 5 seats',            type:'SUV',      badge:'suv', img:p(9615358),    src:'Pexels 9615358' },
+  { num:'02', name:'Kia Sportage',         detail:'2022 · PETROL · 5 seats',            type:'SUV',      badge:'suv', img:p(30587817),   src:'Pexels 30587817' },
+  { num:'03', name:'Toyota Prado',         detail:'2020 · DIESEL · 7 seats',            type:'SUV',      badge:'suv', img:p(19758141),   src:'Pexels 19758141' },
+  { num:'04', name:'Toyota Fielder',       detail:'2019 · PETROL · 5 seats · wagon',    type:'ECONOMY',  badge:'eco', img:p(5421969),    src:'Pexels 5421969' },
+  { num:'05', name:'Toyota Corolla Cross', detail:'2022 · PETROL · 5 seats',            type:'SUV',      badge:'suv', img:p(30486410),   src:'Pexels 30486410' },
+  { num:'06', name:'Hyundai Tucson',       detail:'2021 · PETROL · 5 seats',            type:'SUV',      badge:'suv', img:p(12007134),   src:'Pexels 12007134' },
+  { num:'07', name:'Mitsubishi Pajero',    detail:'2020 · DIESEL · 7 seats',            type:'SUV',      badge:'suv', img:u('1519641471654-76ce0107ad1b'), src:'Unsplash ✓' },
+  { num:'08', name:'Volkswagen Polo',      detail:'2021 · PETROL · 5 seats · hatch',   type:'ECONOMY',  badge:'eco', img:u('1471444928139-48c5bf5173f8'), src:'Unsplash ✓' },
+  { num:'09', name:'Volkswagen Tiguan',    detail:'2022 · PETROL · 5 seats',            type:'SUV',      badge:'suv', img:p(14038277),   src:'Pexels 14038277' },
+  { num:'10', name:'Mercedes-Benz C200',  detail:'2022 · PETROL · 5 seats · exec',     type:'EXECUTIVE',badge:'exe', img:p(10224502),   src:'Pexels 10224502' },
+  { num:'11', name:'Land Cruiser V8',      detail:'2022 · DIESEL · 8 seats',            type:'EXECUTIVE',badge:'exe', img:p(9420592),    src:'Pexels 9420592' },
+  { num:'12', name:'Toyota Hilux',         detail:'2021 · DIESEL · 5 seats · pickup',  type:'PICKUP',   badge:'pic', img:p(19143577),   src:'Pexels 19143577' },
+  { num:'13', name:'Subaru Forester',      detail:'2020 · PETROL · 5 seats',            type:'SUV',      badge:'suv', img:p(19868891),   src:'Pexels 19868891' },
+  { num:'14', name:'Nissan X-Trail',       detail:'2020 · PETROL · 7 seats',            type:'SUV',      badge:'suv', img:p(11798451),   src:'Pexels 11798451' },
+  { num:'15', name:'BYD Atto 3',           detail:'2023 · ELECTRIC · 5 seats',          type:'EV',       badge:'ev',  img:p(9800029),    src:'Pexels 9800029' },
+  { num:'16', name:'Toyota Hiace 14-Seat', detail:'2020 · DIESEL · 14 seats · van',    type:'MINIBUS',  badge:'bus', img:u('1570125909232-eb263c188f7e'), src:'Unsplash ✓' },
+  { num:'17', name:'Toyota Coaster 30-Seat',detail:'2019 · DIESEL · 30 seats · bus',   type:'MINIBUS',  badge:'bus', img:u('1544620347-c4fd4a3d5957'), src:'Unsplash ✓' },
+  { num:'18', name:'Honda CR-V',           detail:'2021 · PETROL · 5 seats',            type:'SUV',      badge:'suv', img:p(13885915),   src:'Pexels 13885915' },
+  { num:'19', name:'Mitsubishi Outlander', detail:'2022 · PETROL · 7 seats',            type:'SUV',      badge:'suv', img:p(2676096),    src:'Pexels 2676096' },
+  { num:'20', name:'Toyota Axio',          detail:'2018 · PETROL · 5 seats · sedan',   type:'ECONOMY',  badge:'eco', img:p(9544521),    src:'Pexels 9544521' },
+];
+
+const grid = document.getElementById('grid');
+cars.forEach(c => {
+  const isPexels = c.src.startsWith('Pexels');
+  const card = document.createElement('div');
+  card.className = `card ${isPexels ? 'new' : 'ok'}`;
+  card.innerHTML = `
+    <img src="${c.img}" alt="${c.name}" onerror="this.style.background='#c00';this.alt='BROKEN'">
+    <div class="info">
+      <div class="num">#${c.num}</div>
+      <div class="name">${c.name}</div>
+      <div class="detail">${c.detail}</div>
+      <div class="src">${c.src}</div>
+      <span class="badge ${c.badge}">${c.type}</span>
+    </div>`;
+  grid.appendChild(card);
+});
+</script>
+</body>
+</html>
