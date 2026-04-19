@@ -1,7 +1,7 @@
 'use client';
 
 // Floating WhatsApp support button — ubiquitous in Rwanda/Africa market
-const WHATSAPP_NUMBER = '250788000000'; // Replace with real support number
+const WHATSAPP_NUMBER = '250788123000';
 const WHATSAPP_MESSAGE = 'Hello Gari support! I need help with:';
 
 export function WhatsAppButton() {

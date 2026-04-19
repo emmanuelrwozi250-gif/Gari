@@ -202,7 +202,7 @@ const en = {
       d.disputeReason ? `\nReason: ${d.disputeReason}` : '',
       ``,
       `Our support team will contact you within 24 hours.`,
-      `📞 Or reach us on WhatsApp: +250788000000`,
+      `📞 Or reach us on WhatsApp: +250788123000`,
     ].filter(Boolean).join('\n'),
     email: `<p>A dispute has been opened for booking <b>${shortRef(d.bookingId)}</b>.</p>
 <p>Our support team will contact you within 24 hours.</p>`,

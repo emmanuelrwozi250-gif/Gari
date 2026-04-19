@@ -140,7 +140,7 @@ function BuyEarnCard({ listing }: { listing: EarnListing }) {
         )}
 
         <a
-          href={`https://wa.me/${(process.env.NEXT_PUBLIC_GARI_WA || '250788000000').replace(/\D/g, '')}?text=I'm interested in the ${listing.year} ${listing.make} ${listing.model} on Gari Buy %26 Earn`}
+          href={`https://wa.me/${(process.env.NEXT_PUBLIC_GARI_WA || '250788123000').replace(/\D/g, '')}?text=I'm interested in the ${listing.year} ${listing.make} ${listing.model} on Gari Buy %26 Earn`}
           target="_blank"
           rel="noopener noreferrer"
           className="btn-primary w-full justify-center text-sm py-2.5"

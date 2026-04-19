@@ -612,7 +612,7 @@ export default function CarDetailPage() {
                 <ul className="mt-3 space-y-2 text-xs text-text-secondary">
                   <li className="flex items-start gap-2"><CheckCircle className="w-3.5 h-3.5 text-primary flex-shrink-0 mt-0.5" /> Payment held securely until trip completes</li>
                   <li className="flex items-start gap-2"><CheckCircle className="w-3.5 h-3.5 text-primary flex-shrink-0 mt-0.5" /> Full refund if host cancels</li>
-                  <li className="flex items-start gap-2"><CheckCircle className="w-3.5 h-3.5 text-primary flex-shrink-0 mt-0.5" /> 24/7 WhatsApp support: +250 788 000 000</li>
+                  <li className="flex items-start gap-2"><CheckCircle className="w-3.5 h-3.5 text-primary flex-shrink-0 mt-0.5" /> 24/7 WhatsApp support: +250 788 123 000</li>
                   <li className="flex items-start gap-2"><CheckCircle className="w-3.5 h-3.5 text-primary flex-shrink-0 mt-0.5" /> RWF 50,000 damage deposit — returned within 48h</li>
                   <li className="flex items-start gap-2"><CheckCircle className="w-3.5 h-3.5 text-primary flex-shrink-0 mt-0.5" /> Insurance included on all Gari bookings</li>
                 </ul>
