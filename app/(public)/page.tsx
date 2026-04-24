@@ -113,6 +113,24 @@ export default async function HomePage() {
 
           <div className="max-w-5xl mx-auto">
             <SearchBar />
+            {/* Quick-select location chips */}
+            <div className="flex flex-wrap items-center justify-center gap-2 mt-4">
+              {[
+                { label: '📍 Kigali', district: 'GASABO' },
+                { label: '🦍 Volcanoes', district: 'MUSANZE' },
+                { label: '🐘 Akagera', district: 'KAYONZA' },
+                { label: '🌊 Lake Kivu', district: 'RUBAVU' },
+                { label: '🌿 Nyungwe', district: 'NYAMASHEKE' },
+              ].map(({ label, district }) => (
+                <Link
+                  key={district}
+                  href={`/search?district=${district}`}
+                  className="px-4 py-1.5 rounded-full text-sm font-medium bg-white/10 text-gray-300 hover:bg-primary/20 hover:text-primary border border-white/10 hover:border-primary/40 transition-all"
+                >
+                  {label}
+                </Link>
+              ))}
+            </div>
           </div>
 
           {/* Stats from demo-data */}

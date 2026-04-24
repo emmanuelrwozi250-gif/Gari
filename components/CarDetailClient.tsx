@@ -12,6 +12,7 @@ import toast from 'react-hot-toast';
 import { DEMO_RENTAL_CARS } from '@/lib/demo-data';
 import { formatRWF, toUSD } from '@/lib/utils';
 import { RWANDA_DISTRICTS } from '@/lib/districts';
+import { RecentlyViewedCars } from './RecentlyViewedCars';
 
 const FALLBACK = 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=800&q=80';
 const PLATFORM_FEE_RATE = 0.10;
@@ -54,6 +55,7 @@ export type CarDisplay = {
   driverPricePerDay: number;
   reviews: ReviewDisplay[];
   completedBookingId?: string | null;
+  hostSuperhostSince?: string | null;
 };
 
 // Generate 8 "unavailable" future dates for realism
@@ -490,9 +492,14 @@ export function CarDetailClient({ car, completedBookingId }: { car: CarDisplay; 
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <span className="font-bold text-text-primary dark:text-white">{data.hostName}</span>
                     {data.hostVerified && <BadgeCheck className="w-4 h-4 text-primary flex-shrink-0" />}
+                    {data.hostSuperhostSince && (
+                      <span className="text-xs bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 font-bold px-2 py-0.5 rounded-full">
+                        ⭐ Superhost
+                      </span>
+                    )}
                   </div>
                   <div className="text-xs text-text-secondary mt-0.5">
                     Member since {data.hostMemberSince} · {data.hostResponseRate} response rate
@@ -808,6 +815,21 @@ export function CarDetailClient({ car, completedBookingId }: { car: CarDisplay; 
             </div>
           </section>
         )}
+
+        {/* Recently Viewed */}
+        <RecentlyViewedCars
+          currentCar={{
+            id: data.id,
+            make: data.make,
+            model: data.model,
+            year: data.year,
+            pricePerDay: data.pricePerDay,
+            type: data.type,
+            district: data.district,
+            photos: data.images,
+            rating: data.rating,
+          }}
+        />
       </div>
     </div>
   );

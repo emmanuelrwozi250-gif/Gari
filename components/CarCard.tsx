@@ -81,12 +81,19 @@ export function CarCard({ car, compact = false }: CarCardProps) {
           )}
         </div>
 
-        {/* Listing type badge top-right */}
-        {car.listingType === 'P2P' ? (
-          <span className="absolute top-3 right-3 badge bg-blue-500/90 text-white text-xs backdrop-blur-sm">P2P</span>
-        ) : (
-          <span className="absolute top-3 right-3 badge bg-purple-500/90 text-white text-xs backdrop-blur-sm">Fleet</span>
-        )}
+        {/* Badges top-right: listing type + superhost */}
+        <div className="absolute top-3 right-3 flex flex-col items-end gap-1">
+          {car.listingType === 'P2P' ? (
+            <span className="badge bg-blue-500/90 text-white text-xs backdrop-blur-sm">P2P</span>
+          ) : (
+            <span className="badge bg-purple-500/90 text-white text-xs backdrop-blur-sm">Fleet</span>
+          )}
+          {isSuperhost && (
+            <span className="badge bg-amber-400/90 text-amber-900 text-xs backdrop-blur-sm font-bold">
+              ⭐ Superhost
+            </span>
+          )}
+        </div>
 
         {/* Price bottom-left */}
         <div className="absolute bottom-3 left-3">

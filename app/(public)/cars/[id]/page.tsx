@@ -10,7 +10,7 @@ import { formatRWF } from '@/lib/utils';
 async function getCar(id: string): Promise<CarDisplay | null> {
   try {
     const include = {
-      host: { select: { id: true, name: true, avatar: true, createdAt: true, nidaVerified: true } },
+      host: { select: { id: true, name: true, avatar: true, createdAt: true, nidaVerified: true, superhostSince: true } },
       reviews: {
         include: { reviewer: { select: { name: true, avatar: true } } },
         orderBy: { createdAt: 'desc' as const },
@@ -62,6 +62,9 @@ async function getCar(id: string): Promise<CarDisplay | null> {
       instantBooking: car.instantBooking,
       driverPricePerDay: car.driverPricePerDay ?? 0,
       reviews,
+      hostSuperhostSince: car.host?.superhostSince
+        ? car.host.superhostSince.toISOString()
+        : null,
     };
   } catch {
     return null;
