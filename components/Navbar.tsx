@@ -43,6 +43,9 @@ export function Navbar() {
             <Link href="/safari" className="px-3 py-2 rounded-xl text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-all flex items-center gap-1.5">
               🏕️ Safari
             </Link>
+            <Link href="/airport-transfer" className="px-3 py-2 rounded-xl text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-all flex items-center gap-1.5">
+              ✈️ Airport
+            </Link>
             {session && (session.user.role === 'HOST' || session.user.role === 'BOTH' || session.user.role === 'ADMIN') && (
               <Link href="/dashboard/host" className="px-3 py-2 rounded-xl text-sm font-medium text-primary hover:text-white hover:bg-white/10 transition-all flex items-center gap-1.5">
                 <LayoutDashboard className="w-3.5 h-3.5" /> Dashboard
@@ -170,6 +173,10 @@ export function Navbar() {
           <Link href="/safari" onClick={() => setMenuOpen(false)}
             className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10">
             🏕️ Safari
+          </Link>
+          <Link href="/airport-transfer" onClick={() => setMenuOpen(false)}
+            className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10">
+            ✈️ Airport Transfer
           </Link>
           <hr className="border-white/10 my-2" />
           {session ? (

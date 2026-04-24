@@ -52,8 +52,8 @@ export function Footer() {
             <h4 className="text-white font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2 text-sm">
               <li><Link href="/search" className="hover:text-primary transition-colors">Browse Cars</Link></li>
-              <li><Link href="/host" className="hover:text-primary transition-colors">Become a Host</Link></li>
-              <li><Link href="/host/new" className="hover:text-primary transition-colors">List Your Car</Link></li>
+              <li><Link href="/safari" className="hover:text-primary transition-colors">🏕️ Safari</Link></li>
+              <li><Link href="/airport-transfer" className="hover:text-primary transition-colors">✈️ Airport Transfer</Link></li>
               <li><Link href="/dashboard" className="hover:text-primary transition-colors">My Bookings</Link></li>
               <li><Link href="/dashboard/host" className="hover:text-primary transition-colors">Host Dashboard</Link></li>
             </ul>
