@@ -1,11 +1,12 @@
 'use client';
 
+import { COMPANY } from '@/lib/config/company';
+
 // Floating WhatsApp support button — ubiquitous in Rwanda/Africa market
-const WHATSAPP_NUMBER = '250788123000';
 const WHATSAPP_MESSAGE = 'Hello Gari support! I need help with:';
 
 export function WhatsAppButton() {
-  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
+  const url = `${COMPANY.whatsappUrl}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
 
   return (
     <a

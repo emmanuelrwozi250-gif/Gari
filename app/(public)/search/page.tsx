@@ -20,6 +20,7 @@ type SearchParamsShape = {
   maxPrice?: string;
   seats?: string;
   transmission?: string;
+  instantBooking?: string;
   sort?: string;
   page?: string;
 };
@@ -62,6 +63,7 @@ function filterDemoCars(params: SearchParamsShape) {
   if (params.seats) cars = cars.filter(c => c.seats >= parseInt(params.seats!));
   if (params.minPrice) cars = cars.filter(c => c.pricePerDay >= parseInt(params.minPrice!));
   if (params.maxPrice) cars = cars.filter(c => c.pricePerDay <= parseInt(params.maxPrice!));
+  if (params.instantBooking === 'true') cars = cars.filter(c => c.instantBooking);
 
   if (params.sort === 'price_asc') cars.sort((a, b) => a.pricePerDay - b.pricePerDay);
   else if (params.sort === 'price_desc') cars.sort((a, b) => b.pricePerDay - a.pricePerDay);
@@ -86,6 +88,7 @@ async function getCars(params: SearchParamsShape) {
       if (params.maxPrice) priceFilter.lte = parseInt(params.maxPrice);
       where.pricePerDay = priceFilter;
     }
+    if (params.instantBooking === 'true') where.instantBooking = true;
 
     const orderBy: Record<string, string> =
       params.sort === 'price_asc' ? { pricePerDay: 'asc' } :

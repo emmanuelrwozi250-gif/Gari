@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Car, MapPin, Phone, Mail, Facebook, Twitter, Instagram } from 'lucide-react';
 import { DISTRICTS_BY_PROVINCE } from '@/lib/districts';
+import { COMPANY } from '@/lib/config/company';
 
 export function Footer() {
   return (
@@ -22,25 +23,25 @@ export function Footer() {
             <div className="space-y-2 text-sm">
               <div className="flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-primary flex-shrink-0" />
-                <span>KG 11 Ave, Kigali, Rwanda</span>
+                <span>{COMPANY.address}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-primary flex-shrink-0" />
-                <span>+250 788 123 000</span>
+                <span>{COMPANY.phone}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-primary flex-shrink-0" />
-                <span>hello@gari.rw</span>
+                <span>{COMPANY.email}</span>
               </div>
             </div>
             <div className="flex gap-3 mt-6">
               <a href="#" className="p-2 rounded-xl bg-white/10 hover:bg-primary/20 transition-colors">
                 <Facebook className="w-4 h-4" />
               </a>
-              <a href="#" className="p-2 rounded-xl bg-white/10 hover:bg-primary/20 transition-colors">
+              <a href={COMPANY.twitter} target="_blank" rel="noopener noreferrer" className="p-2 rounded-xl bg-white/10 hover:bg-primary/20 transition-colors">
                 <Twitter className="w-4 h-4" />
               </a>
-              <a href="#" className="p-2 rounded-xl bg-white/10 hover:bg-primary/20 transition-colors">
+              <a href={COMPANY.instagram} target="_blank" rel="noopener noreferrer" className="p-2 rounded-xl bg-white/10 hover:bg-primary/20 transition-colors">
                 <Instagram className="w-4 h-4" />
               </a>
             </div>

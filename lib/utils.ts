@@ -10,7 +10,8 @@ export function cn(...inputs: ClassValue[]) {
     .trim();
 }
 
-const RWF_TO_USD = 1100;
+/** 1 USD = RWF 1,450 — single source of truth for all USD conversions */
+export const RWF_TO_USD = 1450;
 
 export function formatRWF(amount: number): string {
   return `RWF ${amount.toLocaleString('en-RW')}`;

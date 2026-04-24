@@ -1,9 +1,10 @@
 import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Mountain, MapPin, Star, Users, CheckCircle, ArrowRight, Zap } from 'lucide-react';
+import { Mountain, MapPin, Star, Users, CheckCircle, ArrowRight, Zap, Clock, AlertTriangle } from 'lucide-react';
 import { DEMO_RENTAL_CARS } from '@/lib/demo-data';
 import { formatRWF, toUSD } from '@/lib/utils';
+import { prisma } from '@/lib/prisma';
 
 export const metadata: Metadata = {
   title: 'Safari & Adventure Cars in Rwanda · Gari',
@@ -56,12 +57,69 @@ const SAFARI_TIPS = [
   { icon: '📋', title: 'Park permits', body: 'Gorilla trekking permits ($1,500 USD) must be pre-booked via Rwanda Development Board. Your host can assist.' },
 ];
 
-// Filter for off-road/adventure-capable vehicles
-const safariCars = DEMO_RENTAL_CARS.filter(
-  c => c.type === 'SUV / 4x4' || c.type === 'Pickup'
-).slice(0, 6);
+const POPULAR_ROUTES = [
+  {
+    from: 'Kigali',
+    to: 'Volcanoes NP (Kinigi)',
+    time: '2.5 hrs',
+    conditions: 'Paved then rough mountain road',
+    conditionIcon: '⚠️',
+    recommendedCar: 'Prado / RAV4 4WD',
+    district: 'musanze',
+  },
+  {
+    from: 'Kigali',
+    to: 'Akagera NP',
+    time: '2.5 hrs',
+    conditions: 'Paved highway, dirt tracks inside park',
+    conditionIcon: '🛣️',
+    recommendedCar: 'Land Cruiser / Hilux',
+    district: 'kayonza',
+  },
+  {
+    from: 'Kigali',
+    to: 'Nyungwe Forest',
+    time: '5 hrs',
+    conditions: 'Long paved highway, steep mountain sections',
+    conditionIcon: '🏔️',
+    recommendedCar: 'Prado / SUV with driver',
+    district: 'nyamasheke',
+  },
+  {
+    from: 'Kigali',
+    to: 'Lake Kivu (Rubavu)',
+    time: '2.5 hrs',
+    conditions: 'Scenic mountain road — fully paved',
+    conditionIcon: '✅',
+    recommendedCar: 'Any SUV',
+    district: 'rubavu',
+  },
+];
 
-export default function SafariPage() {
+async function getSafariCars() {
+  try {
+    const dbCars = await prisma.car.findMany({
+      where: {
+        isAvailable: true,
+        isVerified: true,
+        type: { in: ['SUV_4X4', 'PICKUP', 'LUXURY', 'EXECUTIVE'] },
+      },
+      include: { host: { select: { name: true, avatar: true } } },
+      orderBy: [{ rating: 'desc' }, { totalTrips: 'desc' }],
+      take: 6,
+    });
+    if (dbCars.length > 0) return dbCars;
+  } catch {
+    // fall through to demo data
+  }
+  return DEMO_RENTAL_CARS.filter(
+    c => c.type === 'SUV / 4x4' || c.type === 'Pickup'
+  ).slice(0, 6);
+}
+
+export default async function SafariPage() {
+  const safariCars = await getSafariCars();
+
   return (
     <div className="min-h-screen bg-gray-bg dark:bg-gray-950">
       {/* Hero */}
@@ -149,6 +207,45 @@ export default function SafariPage() {
         </div>
       </section>
 
+      {/* Popular Routes — Section 8.2 */}
+      <section className="max-w-6xl mx-auto px-4 pb-12">
+        <div className="mb-6">
+          <h2 className="text-2xl font-extrabold text-text-primary dark:text-white">Popular Safari Routes from Kigali</h2>
+          <p className="text-text-secondary mt-1 text-sm">Drive times and road conditions at a glance</p>
+        </div>
+        <div className="grid sm:grid-cols-2 gap-4">
+          {POPULAR_ROUTES.map(route => (
+            <div key={route.to} className="card p-5">
+              <div className="flex items-start justify-between gap-3 mb-3">
+                <div>
+                  <p className="text-xs font-semibold text-text-light uppercase tracking-wide mb-0.5">
+                    {route.from} →
+                  </p>
+                  <h3 className="font-bold text-text-primary dark:text-white">{route.to}</h3>
+                </div>
+                <span className="flex items-center gap-1 text-xs font-semibold bg-primary-light text-primary px-2.5 py-1 rounded-full flex-shrink-0">
+                  <Clock className="w-3 h-3" /> {route.time}
+                </span>
+              </div>
+              <p className="text-xs text-text-secondary mb-3 flex items-center gap-1.5">
+                <span>{route.conditionIcon}</span> {route.conditions}
+              </p>
+              <div className="flex items-center justify-between">
+                <span className="text-xs bg-gray-100 dark:bg-gray-800 text-text-secondary px-2.5 py-1 rounded-full">
+                  🚙 {route.recommendedCar}
+                </span>
+                <Link
+                  href={`/search?district=${route.district}&type=SUV_4X4`}
+                  className="text-xs text-primary font-semibold flex items-center gap-1 hover:gap-2 transition-all"
+                >
+                  Find cars <ArrowRight className="w-3 h-3" />
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Vehicle listings */}
       <section id="vehicles" className="max-w-6xl mx-auto px-4 pb-12">
         <div className="flex items-center justify-between mb-6">
@@ -162,55 +259,65 @@ export default function SafariPage() {
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {safariCars.map(car => (
-            <Link key={car.id} href={`/cars/${car.id}`} className="card overflow-hidden group hover:shadow-lg transition-shadow block">
-              <div className="relative h-48 overflow-hidden">
-                <Image
-                  src={car.images[0] || 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=800&q=80'}
-                  alt={`${car.make} ${car.model}`}
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(50vw - 24px), 380px"
-                  quality={65}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-                {car.hostVerified && (
-                  <div className="absolute top-3 left-3 flex items-center gap-1 bg-primary/90 text-white text-xs font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm">
-                    <CheckCircle className="w-3 h-3" /> Verified
-                  </div>
-                )}
-                {car.drivingOption !== 'Self-Drive' && (
-                  <span className="absolute top-3 right-3 bg-purple-500/90 text-white text-xs font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm">
-                    + Driver
-                  </span>
-                )}
-                <div className="absolute bottom-3 left-3">
-                  <span className="bg-white/95 dark:bg-gray-900/95 text-primary font-bold text-sm px-2.5 py-1 rounded-lg shadow">
-                    {formatRWF(car.pricePerDay)}<span className="text-text-light font-normal text-xs">/day</span>
-                  </span>
-                  <span className="block text-[10px] text-white/80 mt-0.5 pl-0.5">{toUSD(car.pricePerDay)}</span>
-                </div>
-              </div>
-              <div className="p-4">
-                <div className="flex items-start justify-between gap-2 mb-1">
-                  <div>
-                    <h3 className="font-bold text-text-primary dark:text-white">{car.make} {car.model}</h3>
-                    <p className="text-xs text-text-light">{car.year} · {car.type}</p>
-                  </div>
-                  <div className="flex items-center gap-0.5 flex-shrink-0">
-                    <Star className="w-3.5 h-3.5 fill-accent-yellow text-accent-yellow" />
-                    <span className="text-xs font-semibold text-text-primary dark:text-white">{car.rating.toFixed(1)}</span>
-                    <span className="text-xs text-text-light">({car.reviewCount})</span>
+          {safariCars.map((car: any) => {
+            const photo = (car.photos ?? car.images)?.[0];
+            const verified = car.isVerified ?? car.hostVerified ?? false;
+            const hasDriver = car.driverAvailable ?? (car.drivingOption !== 'Self-Drive');
+            const carRating = typeof car.rating === 'number' ? car.rating : 0;
+            const reviewCt = car._count?.reviews ?? car.reviewCount ?? 0;
+            return (
+              <Link key={car.id} href={`/cars/${car.id}`} className="card overflow-hidden group hover:shadow-lg transition-shadow block">
+                <div className="relative h-48 overflow-hidden">
+                  <Image
+                    src={photo || '/images/car-placeholder.svg'}
+                    alt={`${car.make} ${car.model}`}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(50vw - 24px), 380px"
+                    quality={65}
+                    unoptimized={!photo}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+                  {verified && (
+                    <div className="absolute top-3 left-3 flex items-center gap-1 bg-primary/90 text-white text-xs font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm">
+                      <CheckCircle className="w-3 h-3" /> Verified
+                    </div>
+                  )}
+                  {hasDriver && (
+                    <span className="absolute top-3 right-3 bg-purple-500/90 text-white text-xs font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm">
+                      🧑‍✈️ Driver
+                    </span>
+                  )}
+                  <div className="absolute bottom-3 left-3">
+                    <span className="bg-white/95 dark:bg-gray-900/95 text-primary font-bold text-sm px-2.5 py-1 rounded-lg shadow">
+                      {formatRWF(car.pricePerDay)}<span className="text-text-light font-normal text-xs">/day</span>
+                    </span>
+                    <span className="block text-[10px] text-white/80 mt-0.5 pl-0.5">{toUSD(car.pricePerDay)}</span>
                   </div>
                 </div>
-                <div className="flex items-center gap-3 text-xs text-text-secondary mt-2">
-                  <span className="flex items-center gap-1"><Users className="w-3 h-3" /> {car.seats} seats</span>
-                  <span className="flex items-center gap-1"><Zap className="w-3 h-3" /> {car.fuel}</span>
-                  <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {car.district}</span>
+                <div className="p-4">
+                  <div className="flex items-start justify-between gap-2 mb-1">
+                    <div>
+                      <h3 className="font-bold text-text-primary dark:text-white">{car.make} {car.model}</h3>
+                      <p className="text-xs text-text-light">{car.year} · {car.type}</p>
+                    </div>
+                    <div className="flex items-center gap-0.5 flex-shrink-0">
+                      <Star className="w-3.5 h-3.5 fill-accent-yellow text-accent-yellow" />
+                      <span className="text-xs font-semibold text-text-primary dark:text-white">
+                        {carRating > 0 ? carRating.toFixed(1) : 'New'}
+                      </span>
+                      {reviewCt > 0 && <span className="text-xs text-text-light">({reviewCt})</span>}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 text-xs text-text-secondary mt-2">
+                    <span className="flex items-center gap-1"><Users className="w-3 h-3" /> {car.seats} seats</span>
+                    <span className="flex items-center gap-1"><Zap className="w-3 h-3" /> {car.fuel}</span>
+                    <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {car.district}</span>
+                  </div>
                 </div>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            );
+          })}
         </div>
       </section>
 

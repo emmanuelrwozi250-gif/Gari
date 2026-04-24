@@ -182,11 +182,36 @@ export function FilterSidebar({ searchParams, onChange }: FilterSidebarProps) {
         </div>
       </div>
 
+      {/* ⚡ Instant Book */}
+      <div>
+        <button
+          type="button"
+          onClick={() => onChange('instantBooking', searchParams.instantBooking === 'true' ? null : 'true')}
+          className={`flex items-center justify-between w-full px-4 py-3 rounded-xl border-2 transition-colors ${
+            searchParams.instantBooking === 'true'
+              ? 'border-accent-yellow bg-accent-yellow/10 text-amber-700 dark:text-accent-yellow'
+              : 'border-border text-text-secondary hover:border-accent-yellow/50'
+          }`}
+        >
+          <span className="text-sm font-semibold flex items-center gap-2">
+            ⚡ Instant Book only
+          </span>
+          <span className={`w-10 h-5 rounded-full transition-colors relative ${
+            searchParams.instantBooking === 'true' ? 'bg-accent-yellow' : 'bg-gray-200 dark:bg-gray-700'
+          }`}>
+            <span className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${
+              searchParams.instantBooking === 'true' ? 'translate-x-5' : 'translate-x-0.5'
+            }`} />
+          </span>
+        </button>
+        <p className="text-xs text-text-light mt-1.5 px-1">Confirmed immediately — no waiting for host approval</p>
+      </div>
+
       {/* Clear all */}
       <button
         type="button"
         onClick={() => {
-          ['district', 'driver', 'type', 'listingType', 'minPrice', 'maxPrice', 'seats', 'transmission'].forEach(k => onChange(k, null));
+          ['district', 'driver', 'type', 'listingType', 'minPrice', 'maxPrice', 'seats', 'transmission', 'instantBooking'].forEach(k => onChange(k, null));
         }}
         className="w-full py-2 text-sm text-text-secondary hover:text-red-500 transition-colors"
       >
