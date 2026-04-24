@@ -3,14 +3,13 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { Car, Tag, PlusCircle, TrendingUp, User } from 'lucide-react';
+import { Car, TrendingUp, ClipboardList, User } from 'lucide-react';
 
 const navItems = [
-  { href: '/search', icon: Car, label: 'Rent' },
-  { href: '/buy', icon: Tag, label: 'Buy' },
-  { href: '/sell', icon: PlusCircle, label: 'Sell' },
+  { href: '/search', icon: Car, label: 'Find a Car' },
   { href: '/earn', icon: TrendingUp, label: 'Earn' },
-  { href: '/profile', icon: User, label: 'Profile' },
+  { href: '/dashboard', icon: ClipboardList, label: 'Trips' },
+  { href: '/profile', icon: User, label: 'Me' },
 ];
 
 export function MobileNav() {
@@ -23,10 +22,11 @@ export function MobileNav() {
         {navItems.map(({ href, icon: Icon, label }) => {
           const active = pathname === href || (href !== '/' && pathname.startsWith(href));
           const isProfile = href === '/profile';
+          const requiresAuth = href === '/profile' || href === '/dashboard';
           return (
             <Link
               key={href}
-              href={isProfile && !session ? '/login' : href}
+              href={requiresAuth && !session ? '/login' : href}
               className={`flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-colors min-w-[44px] ${
                 active ? 'text-primary' : 'text-text-light'
               }`}

@@ -8,8 +8,8 @@ import { prisma } from '@/lib/prisma';
 import { DEMO_RENTAL_CARS, DEMO_STATS, DEMO_TESTIMONIALS } from '@/lib/demo-data';
 import {
   Shield, BadgeCheck, Phone, Star, ArrowRight,
-  TrendingUp, Car, Users, Globe, CheckCircle,
-  Banknote, Clock, HeartHandshake, Tag, Building2
+  Car, Users, Globe, CheckCircle,
+  Banknote, Clock, HeartHandshake
 } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -151,39 +151,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Marketplace Callouts */}
-      <section className="py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="grid sm:grid-cols-2 gap-4">
-          <Link href="/buy" className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 to-blue-800 p-6 text-white hover:shadow-xl transition-shadow">
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 opacity-10 group-hover:opacity-20 transition-opacity">
-              <Tag className="w-28 h-28" />
-            </div>
-            <div className="relative z-10">
-              <Tag className="w-7 h-7 text-blue-200 mb-3" />
-              <h3 className="text-xl font-extrabold mb-1">Buy a Car</h3>
-              <p className="text-blue-200 text-sm mb-3">Browse verified used cars sold directly by owners. NIDA-checked sellers, transparent pricing.</p>
-              <span className="inline-flex items-center gap-1 text-sm font-semibold text-white hover:gap-2 transition-all">
-                Browse listings <ArrowRight className="w-4 h-4" />
-              </span>
-            </div>
-          </Link>
-
-          <Link href="/sell" className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-600 to-emerald-800 p-6 text-white hover:shadow-xl transition-shadow">
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 opacity-10 group-hover:opacity-20 transition-opacity">
-              <Building2 className="w-28 h-28" />
-            </div>
-            <div className="relative z-10">
-              <Building2 className="w-7 h-7 text-emerald-200 mb-3" />
-              <h3 className="text-xl font-extrabold mb-1">Sell Your Car</h3>
-              <p className="text-emerald-200 text-sm mb-3">List in minutes, reach thousands of verified buyers across Rwanda. Basic listing is free.</p>
-              <span className="inline-flex items-center gap-1 text-sm font-semibold text-white hover:gap-2 transition-all">
-                Start listing <ArrowRight className="w-4 h-4" />
-              </span>
-            </div>
-          </Link>
-        </div>
-      </section>
-
       {/* How It Works */}
       <section className="py-16 bg-gray-bg dark:bg-gray-950">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -241,53 +208,6 @@ export default async function HomePage() {
             <EarningsCalculator />
           </div>
         </div>
-      </section>
-
-      {/* Buy & Earn Teaser */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="text-center mb-10">
-          <div className="inline-flex items-center gap-2 bg-accent-yellow/10 border border-accent-yellow/30 rounded-full px-4 py-1.5 text-accent-yellow text-sm font-semibold mb-4">
-            <TrendingUp className="w-4 h-4" />
-            New on Gari
-          </div>
-          <h2 className="section-title">Invest in a Car. Earn on Gari.</h2>
-          <p className="section-subtitle max-w-2xl mx-auto">
-            Buy a car from our curated fleet and list it on Gari from day one.
-            We handle the bookings — you collect the income.
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
-          {[
-            { icon: Banknote, stat: '18–30%', label: 'Typical Annual ROI', desc: 'Based on comparable cars listed on Gari at Rwanda market rates.' },
-            { icon: Clock, stat: '2–3 years', label: '24–36 Month Payback', desc: 'Earn rental income that progressively covers your vehicle purchase cost.' },
-            { icon: Shield, stat: 'Fully Insured', label: 'Every Trip', desc: 'Comprehensive insurance on all rentals — your asset is protected from day one.' },
-          ].map(({ icon: Icon, stat, label, desc }) => (
-            <div key={label} className="card p-6 text-center">
-              <div className="w-12 h-12 rounded-2xl bg-accent-yellow/10 flex items-center justify-center mx-auto mb-4">
-                <Icon className="w-6 h-6 text-accent-yellow" />
-              </div>
-              <div className="text-2xl font-extrabold text-text-primary dark:text-white mb-0.5">{stat}</div>
-              <div className="text-xs font-semibold text-primary uppercase tracking-wide mb-2">{label}</div>
-              <p className="text-sm text-text-secondary">{desc}</p>
-            </div>
-          ))}
-        </div>
-
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link href="/earn" className="inline-flex items-center justify-center gap-2 bg-accent-yellow text-gray-900 font-bold px-8 py-3 rounded-pill hover:bg-yellow-400 transition-colors">
-            <TrendingUp className="w-4 h-4" />
-            View Investment Opportunities
-          </Link>
-          <Link href="/buy" className="inline-flex items-center justify-center gap-2 btn-secondary px-8 py-3">
-            <Tag className="w-4 h-4" />
-            Browse Cars for Sale
-          </Link>
-        </div>
-
-        <p className="text-xs text-center text-text-light mt-4">
-          Income estimates are projections based on comparable Gari listings. Not a guaranteed return. See full disclaimer on listing pages.
-        </p>
       </section>
 
       {/* Trust & Safety */}

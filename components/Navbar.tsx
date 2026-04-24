@@ -8,7 +8,7 @@ import { useTheme } from './ThemeProvider';
 import { useLanguage, type Locale } from '@/lib/language';
 import {
   Car, Menu, X, Sun, Moon, User, LogOut, LayoutDashboard,
-  Bell, ChevronDown, PlusCircle, MessageSquare, Tag, TrendingUp, MapPin, Globe,
+  Bell, ChevronDown, MessageSquare, TrendingUp, Globe,
 } from 'lucide-react';
 
 const LOCALE_LABELS: Record<Locale, string> = { en: 'EN', fr: 'FR', rw: 'RW' };
@@ -39,12 +39,6 @@ export function Navbar() {
           <div className="hidden md:flex items-center gap-1">
             <Link href="/search" className="px-3 py-2 rounded-xl text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-all flex items-center gap-1.5">
               <Car className="w-3.5 h-3.5" /> {t('nav', 'rentCar')}
-            </Link>
-            <Link href="/buy" className="px-3 py-2 rounded-xl text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-all flex items-center gap-1.5">
-              <Tag className="w-3.5 h-3.5" /> {t('nav', 'buyCar')}
-            </Link>
-            <Link href="/sell" className="px-3 py-2 rounded-xl text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-all flex items-center gap-1.5">
-              <PlusCircle className="w-3.5 h-3.5" /> {t('nav', 'sellCar')}
             </Link>
             <Link href="/earn" className="px-3 py-2 rounded-xl text-sm font-medium text-accent-yellow hover:text-white hover:bg-white/10 transition-all flex items-center gap-1.5">
               <TrendingUp className="w-3.5 h-3.5" /> {t('nav', 'earnCar')}
@@ -130,14 +124,6 @@ export function Navbar() {
                           <Car className="w-4 h-4" /> Host Dashboard
                         </Link>
                       )}
-                      <Link href="/sell" onClick={() => setUserMenuOpen(false)}
-                        className="flex items-center gap-2 px-4 py-2 text-sm text-text-primary dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800">
-                        <Tag className="w-4 h-4" /> Sell a Car
-                      </Link>
-                      <Link href="/financing" onClick={() => setUserMenuOpen(false)}
-                        className="flex items-center gap-2 px-4 py-2 text-sm text-text-primary dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800">
-                        <TrendingUp className="w-4 h-4" /> Drive to Own
-                      </Link>
                       <Link href="/profile" onClick={() => setUserMenuOpen(false)}
                         className="flex items-center gap-2 px-4 py-2 text-sm text-text-primary dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800">
                         <User className="w-4 h-4" /> Profile
@@ -181,14 +167,6 @@ export function Navbar() {
             className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10">
             <Car className="w-4 h-4" /> Rent a Car
           </Link>
-          <Link href="/buy" onClick={() => setMenuOpen(false)}
-            className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10">
-            <Tag className="w-4 h-4" /> Buy a Car
-          </Link>
-          <Link href="/sell" onClick={() => setMenuOpen(false)}
-            className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10">
-            <PlusCircle className="w-4 h-4" /> Sell Your Car
-          </Link>
           <Link href="/earn" onClick={() => setMenuOpen(false)}
             className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium text-accent-yellow hover:text-white hover:bg-white/10">
             <TrendingUp className="w-4 h-4" /> Earn with Your Car
@@ -209,10 +187,6 @@ export function Navbar() {
               <Link href="/messages" onClick={() => setMenuOpen(false)}
                 className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10">
                 <MessageSquare className="w-4 h-4" /> Messages
-              </Link>
-              <Link href="/financing" onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10">
-                <TrendingUp className="w-4 h-4" /> Drive to Own
               </Link>
               <button onClick={() => { setMenuOpen(false); signOut({ callbackUrl: '/' }); }}
                 className="flex items-center gap-2 w-full px-4 py-3 rounded-xl text-sm font-medium text-red-400 hover:bg-red-900/20">
