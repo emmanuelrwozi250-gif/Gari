@@ -1,8 +1,10 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
+import { getServerSession } from 'next-auth';
 import { prisma } from '@/lib/prisma';
+import { authOptions } from '@/lib/auth';
 import { DEMO_RENTAL_CARS } from '@/lib/demo-data';
-import { CarDetailClient, type CarDisplay } from '@/components/CarDetailClient';
+import { CarDetailClient, type CarDisplay, type ReviewDisplay } from '@/components/CarDetailClient';
 import { formatRWF } from '@/lib/utils';
 
 async function getCar(id: string): Promise<CarDisplay | null> {
@@ -22,6 +24,15 @@ async function getCar(id: string): Promise<CarDisplay | null> {
       car = await prisma.car.findFirst({ where: { slug: id }, include });
     }
     if (!car) return null;
+
+    const reviews: ReviewDisplay[] = (car.reviews ?? []).map(r => ({
+      id: r.id,
+      rating: r.rating,
+      comment: r.comment,
+      createdAt: r.createdAt.toISOString(),
+      reviewerName: r.reviewer?.name ?? 'Anonymous',
+      reviewerAvatar: r.reviewer?.avatar ?? null,
+    }));
 
     return {
       id: car.id,
@@ -50,6 +61,7 @@ async function getCar(id: string): Promise<CarDisplay | null> {
       depositAmount: car.depositAmount,
       instantBooking: car.instantBooking,
       driverPricePerDay: car.driverPricePerDay ?? 0,
+      reviews,
     };
   } catch {
     return null;
@@ -119,6 +131,7 @@ export default async function CarPage(
         depositAmount: 0,
         instantBooking: false,
         driverPricePerDay: 0,
+        reviews: [],
       };
     }
   }
@@ -126,5 +139,23 @@ export default async function CarPage(
   // 3. Proper 404 — shows custom not-found page
   if (!car) notFound();
 
-  return <CarDetailClient car={car} />;
+  // 4. Check if logged-in user has a completed booking for this car (enables review form)
+  let completedBookingId: string | null = null;
+  try {
+    const session = await getServerSession(authOptions);
+    if (session?.user) {
+      const userId = (session.user as { id?: string }).id;
+      if (userId) {
+        const booking = await prisma.booking.findFirst({
+          where: { carId: id, renterId: userId, status: 'COMPLETED', review: null },
+          select: { id: true },
+        });
+        completedBookingId = booking?.id ?? null;
+      }
+    }
+  } catch {
+    // Session check is non-critical — silently skip
+  }
+
+  return <CarDetailClient car={car} completedBookingId={completedBookingId} />;
 }

@@ -16,6 +16,15 @@ import { RWANDA_DISTRICTS } from '@/lib/districts';
 const FALLBACK = 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=800&q=80';
 const PLATFORM_FEE_RATE = 0.10;
 
+export type ReviewDisplay = {
+  id: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
+  reviewerName: string;
+  reviewerAvatar: string | null;
+};
+
 export type CarDisplay = {
   id: string;
   make: string;
@@ -43,6 +52,8 @@ export type CarDisplay = {
   depositAmount: number;
   instantBooking: boolean;
   driverPricePerDay: number;
+  reviews: ReviewDisplay[];
+  completedBookingId?: string | null;
 };
 
 // Generate 8 "unavailable" future dates for realism
@@ -116,6 +127,150 @@ function VerificationSection({ isVerified }: { isVerified: boolean }) {
   );
 }
 
+function StarRow({ value, interactive, onSet, onHover }: {
+  value: number; interactive?: boolean;
+  onSet?: (v: number) => void; onHover?: (v: number) => void;
+}) {
+  return (
+    <div className="flex gap-0.5">
+      {[1, 2, 3, 4, 5].map(s => (
+        <button
+          key={s}
+          type="button"
+          disabled={!interactive}
+          onClick={() => onSet?.(s)}
+          onMouseEnter={() => onHover?.(s)}
+          onMouseLeave={() => onHover?.(0)}
+          className={`${interactive ? 'cursor-pointer p-0.5' : 'cursor-default p-0'}`}
+        >
+          <Star className={`${interactive ? 'w-6 h-6' : 'w-3 h-3'} transition-colors ${
+            s <= value ? 'fill-accent-yellow text-accent-yellow' : 'text-text-light/30'
+          }`} />
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function ReviewsSection({ reviews, completedBookingId }: {
+  reviews: ReviewDisplay[];
+  completedBookingId?: string | null;
+}) {
+  const [rating, setRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
+  const [comment, setComment] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  const avgRating = reviews.length > 0
+    ? reviews.reduce((s, r) => s + r.rating, 0) / reviews.length
+    : 0;
+
+  async function submitReview() {
+    if (!completedBookingId || rating === 0 || comment.length < 10) return;
+    setSubmitting(true);
+    try {
+      const res = await fetch('/api/reviews', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bookingId: completedBookingId, rating, comment }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || 'Failed to submit review');
+      setSubmitted(true);
+      toast.success('Review submitted! Thank you.');
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Failed to submit review');
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  return (
+    <div className="card p-5">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="font-bold text-text-primary dark:text-white">
+          Reviews {reviews.length > 0 && `(${reviews.length})`}
+        </h2>
+        {reviews.length > 0 && (
+          <div className="flex items-center gap-1 text-accent-yellow font-bold text-sm">
+            <Star className="w-4 h-4 fill-accent-yellow" />
+            {avgRating.toFixed(1)}
+          </div>
+        )}
+      </div>
+
+      {/* Empty state */}
+      {reviews.length === 0 && (
+        <div className="text-center py-6">
+          <Star className="w-8 h-8 text-text-light/30 mx-auto mb-2" />
+          <p className="text-sm text-text-secondary">No reviews yet — be the first</p>
+          <p className="text-xs text-text-light mt-1">Reviews come from verified renters after a completed trip.</p>
+        </div>
+      )}
+
+      {/* Reviews list */}
+      {reviews.length > 0 && (
+        <div className="space-y-5 mb-4">
+          {reviews.map(r => (
+            <div key={r.id} className="flex gap-3">
+              <div className="w-9 h-9 rounded-full bg-primary/20 flex-shrink-0 flex items-center justify-center text-primary font-bold text-sm">
+                {r.reviewerName?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || '?'}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-0.5">
+                  <span className="font-semibold text-sm text-text-primary dark:text-white">{r.reviewerName}</span>
+                  <span className="text-xs text-text-light">
+                    {new Date(r.createdAt).toLocaleDateString('en-RW', { month: 'short', year: 'numeric' })}
+                  </span>
+                </div>
+                <StarRow value={r.rating} />
+                <p className="text-sm text-text-secondary leading-relaxed mt-1.5">{r.comment}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Write a review */}
+      {completedBookingId && !submitted && (
+        <div className={`${reviews.length > 0 ? 'border-t border-border pt-4' : ''}`}>
+          <h3 className="text-sm font-semibold text-text-primary dark:text-white mb-3">Write a Review</h3>
+          <StarRow value={hoverRating || rating} interactive onSet={setRating} onHover={setHoverRating} />
+          {rating > 0 && (
+            <p className="text-xs text-text-light mt-1 mb-3">
+              {['', 'Poor', 'Fair', 'Good', 'Great', 'Excellent'][rating]}
+            </p>
+          )}
+          <textarea
+            value={comment}
+            onChange={e => setComment(e.target.value)}
+            placeholder="Share your experience (min. 10 characters)…"
+            rows={3}
+            className="input text-sm resize-none w-full mt-3 mb-3"
+          />
+          <button
+            onClick={submitReview}
+            disabled={submitting || rating === 0 || comment.length < 10}
+            className="btn-primary w-full justify-center py-2.5 text-sm disabled:opacity-60"
+          >
+            {submitting
+              ? <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2 inline-block" />Submitting…</>
+              : 'Submit Review'}
+          </button>
+        </div>
+      )}
+
+      {submitted && (
+        <div className={`${reviews.length > 0 ? 'border-t border-border pt-4' : ''} text-center`}>
+          <CheckCircle className="w-8 h-8 text-primary mx-auto mb-2" />
+          <p className="text-sm font-semibold text-text-primary dark:text-white">Thank you for your review!</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function CalendarBlock({ unavailable }: { unavailable: string[] }) {
   const today = new Date();
   const month = today.toLocaleString('en', { month: 'long', year: 'numeric' });
@@ -154,7 +309,7 @@ function CalendarBlock({ unavailable }: { unavailable: string[] }) {
   );
 }
 
-export function CarDetailClient({ car }: { car: CarDisplay }) {
+export function CarDetailClient({ car, completedBookingId }: { car: CarDisplay; completedBookingId?: string | null }) {
   const router = useRouter();
   const [activePhoto, setActivePhoto] = useState(0);
   const [pickup, setPickup] = useState('');
@@ -349,6 +504,12 @@ export function CarDetailClient({ car }: { car: CarDisplay }) {
                 <Phone className="w-4 h-4" /> Message on WhatsApp
               </a>
             </div>
+
+            {/* Reviews */}
+            <ReviewsSection
+              reviews={car.reviews ?? []}
+              completedBookingId={completedBookingId}
+            />
 
             {/* Safety notice */}
             <div className="flex items-start gap-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-xl p-4">
