@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { calculateExtensionFee } from '@/config/rental-policy';
 import { formatRWF } from '@/lib/utils';
+import { PhotoInspection } from '@/components/PhotoInspection';
 
 interface TripStatus {
   id: string;
@@ -242,6 +243,24 @@ export default function ActiveTripPage() {
             ))}
           </div>
         </div>
+
+        {/* Pre-trip pickup inspection */}
+        <div className="mb-4">
+          <p className="text-xs font-semibold text-text-secondary uppercase tracking-wide mb-2 px-1">
+            📸 Pickup Inspection
+          </p>
+          <PhotoInspection bookingId={id} stage="pickup" />
+        </div>
+
+        {/* Return inspection — show when overdue or within last 2 hours */}
+        {(isOverdue || msRemaining < 2 * 3600000) && (
+          <div className="mb-4">
+            <p className="text-xs font-semibold text-text-secondary uppercase tracking-wide mb-2 px-1">
+              📸 Return Inspection
+            </p>
+            <PhotoInspection bookingId={id} stage="return" />
+          </div>
+        )}
 
         {/* Actions */}
         <div className="space-y-2">
