@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import { MessageCircle, Mail, MapPin, Clock, Phone } from 'lucide-react';
+import { ContactForm } from '@/components/ContactForm';
+import { COMPANY, waLink } from '@/lib/config/company';
 
 export const metadata: Metadata = {
   title: 'Contact Us — Gari',
@@ -26,9 +28,9 @@ export default function ContactPage() {
           </div>
           <h2 className="text-xl font-bold text-text-primary dark:text-white mb-2">WhatsApp Support</h2>
           <p className="text-text-secondary text-sm mb-1">Fastest response — typically under 30 minutes</p>
-          <p className="font-bold text-2xl text-primary mb-5">+250 788 123 000</p>
+          <p className="font-bold text-2xl text-primary mb-5">{COMPANY.phone}</p>
           <a
-            href="https://wa.me/250788123000?text=Hi%20Gari%2C%20I%20need%20help%20with%20my%20booking."
+            href={waLink('Hi Gari, I need help with my booking.')}
             target="_blank"
             rel="noopener noreferrer"
             className="btn-primary inline-flex items-center gap-2 px-8 py-3 text-base"
@@ -50,8 +52,8 @@ export default function ContactPage() {
                 <div className="text-xs text-text-secondary">Response within 4 hours</div>
               </div>
             </div>
-            <a href="mailto:support@gari.rw" className="text-primary text-sm font-medium hover:underline">
-              support@gari.rw
+            <a href={`mailto:${COMPANY.email}`} className="text-primary text-sm font-medium hover:underline">
+              {COMPANY.email}
             </a>
           </div>
 
@@ -65,8 +67,8 @@ export default function ContactPage() {
                 <div className="text-xs text-text-secondary">24/7 for active bookings only</div>
               </div>
             </div>
-            <a href="tel:+250788123000" className="text-primary text-sm font-medium hover:underline">
-              +250 788 123 000
+            <a href={`tel:${COMPANY.phone.replace(/\s/g, '')}`} className="text-primary text-sm font-medium hover:underline">
+              {COMPANY.phone}
             </a>
           </div>
 
@@ -80,7 +82,7 @@ export default function ContactPage() {
                 <div className="text-xs text-text-secondary">Walk-ins welcome</div>
               </div>
             </div>
-            <p className="text-sm text-text-secondary">KG 7 Ave, Kigali, Rwanda</p>
+            <p className="text-sm text-text-secondary">{COMPANY.address}</p>
           </div>
 
           <div className="card p-5">
@@ -98,11 +100,14 @@ export default function ContactPage() {
           </div>
         </div>
 
-        <div className="card p-5 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-700">
+        <div className="card p-5 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-700 mb-6">
           <p className="text-sm text-amber-800 dark:text-amber-200 text-center">
             <strong>For police or medical emergencies</strong> — call <strong>112</strong> first, then contact Gari support.
           </p>
         </div>
+
+        {/* Contact form */}
+        <ContactForm />
       </div>
     </div>
   );
