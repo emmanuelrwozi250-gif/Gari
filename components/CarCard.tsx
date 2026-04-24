@@ -74,6 +74,11 @@ export function CarCard({ car, compact = false }: CarCardProps) {
               <Zap className="w-3 h-3" /> Instant
             </span>
           )}
+          {car.driverAvailable && (
+            <span className="badge bg-purple-600/90 text-white text-xs backdrop-blur-sm">
+              🧑‍✈️ Driver
+            </span>
+          )}
         </div>
 
         {/* Listing type badge top-right */}
@@ -129,9 +134,6 @@ export function CarCard({ car, compact = false }: CarCardProps) {
               <Fuel className="w-3 h-3" /> {getFuelLabel(car.fuel)}
             </span>
             {car.hasAC && <span className="text-text-light">A/C</span>}
-            {car.driverAvailable && (
-              <span className="text-primary font-medium ml-auto">+ Driver</span>
-            )}
           </div>
         )}
 
