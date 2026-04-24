@@ -3,11 +3,11 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { Car, TrendingUp, ClipboardList, User } from 'lucide-react';
+import { Car, ClipboardList, User, Search } from 'lucide-react';
 
 const navItems = [
-  { href: '/search', icon: Car, label: 'Find a Car' },
-  { href: '/earn', icon: TrendingUp, label: 'Earn' },
+  { href: '/search', icon: Car, label: 'Rent' },
+  { href: '/search?type=SUV', icon: Search, label: 'Explore' },
   { href: '/dashboard', icon: ClipboardList, label: 'Trips' },
   { href: '/profile', icon: User, label: 'Me' },
 ];

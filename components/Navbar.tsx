@@ -8,7 +8,7 @@ import { useTheme } from './ThemeProvider';
 import { useLanguage, type Locale } from '@/lib/language';
 import {
   Car, Menu, X, Sun, Moon, User, LogOut, LayoutDashboard,
-  Bell, ChevronDown, MessageSquare, TrendingUp, Globe,
+  Bell, ChevronDown, MessageSquare, Globe,
 } from 'lucide-react';
 
 const LOCALE_LABELS: Record<Locale, string> = { en: 'EN', fr: 'FR', rw: 'RW' };
@@ -40,8 +40,8 @@ export function Navbar() {
             <Link href="/search" className="px-3 py-2 rounded-xl text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-all flex items-center gap-1.5">
               <Car className="w-3.5 h-3.5" /> {t('nav', 'rentCar')}
             </Link>
-            <Link href="/earn" className="px-3 py-2 rounded-xl text-sm font-medium text-accent-yellow hover:text-white hover:bg-white/10 transition-all flex items-center gap-1.5">
-              <TrendingUp className="w-3.5 h-3.5" /> {t('nav', 'earnCar')}
+            <Link href="/safari" className="px-3 py-2 rounded-xl text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-all flex items-center gap-1.5">
+              🏕️ Safari
             </Link>
             {session && (session.user.role === 'HOST' || session.user.role === 'BOTH' || session.user.role === 'ADMIN') && (
               <Link href="/dashboard/host" className="px-3 py-2 rounded-xl text-sm font-medium text-primary hover:text-white hover:bg-white/10 transition-all flex items-center gap-1.5">
@@ -167,9 +167,9 @@ export function Navbar() {
             className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10">
             <Car className="w-4 h-4" /> Rent a Car
           </Link>
-          <Link href="/earn" onClick={() => setMenuOpen(false)}
-            className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium text-accent-yellow hover:text-white hover:bg-white/10">
-            <TrendingUp className="w-4 h-4" /> Earn with Your Car
+          <Link href="/safari" onClick={() => setMenuOpen(false)}
+            className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10">
+            🏕️ Safari
           </Link>
           <hr className="border-white/10 my-2" />
           {session ? (

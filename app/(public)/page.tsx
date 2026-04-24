@@ -2,14 +2,13 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { SearchBar } from '@/components/SearchBar';
 import { CarCard } from '@/components/CarCard';
-import { EarningsCalculator } from '@/components/EarningsCalculator';
 import { STATS } from '@/config/social-proof';
 import { prisma } from '@/lib/prisma';
 import { DEMO_RENTAL_CARS, DEMO_STATS, DEMO_TESTIMONIALS } from '@/lib/demo-data';
 import {
   Shield, BadgeCheck, Phone, Star, ArrowRight,
-  Car, Users, Globe, CheckCircle,
-  Banknote, Clock, HeartHandshake
+  Car, Users, Globe,
+  Clock, HeartHandshake
 } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -173,43 +172,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Earnings Calculator */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="bg-gradient-to-br from-primary to-primary-dark rounded-3xl p-8 md:p-12 text-white overflow-hidden relative">
-          <div className="absolute right-0 top-0 opacity-10">
-            <Banknote className="w-64 h-64" />
-          </div>
-          <div className="relative z-10 grid md:grid-cols-2 gap-8 items-center">
-            <div>
-              <h2 className="text-3xl md:text-4xl font-extrabold mb-4">
-                Earn with Your Car <span className="text-accent-yellow">🚗💰</span>
-              </h2>
-              <p className="text-primary-light mb-6">
-                List your car on Gari and earn passive income. Hosts typically earn RWF 400,000 – 1,200,000 per month.
-              </p>
-              <div className="space-y-3 mb-8">
-                {[
-                  'No listing fees — only 10% per completed booking',
-                  'Insurance coverage on every trip',
-                  'Payout via MTN MoMo within 24h',
-                  'NIDA-verified renters only',
-                ].map(point => (
-                  <div key={point} className="flex items-center gap-3">
-                    <CheckCircle className="w-5 h-5 text-accent-yellow flex-shrink-0" />
-                    <span>{point}</span>
-                  </div>
-                ))}
-              </div>
-              <Link href="/host/new" className="inline-flex items-center gap-2 bg-accent-yellow text-gray-900 font-bold px-8 py-3 rounded-pill hover:bg-yellow-400 transition-colors">
-                List Your Car <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-
-            <EarningsCalculator />
-          </div>
-        </div>
-      </section>
-
       {/* Trust & Safety */}
       <section className="py-16 bg-gray-bg dark:bg-gray-950">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -272,16 +234,11 @@ export default async function HomePage() {
       <section className="py-16 px-4 bg-dark-bg text-white text-center">
         <div className="max-w-2xl mx-auto">
           <HeartHandshake className="w-12 h-12 text-primary mx-auto mb-4" />
-          <h2 className="text-3xl font-extrabold mb-4">Ready to Drive on Your Own Terms?</h2>
-          <p className="text-gray-400 mb-8">Join {STATS.tripsCompleted} Rwandans already renting and hosting on Gari.</p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/search" className="btn-primary text-base px-10 py-4">
-              Browse Cars <ArrowRight className="w-5 h-5" />
-            </Link>
-            <Link href="/host/new" className="btn-secondary text-base px-10 py-4 border-white text-white hover:bg-white/10">
-              List Your Car
-            </Link>
-          </div>
+          <h2 className="text-3xl font-extrabold mb-4">Your Next Drive Starts Here</h2>
+          <p className="text-gray-400 mb-8">Join {STATS.tripsCompleted} Rwandans who have rented on Gari. NIDA-verified hosts, MTN MoMo payments.</p>
+          <Link href="/search" className="btn-primary text-base px-12 py-4 inline-flex items-center gap-2">
+            Browse Cars <ArrowRight className="w-5 h-5" />
+          </Link>
         </div>
       </section>
     </div>
