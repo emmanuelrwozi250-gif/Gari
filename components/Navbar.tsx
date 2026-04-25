@@ -69,13 +69,14 @@ export function Navbar() {
                   {(['en', 'fr', 'rw'] as Locale[]).map(l => (
                     <button
                       key={l}
-                      onClick={() => { setLocale(l); setLangOpen(false); }}
+                      onClick={() => { if (l === 'en') { setLocale(l); setLangOpen(false); } }}
                       className={`flex items-center gap-2 w-full px-3 py-2 text-sm transition-colors ${
                         locale === l ? 'text-primary font-semibold bg-primary/10' : 'text-gray-300 hover:bg-white/10'
-                      }`}
+                      } ${l !== 'en' ? 'opacity-50 cursor-default' : ''}`}
                     >
                       <span>{LOCALE_FLAGS[l]}</span>
                       <span>{{ en: 'English', fr: 'Français', rw: 'Kinyarwanda' }[l]}</span>
+                      {l !== 'en' && <span className="ml-auto text-[10px] text-gray-500">soon</span>}
                     </button>
                   ))}
                 </div>

@@ -18,7 +18,7 @@ export function Footer() {
               </span>
             </Link>
             <p className="text-sm leading-relaxed mb-6 max-w-xs">
-              Connecting Africa to the world. Rent a car on your own terms — peer-to-peer or from trusted fleets, with or without a driver.
+              Rwanda&apos;s car rental marketplace. Verified hosts, mobile money payments, available across all 30 districts.
             </p>
             <div className="space-y-2 text-sm">
               <div className="flex items-center gap-2">
@@ -76,6 +76,7 @@ export function Footer() {
           <div>
             <h4 className="text-white font-semibold mb-4">Locations</h4>
             <ul className="space-y-1 text-sm">
+              {/* Kigali districts */}
               {Object.entries(DISTRICTS_BY_PROVINCE).slice(0, 1).flatMap(([, districts]) =>
                 districts.map(d => (
                   <li key={d.id}>
@@ -85,6 +86,18 @@ export function Footer() {
                   </li>
                 ))
               )}
+              {/* High-intent upcountry destinations */}
+              <li>
+                <Link href="/search?district=MUSANZE" className="hover:text-primary transition-colors">
+                  Musanze — Volcanoes
+                </Link>
+              </li>
+              <li>
+                <Link href="/search?district=RUBAVU" className="hover:text-primary transition-colors">
+                  Rubavu — Lake Kivu
+                </Link>
+              </li>
+              {/* Province browse links */}
               {Object.entries(DISTRICTS_BY_PROVINCE).slice(1).map(([province, districts]) => (
                 <li key={province}>
                   <Link href={`/search?province=${province.replace(' ', '+')}`} className="hover:text-primary transition-colors">

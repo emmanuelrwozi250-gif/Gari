@@ -147,21 +147,31 @@ export function CarCard({ car, compact = false }: CarCardProps) {
         {/* Host row */}
         {car.host && (
           <div className="flex items-center gap-2">
-            {car.host.avatar ? (
-              <div className="relative w-5 h-5 rounded-full overflow-hidden flex-shrink-0">
-                <Image
-                  src={car.host.avatar}
-                  alt={car.host.name || ''}
-                  fill
-                  className="object-cover"
-                  sizes="20px"
-                />
-              </div>
-            ) : (
-              <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center text-xs text-primary font-bold flex-shrink-0">
-                {car.host.name?.[0] || '?'}
-              </div>
-            )}
+            {(() => {
+              const av = car.host.avatar;
+              const isReal = av &&
+                !av.includes('pravatar') &&
+                !av.includes('placeholder') &&
+                !av.includes('picsum');
+              const initials = car.host.name
+                ?.trim().split(' ').slice(0, 2).map(n => n[0]?.toUpperCase() ?? '').join('')
+                || '?';
+              const COLOURS = [
+                'bg-blue-100 text-blue-700','bg-emerald-100 text-emerald-700',
+                'bg-violet-100 text-violet-700','bg-amber-100 text-amber-700',
+                'bg-rose-100 text-rose-700','bg-cyan-100 text-cyan-700',
+              ];
+              const colour = COLOURS[(car.host.name?.charCodeAt(0) ?? 0) % COLOURS.length];
+              return isReal ? (
+                <div className="relative w-5 h-5 rounded-full overflow-hidden flex-shrink-0">
+                  <Image src={av!} alt={car.host.name || ''} fill className="object-cover" sizes="20px" />
+                </div>
+              ) : (
+                <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold flex-shrink-0 ${colour}`}>
+                  {initials}
+                </div>
+              );
+            })()}
             <span className="text-xs text-text-light truncate">{car.host.name?.split(' ')[0]}</span>
             {isSuperhost && (
               <span className="ml-auto flex items-center gap-0.5 text-xs text-amber-600 dark:text-amber-400 font-medium">

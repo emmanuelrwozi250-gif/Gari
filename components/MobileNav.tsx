@@ -7,7 +7,7 @@ import { Car, ClipboardList, User, Search } from 'lucide-react';
 
 const navItems = [
   { href: '/search', icon: Car, label: 'Rent' },
-  { href: '/search?type=SUV', icon: Search, label: 'Explore' },
+  { href: '/search', icon: Search, label: 'Search' },
   { href: '/dashboard', icon: ClipboardList, label: 'Trips' },
   { href: '/profile', icon: User, label: 'Me' },
 ];
