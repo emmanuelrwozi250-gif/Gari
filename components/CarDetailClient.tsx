@@ -343,38 +343,25 @@ export function CarDetailClient({ car, completedBookingId }: { car: CarDisplay; 
   const grandTotal = total + depositAmount;
   const similar = DEMO_RENTAL_CARS.filter(c => c.id !== data.id && (c.type === data.type || c.district === data.district)).slice(0, 3);
 
-  async function requestBooking() {
+  function requestBooking() {
     if (!pickup || !returnDate) { toast.error('Please select pick-up and return dates'); return; }
     if (!pickupLocation) { toast.error('Please select a pickup location'); return; }
-    setBooking(true);
-    try {
-      const driverFee = withDriver ? data.driverPricePerDay * days : 0;
-      const res = await fetch('/api/bookings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          carId: data.id,
-          pickupDate: pickup,
-          returnDate,
-          withDriver,
-          pickupLocation,
-          totalDays: days,
-          subtotal,
-          platformFee,
-          driverFee: driverFee || 0,
-          totalAmount: total,
-          paymentMethod,
-        }),
-      });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.error || 'Failed to create booking');
-      toast.success('Booking request sent! The host will confirm via WhatsApp within 1 hour.');
-      router.push(`/bookings/${json.id}/confirmed`);
-    } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : 'Failed to create booking');
-    } finally {
-      setBooking(false);
-    }
+    const driverFee = withDriver ? data.driverPricePerDay * days : 0;
+    const params = new URLSearchParams({
+      carId: data.id,
+      pickupDate: pickup,
+      returnDate,
+      withDriver: String(withDriver),
+      pickupLocation,
+      totalDays: String(days),
+      subtotal: String(subtotal),
+      platformFee: String(platformFee),
+      driverFee: String(driverFee),
+      totalAmount: String(total),
+      depositAmount: String(depositAmount),
+      paymentMethod,
+    });
+    router.push(`/bookings/new?${params.toString()}`);
   }
 
   const waLink = `https://wa.me/${COMPANY.whatsapp}?text=${encodeURIComponent(`Hi, I'm interested in the ${data.year} ${data.make} ${data.model} listed on Gari (ID: ${data.id})`)}`;
