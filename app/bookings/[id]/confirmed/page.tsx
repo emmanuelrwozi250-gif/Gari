@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { CheckCircle, Calendar, MapPin, Car, MessageSquare, ArrowRight, Loader2, Clock } from 'lucide-react';
+import { CheckCircle, Calendar, MapPin, Car, MessageSquare, ArrowRight, Loader2, Clock, Camera } from 'lucide-react';
 import { formatRWF } from '@/lib/utils';
 import { format } from 'date-fns';
 
@@ -183,16 +183,22 @@ export default function BookingConfirmedPage() {
             WhatsApp {isInstant ? 'Host' : 'Support'}
           </a>
           <Link
-            href="/dashboard"
+            href={`/bookings/${id}/checkin?type=pickup`}
             className="flex items-center justify-center gap-2 bg-primary text-white font-semibold py-3.5 rounded-xl hover:bg-primary/90 transition-colors"
+          >
+            <Camera className="w-5 h-5" /> Complete Vehicle Check-in
+          </Link>
+          <Link
+            href="/dashboard"
+            className="flex items-center justify-center gap-2 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-medium py-3 rounded-xl hover:border-primary/40 transition-colors"
           >
             View My Bookings <ArrowRight className="w-4 h-4" />
           </Link>
           <Link
             href="/search"
-            className="flex items-center justify-center gap-2 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 font-medium py-3 rounded-xl hover:border-gray-300 transition-colors text-sm"
+            className="text-center text-xs text-text-light hover:text-primary transition-colors py-1"
           >
-            Browse More Cars
+            Browse more cars
           </Link>
         </div>
 
