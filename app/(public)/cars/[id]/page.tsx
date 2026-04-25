@@ -55,7 +55,7 @@ async function getCar(id: string): Promise<CarDisplay | null> {
       tripCount: car.totalTrips,
       reviewCount: car._count.reviews,
       features: car.features.length > 0 ? car.features : ['Air Conditioning', 'USB Charging'],
-      description: car.description,
+      description: car.description ?? '',
       fuel: car.fuel,
       available: car.isAvailable,
       depositAmount: car.depositAmount,

@@ -160,7 +160,7 @@ const jsonLd = {
   paymentAccepted: 'MTN MoMo, Airtel Money, Visa, Mastercard',
   currenciesAccepted: 'RWF',
   priceRange: 'RWF 35,000 – 200,000 / day',
-  telephone: '+250788000000',
+  telephone: '+250788123000',
   address: {
     '@type': 'PostalAddress',
     addressLocality: 'Kigali',

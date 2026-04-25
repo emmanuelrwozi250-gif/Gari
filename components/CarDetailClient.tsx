@@ -13,6 +13,7 @@ import { DEMO_RENTAL_CARS } from '@/lib/demo-data';
 import { formatRWF, toUSD } from '@/lib/utils';
 import { RWANDA_DISTRICTS } from '@/lib/districts';
 import { RecentlyViewedCars } from './RecentlyViewedCars';
+import { COMPANY } from '@/lib/config/company';
 
 const FALLBACK = 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=800&q=80';
 const PLATFORM_FEE_RATE = 0.10;
@@ -376,7 +377,8 @@ export function CarDetailClient({ car, completedBookingId }: { car: CarDisplay; 
     }
   }
 
-  const waLink = `https://wa.me/250788123000?text=Hi%2C%20I%27m%20interested%20in%20the%20${encodeURIComponent(`${data.year} ${data.make} ${data.model}`)}%20listed%20on%20Gari%20(ID%3A%20${data.id})`;
+  const waLink = `https://wa.me/${COMPANY.whatsapp}?text=${encodeURIComponent(`Hi, I'm interested in the ${data.year} ${data.make} ${data.model} listed on Gari (ID: ${data.id})`)}`;
+
 
   return (
     <div className="min-h-screen bg-gray-bg dark:bg-gray-950">

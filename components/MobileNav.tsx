@@ -3,11 +3,11 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { Car, ClipboardList, User, Search } from 'lucide-react';
+import { Car, ClipboardList, User, Tent } from 'lucide-react';
 
 const navItems = [
   { href: '/search', icon: Car, label: 'Rent' },
-  { href: '/search', icon: Search, label: 'Search' },
+  { href: '/safari', icon: Tent, label: 'Safari' },
   { href: '/dashboard', icon: ClipboardList, label: 'Trips' },
   { href: '/profile', icon: User, label: 'Me' },
 ];
