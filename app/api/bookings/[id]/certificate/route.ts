@@ -190,7 +190,7 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
     </p>
   </div>
   <div class="footer">
-    <span>Gari Marketplace Ltd. · KG 7 Ave, Kigali, Rwanda</span>
+    <span>Gari Marketplace Ltd. · KG 11 Ave, Kigali, Rwanda</span>
     <span>support@gari.rw · gari.rw</span>
   </div>
 </div>
