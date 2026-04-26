@@ -81,18 +81,25 @@ export async function generateMetadata(
   const demo = !car ? DEMO_RENTAL_CARS.find(c => c.id === id) : null;
   const display = car ?? demo;
   if (!display) return { title: 'Car Rental — Gari' };
+
+  const baseUrl = process.env.NEXTAUTH_URL || 'https://gari.rw';
+  const carTitle = `${display.year} ${display.make} ${display.model}`;
+  const ogUrl = `${baseUrl}/og?title=${encodeURIComponent(carTitle)}&sub=${encodeURIComponent('Available in Rwanda · NIDA Verified')}&price=${encodeURIComponent(formatRWF(display.pricePerDay))}`;
+
   return {
-    title: `${display.year} ${display.make} ${display.model} Rental in Rwanda — Gari`,
-    description: `Rent a ${display.year} ${display.make} ${display.model} in Rwanda from ${formatRWF(display.pricePerDay)}/day. NIDA-verified host. Book on Gari.`,
+    title: `${carTitle} Rental in Rwanda — Gari`,
+    description: `Rent a ${carTitle} in Rwanda from ${formatRWF(display.pricePerDay)}/day. NIDA-verified host. Book on Gari.`,
     openGraph: {
-      title: `${display.year} ${display.make} ${display.model} — ${formatRWF(display.pricePerDay)}/day`,
-      description: `${display.year} ${display.make} ${display.model} available in Rwanda. Self-drive or with driver.`,
-      images: (display as CarDisplay).images?.[0]
-        ? [{ url: (display as CarDisplay).images[0] }]
-        : (demo as { images?: string[] })?.images?.[0]
-        ? [{ url: (demo as { images: string[] }).images[0] }]
-        : [],
+      title: `${carTitle} — ${formatRWF(display.pricePerDay)}/day`,
+      description: `${carTitle} available in Rwanda. Self-drive or with driver.`,
+      images: [{ url: ogUrl, width: 1200, height: 630, alt: carTitle }],
       type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${carTitle} — ${formatRWF(display.pricePerDay)}/day`,
+      description: `${carTitle} available in Rwanda. Self-drive or with driver.`,
+      images: [ogUrl],
     },
   };
 }
@@ -172,5 +179,47 @@ export default async function CarPage(
     // Session check is non-critical — silently skip
   }
 
-  return <CarDetailClient car={car} completedBookingId={completedBookingId} existingBookingId={existingBookingId} />;
+  const baseUrl = process.env.NEXTAUTH_URL || 'https://gari.rw';
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: `${car.year} ${car.make} ${car.model} — Car Rental in Rwanda`,
+    description: car.description || `Rent a ${car.year} ${car.make} ${car.model} in Rwanda`,
+    image: car.images[0] ?? '',
+    brand: { '@type': 'Brand', name: car.make },
+    offers: {
+      '@type': 'Offer',
+      priceCurrency: 'RWF',
+      price: car.pricePerDay,
+      priceSpecification: {
+        '@type': 'UnitPriceSpecification',
+        price: car.pricePerDay,
+        priceCurrency: 'RWF',
+        unitCode: 'DAY',
+      },
+      availability: car.available ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+      url: `${baseUrl}/cars/${id}`,
+    },
+    ...(car.rating > 0 && car.reviewCount > 0
+      ? {
+          aggregateRating: {
+            '@type': 'AggregateRating',
+            ratingValue: car.rating.toFixed(1),
+            reviewCount: car.reviewCount,
+            bestRating: '5',
+            worstRating: '1',
+          },
+        }
+      : {}),
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <CarDetailClient car={car} completedBookingId={completedBookingId} existingBookingId={existingBookingId} />
+    </>
+  );
 }

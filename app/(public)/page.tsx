@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     locale: 'en_RW',
     images: [
       {
-        url: 'https://gari.rw/og-image.jpg',
+        url: 'https://gari.rw/og?title=Rent+a+Car+Anywhere+in+Rwanda&sub=Verified+hosts+%C2%B7+MTN+MoMo+%C2%B7+30+districts',
         width: 1200,
         height: 630,
         alt: 'Gari — Rwanda Car Rental Marketplace',
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Gari — Rent a Car Anywhere in Rwanda',
     description: 'Verified hosts, mobile money payments, available across all 30 districts.',
-    images: ['https://gari.rw/og-image.jpg'],
+    images: ['https://gari.rw/og?title=Rent+a+Car+Anywhere+in+Rwanda&sub=Verified+hosts+%C2%B7+MTN+MoMo+%C2%B7+30+districts'],
   },
   alternates: { canonical: 'https://gari.rw' },
 };

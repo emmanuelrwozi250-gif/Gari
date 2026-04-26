@@ -35,15 +35,22 @@ interface CarCardProps {
     };
   };
   compact?: boolean;
+  pickupDate?: string;
+  returnDate?: string;
 }
 
 const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=800&q=80';
 
-export function CarCard({ car, compact = false }: CarCardProps) {
+export function CarCard({ car, compact = false, pickupDate, returnDate }: CarCardProps) {
   const district = RWANDA_DISTRICTS.find(d => d.id === car.district);
   const rawPhoto = car.photos[0] || FALLBACK_IMAGE;
   const [imgSrc, setImgSrc] = useState(rawPhoto.startsWith('http') ? rawPhoto : FALLBACK_IMAGE);
   const isSuperhost = !!car.host?.superhostSince;
+
+  const tripDays = (pickupDate && returnDate)
+    ? Math.max(1, Math.ceil((new Date(returnDate).getTime() - new Date(pickupDate).getTime()) / 86400000))
+    : null;
+  const tripTotal = tripDays ? car.pricePerDay * tripDays : null;
 
   return (
     <Link href={`/cars/${car.slug ?? car.id}`} className="card block group overflow-hidden hover:shadow-lg transition-shadow duration-300">
@@ -97,10 +104,21 @@ export function CarCard({ car, compact = false }: CarCardProps) {
 
         {/* Price bottom-left */}
         <div className="absolute bottom-3 left-3">
-          <span className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm text-primary font-bold text-sm px-2.5 py-1 rounded-lg shadow">
-            {formatRWF(car.pricePerDay)}<span className="text-text-light font-normal text-xs">/day</span>
-          </span>
-          <span className="block text-[10px] text-white/80 mt-0.5 pl-0.5">{toUSD(car.pricePerDay)}</span>
+          {tripTotal ? (
+            <>
+              <span className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm text-primary font-bold text-sm px-2.5 py-1 rounded-lg shadow">
+                {formatRWF(tripTotal)}<span className="text-text-light font-normal text-xs"> total</span>
+              </span>
+              <span className="block text-[10px] text-white/80 mt-0.5 pl-0.5">{formatRWF(car.pricePerDay)}/day · {tripDays}d</span>
+            </>
+          ) : (
+            <>
+              <span className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm text-primary font-bold text-sm px-2.5 py-1 rounded-lg shadow">
+                {formatRWF(car.pricePerDay)}<span className="text-text-light font-normal text-xs">/day</span>
+              </span>
+              <span className="block text-[10px] text-white/80 mt-0.5 pl-0.5">{toUSD(car.pricePerDay)}</span>
+            </>
+          )}
         </div>
       </div>
 

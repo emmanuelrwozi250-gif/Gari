@@ -234,7 +234,14 @@ export function SearchResults({ cars, total, page, searchParams }: SearchResults
             {/* Car grid */}
             {cars.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
-                {cars.map(car => <CarCard key={car.id} car={car} />)}
+                {cars.map(car => (
+                  <CarCard
+                    key={car.id}
+                    car={car}
+                    pickupDate={searchParams.pickup}
+                    returnDate={searchParams.return}
+                  />
+                ))}
               </div>
             ) : (
               <div className="text-center py-20">

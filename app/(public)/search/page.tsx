@@ -4,10 +4,24 @@ import { prisma } from '@/lib/prisma';
 import { SearchResults, SearchSkeleton } from './SearchResults';
 import { DEMO_RENTAL_CARS } from '@/lib/demo-data';
 
-export const metadata: Metadata = {
-  title: 'Browse Cars for Rent in Rwanda · Gari',
-  description: 'Find economy cars, SUVs, minibuses and executive vehicles. Filter by district, price and car type.',
-};
+export async function generateMetadata(
+  { searchParams }: SearchPageProps
+): Promise<Metadata> {
+  const p = await searchParams;
+  const parts: string[] = [];
+  if (p.type) parts.push(p.type.replace(/_/g, ' ').toLowerCase());
+  if (p.district) parts.push(`in ${p.district.charAt(0) + p.district.slice(1).toLowerCase()}`);
+
+  const title = parts.length
+    ? `Rent ${parts.join(' ')} · Gari Rwanda`
+    : 'Browse Cars for Rent in Rwanda · Gari';
+
+  const description = parts.length
+    ? `Find and book ${parts.join(' ')} on Gari. NIDA-verified hosts, instant booking available.`
+    : 'Find economy cars, SUVs, minibuses and executive vehicles in Rwanda. Filter by district, price and car type.';
+
+  return { title, description };
+}
 
 type SearchParamsShape = {
   district?: string;
