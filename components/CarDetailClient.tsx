@@ -25,6 +25,7 @@ export type ReviewDisplay = {
   createdAt: string;
   reviewerName: string;
   reviewerAvatar: string | null;
+  isRevealed?: boolean;
 };
 
 export type CarDisplay = {
@@ -164,9 +165,12 @@ function ReviewsSection({ reviews, completedBookingId }: {
   const [comment, setComment] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [pendingReveal, setPendingReveal] = useState(false);
 
-  const avgRating = reviews.length > 0
-    ? reviews.reduce((s, r) => s + r.rating, 0) / reviews.length
+  // Only count revealed reviews in the aggregate
+  const visibleReviews = reviews.filter(r => r.isRevealed !== false);
+  const avgRating = visibleReviews.length > 0
+    ? visibleReviews.reduce((s, r) => s + r.rating, 0) / visibleReviews.length
     : 0;
 
   async function submitReview() {
@@ -181,7 +185,8 @@ function ReviewsSection({ reviews, completedBookingId }: {
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || 'Failed to submit review');
       setSubmitted(true);
-      toast.success('Review submitted! Thank you.');
+      setPendingReveal(json.pendingReveal === true);
+      toast.success(json.pendingReveal ? 'Review saved — waiting for host to review too.' : 'Review submitted! Thank you.');
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Failed to submit review');
     } finally {
@@ -193,9 +198,9 @@ function ReviewsSection({ reviews, completedBookingId }: {
     <div className="card p-5">
       <div className="flex items-center justify-between mb-4">
         <h2 className="font-bold text-text-primary dark:text-white">
-          Reviews {reviews.length > 0 && `(${reviews.length})`}
+          Reviews {visibleReviews.length > 0 && `(${visibleReviews.length})`}
         </h2>
-        {reviews.length > 0 && (
+        {visibleReviews.length > 0 && (
           <div className="flex items-center gap-1 text-accent-yellow font-bold text-sm">
             <Star className="w-4 h-4 fill-accent-yellow" />
             {avgRating.toFixed(1)}
@@ -204,7 +209,7 @@ function ReviewsSection({ reviews, completedBookingId }: {
       </div>
 
       {/* Empty state */}
-      {reviews.length === 0 && (
+      {visibleReviews.length === 0 && (
         <div className="text-center py-6">
           <Star className="w-8 h-8 text-text-light/30 mx-auto mb-2" />
           <p className="text-sm text-text-secondary">No reviews yet — be the first</p>
@@ -212,10 +217,10 @@ function ReviewsSection({ reviews, completedBookingId }: {
         </div>
       )}
 
-      {/* Reviews list */}
-      {reviews.length > 0 && (
+      {/* Reviews list — only show revealed ones */}
+      {visibleReviews.length > 0 && (
         <div className="space-y-5 mb-4">
-          {reviews.map(r => (
+          {visibleReviews.map(r => (
             <div key={r.id} className="flex gap-3">
               <div className="w-9 h-9 rounded-full bg-primary/20 flex-shrink-0 flex items-center justify-center text-primary font-bold text-sm">
                 {r.reviewerName?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || '?'}
@@ -265,9 +270,16 @@ function ReviewsSection({ reviews, completedBookingId }: {
       )}
 
       {submitted && (
-        <div className={`${reviews.length > 0 ? 'border-t border-border pt-4' : ''} text-center`}>
+        <div className={`${visibleReviews.length > 0 ? 'border-t border-border pt-4' : ''} text-center`}>
           <CheckCircle className="w-8 h-8 text-primary mx-auto mb-2" />
-          <p className="text-sm font-semibold text-text-primary dark:text-white">Thank you for your review!</p>
+          <p className="text-sm font-semibold text-text-primary dark:text-white">
+            {pendingReveal ? 'Review saved!' : 'Review published!'}
+          </p>
+          {pendingReveal && (
+            <p className="text-xs text-text-secondary mt-1 max-w-xs mx-auto">
+              ⏳ Your review is hidden until the host also submits theirs, or after 14 days — whichever comes first.
+            </p>
+          )}
         </div>
       )}
     </div>

@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
 
     const booking = await prisma.booking.findUnique({
       where: { id: bookingId },
-      include: { review: true },
+      include: { review: true, hostReview: true },
     });
     if (!booking) return NextResponse.json({ error: 'Booking not found' }, { status: 404 });
     if (booking.renterId !== (session.user as any).id) {
@@ -35,6 +35,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'You have already reviewed this booking' }, { status: 400 });
     }
 
+    const now = new Date();
+    // Reveal immediately if the host has already submitted their review
+    const hostAlreadyReviewed = !!booking.hostReview;
+
     const review = await prisma.review.create({
       data: {
         bookingId,
@@ -42,10 +46,20 @@ export async function POST(req: NextRequest) {
         reviewerId: (session.user as any).id,
         rating,
         comment,
+        isRevealed: hostAlreadyReviewed,
+        revealedAt: hostAlreadyReviewed ? now : undefined,
       },
     });
 
-    // Update car rating and sync totalTrips from actual completed bookings (not review count)
+    // If host had already reviewed, reveal their review too
+    if (hostAlreadyReviewed) {
+      await prisma.hostReview.update({
+        where: { bookingId },
+        data: { isRevealed: true, revealedAt: now },
+      });
+    }
+
+    // Update car rating and totalTrips
     const [allReviews, completedTrips] = await Promise.all([
       prisma.review.findMany({ where: { carId: booking.carId }, select: { rating: true } }),
       prisma.booking.count({ where: { carId: booking.carId, status: 'COMPLETED' } }),
@@ -56,7 +70,13 @@ export async function POST(req: NextRequest) {
       data: { rating: Math.round(avg * 10) / 10, totalTrips: completedTrips },
     });
 
-    return NextResponse.json(review, { status: 201 });
+    return NextResponse.json({
+      ...review,
+      pendingReveal: !hostAlreadyReviewed,
+      message: hostAlreadyReviewed
+        ? 'Your review is now live!'
+        : 'Review saved. It will be revealed once the host also submits their review (or after 14 days).',
+    }, { status: 201 });
   } catch (err) {
     if (err instanceof z.ZodError) {
       return NextResponse.json({ error: err.errors[0].message }, { status: 400 });

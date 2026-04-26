@@ -78,6 +78,7 @@ model User {
   isSeller          Boolean   @default(false)
   isInvestor        Boolean   @default(false)
   // Repeat-offender / reputation
+  renterRating      Float     @default(0)
   lateReturnCount   Int       @default(0)
   lateReturnFlaggedAt DateTime?
   suspendedUntil    DateTime?
@@ -101,6 +102,8 @@ model User {
   poiInteractions       POIInteraction[]       @relation("UserPOIInteractions")
   mapPreferences        UserMapPreferences?    @relation("UserMapPreferences")
   kycVerification       RenterVerification?    @relation("UserKYC")
+  hostReviewsGiven      HostReview[]           @relation("HostReviewsByHost")
+  hostReviewsReceived   HostReview[]           @relation("HostReviewsAboutRenter")
 }
 
 enum Role {
@@ -303,6 +306,7 @@ model Booking {
   updatedAt              DateTime      @updatedAt
 
   review           Review?
+  hostReview       HostReview?
   messages         Message[]
   insurance        Insurance?
   refunds          Refund[]
@@ -362,16 +366,40 @@ model Insurance {
 }
 
 model Review {
-  id         String   @id @default(cuid())
-  bookingId  String   @unique
-  booking    Booking  @relation(fields: [bookingId], references: [id])
+  id         String    @id @default(cuid())
+  bookingId  String    @unique
+  booking    Booking   @relation(fields: [bookingId], references: [id])
   carId      String
-  car        Car      @relation(fields: [carId], references: [id])
+  car        Car       @relation(fields: [carId], references: [id])
   reviewerId String
-  reviewer   User     @relation(fields: [reviewerId], references: [id])
+  reviewer   User      @relation(fields: [reviewerId], references: [id])
   rating     Int
-  comment    String   @db.Text
-  createdAt  DateTime @default(now())
+  comment    String    @db.Text
+  // Blind reveal — content shown only after both parties review or 14-day deadline
+  isRevealed Boolean   @default(false)
+  revealedAt DateTime?
+  createdAt  DateTime  @default(now())
+}
+
+model HostReview {
+  id           String    @id @default(cuid())
+  bookingId    String    @unique
+  booking      Booking   @relation(fields: [bookingId], references: [id])
+  renterId     String
+  renter       User      @relation("HostReviewsAboutRenter", fields: [renterId], references: [id])
+  hostId       String
+  host         User      @relation("HostReviewsByHost", fields: [hostId], references: [id])
+  rating       Int
+  comment      String    @db.Text
+  reliability  Int?
+  communication Int?
+  respect      Int?
+  isRevealed   Boolean   @default(false)
+  revealedAt   DateTime?
+  createdAt    DateTime  @default(now())
+
+  @@index([bookingId])
+  @@index([renterId])
 }
 
 model Notification {

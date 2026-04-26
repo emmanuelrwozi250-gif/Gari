@@ -12,6 +12,7 @@ import {
 import { EarningsDashboard } from '@/components/EarningsDashboard';
 import { BookingActionButtons } from '@/components/BookingActionButtons';
 import { LateReturnPanel } from '@/components/LateReturnPanel';
+import { HostReviewForm } from '@/components/HostReviewForm';
 
 export const metadata: Metadata = { title: 'Host Dashboard — Gari' };
 
@@ -47,7 +48,11 @@ export default async function HostDashboardPage() {
 
   const allBookings = await prisma.booking.findMany({
     where: { carId: { in: carIds } },
-    include: { renter: { select: { name: true, avatar: true, email: true, phone: true, whatsappNumber: true } }, car: true },
+    include: {
+      renter: { select: { name: true, avatar: true, email: true, phone: true, whatsappNumber: true } },
+      car: true,
+      hostReview: { select: { id: true } },
+    },
     orderBy: { createdAt: 'desc' },
     take: 50,
   });
@@ -361,6 +366,32 @@ export default async function HostDashboardPage() {
                           lateReturnReportedAt={(booking as any).lateReturnReportedAt?.toISOString() ?? null}
                         />
                       )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Past Trips awaiting host review */}
+            {completedBookings.filter(b => !b.hostReview).length > 0 && (
+              <div className="card p-6">
+                <h2 className="font-bold text-text-primary dark:text-white flex items-center gap-2 mb-4">
+                  <Star className="w-5 h-5 text-accent-yellow" />
+                  Review Your Renters ({completedBookings.filter(b => !b.hostReview).length})
+                </h2>
+                <div className="space-y-4">
+                  {completedBookings.filter(b => !b.hostReview).slice(0, 5).map(booking => (
+                    <div key={booking.id} className="space-y-3">
+                      <div className="text-sm font-medium text-text-primary dark:text-white">
+                        {booking.car.make} {booking.car.model} ·{' '}
+                        <span className="text-text-secondary font-normal">
+                          {formatDate(booking.pickupDate)} – {formatDate(booking.returnDate)}
+                        </span>
+                      </div>
+                      <HostReviewForm
+                        bookingId={booking.id}
+                        renterName={booking.renter.name ?? 'Renter'}
+                      />
                     </div>
                   ))}
                 </div>

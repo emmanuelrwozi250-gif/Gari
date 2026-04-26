@@ -32,6 +32,7 @@ async function getCar(id: string): Promise<CarDisplay | null> {
       createdAt: r.createdAt.toISOString(),
       reviewerName: r.reviewer?.name ?? 'Anonymous',
       reviewerAvatar: r.reviewer?.avatar ?? null,
+      isRevealed: (r as { isRevealed?: boolean }).isRevealed ?? true,
     }));
 
     return {
