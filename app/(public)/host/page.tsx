@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 };
 
 const BENEFITS = [
-  { icon: Banknote, title: 'Earn Passive Income', desc: 'Hosts earn RWF 400,000 – 1,200,000+ per month. Set your own price.' },
+  { icon: Banknote, title: 'Earn Passive Income', desc: 'Hosts earn RWF 550,000 – 2,600,000/month depending on vehicle type.' },
   { icon: Shield, title: 'Insured Every Trip', desc: 'Every rental is covered by our insurance policy. You\'re protected.' },
   { icon: Users, title: 'Verified Renters Only', desc: 'All renters go through NIDA verification. Peace of mind guaranteed.' },
   { icon: Star, title: 'Build Your Reputation', desc: 'Great reviews lead to more bookings and Superhost status.' },
