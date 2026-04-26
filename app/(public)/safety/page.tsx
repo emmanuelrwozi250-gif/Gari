@@ -80,18 +80,22 @@ export default function SafetyPage() {
               <AlertTriangle className="w-6 h-6 text-red-500 flex-shrink-0" />
               <h2 className="text-lg font-bold text-text-primary dark:text-white">Emergency Contacts</h2>
             </div>
-            <div className="grid sm:grid-cols-3 gap-4 text-sm">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
+              <div className="bg-red-50 dark:bg-red-900/20 rounded-xl p-4 text-center">
+                <div className="font-bold text-red-600 text-lg">113</div>
+                <div className="text-text-secondary mt-1">Police</div>
+              </div>
+              <div className="bg-orange-50 dark:bg-orange-900/20 rounded-xl p-4 text-center">
+                <div className="font-bold text-orange-600 text-lg">912</div>
+                <div className="text-text-secondary mt-1">Medical Emergency</div>
+              </div>
               <div className="bg-red-50 dark:bg-red-900/20 rounded-xl p-4 text-center">
                 <div className="font-bold text-red-600 text-lg">112</div>
-                <div className="text-text-secondary mt-1">Rwanda Police</div>
+                <div className="text-text-secondary mt-1">General Emergency</div>
               </div>
               <div className="bg-primary/5 rounded-xl p-4 text-center">
                 <div className="font-bold text-primary text-lg">+250 788 123 000</div>
                 <div className="text-text-secondary mt-1">Gari Support (24/7)</div>
-              </div>
-              <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 text-center">
-                <div className="font-bold text-blue-600 text-sm">support@gari.rw</div>
-                <div className="text-text-secondary mt-1">Email Support</div>
               </div>
             </div>
           </div>
