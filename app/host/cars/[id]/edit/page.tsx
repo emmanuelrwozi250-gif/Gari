@@ -44,6 +44,7 @@ export default function EditCarPage() {
   const [driverAvailable, setDriverAvailable] = useState(false);
   const [driverPricePerDay, setDriverPricePerDay] = useState(0);
   const [instantBooking, setInstantBooking] = useState(false);
+  const [pricingMode, setPricingMode] = useState<'static' | 'dynamic'>('static');
 
   // Availability
   const [blockedDates, setBlockedDates] = useState<{ id: string; date: string }[]>([]);
@@ -80,6 +81,7 @@ export default function EditCarPage() {
         setDriverAvailable(data.driverAvailable || false);
         setDriverPricePerDay(data.driverPricePerDay || 0);
         setInstantBooking(data.instantBooking || false);
+        setPricingMode(data.pricingMode === 'dynamic' ? 'dynamic' : 'static');
         setCancellationPolicy(data.cancellationPolicy || 'MODERATE');
         setIsAvailable(data.isAvailable ?? true);
         setLoading(false);
@@ -419,6 +421,31 @@ export default function EditCarPage() {
               )}
             </div>
 
+            {/* Dynamic Pricing toggle */}
+            <div className="border-t border-border pt-4">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1">
+                  <p className="font-semibold text-sm text-text-primary dark:text-white">Dynamic Pricing</p>
+                  <p className="text-xs text-text-secondary mt-0.5">
+                    Price adjusts automatically for peak seasons, holidays, and demand.
+                    You earn more when demand is high (up to 2.5× base rate).
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setPricingMode(m => m === 'dynamic' ? 'static' : 'dynamic')}
+                  className={`relative flex-shrink-0 w-11 h-6 rounded-full transition-colors ${pricingMode === 'dynamic' ? 'bg-primary' : 'bg-gray-300 dark:bg-gray-600'}`}
+                >
+                  <span className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${pricingMode === 'dynamic' ? 'translate-x-5' : 'translate-x-0.5'}`} />
+                </button>
+              </div>
+              {pricingMode === 'dynamic' && (
+                <p className="text-xs text-primary mt-2 font-medium">
+                  ✓ Dynamic pricing active — rates adjust for seasons, holidays, and demand
+                </p>
+              )}
+            </div>
+
             {/* Cancellation policy */}
             <div>
               <label className="text-sm font-semibold text-text-primary dark:text-white block mb-2">Cancellation Policy</label>
@@ -446,7 +473,7 @@ export default function EditCarPage() {
             </div>
 
             <button
-              onClick={() => saveSection('pricing', { pricePerDay, depositAmount, driverAvailable, driverPricePerDay: driverAvailable ? driverPricePerDay : 0, instantBooking, cancellationPolicy })}
+              onClick={() => saveSection('pricing', { pricePerDay, depositAmount, driverAvailable, driverPricePerDay: driverAvailable ? driverPricePerDay : 0, instantBooking, cancellationPolicy, pricingMode })}
               disabled={saving === 'pricing'}
               className="btn-primary w-full justify-center">
               {saving === 'pricing' ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
