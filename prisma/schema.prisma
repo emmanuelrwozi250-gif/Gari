@@ -185,6 +185,15 @@ enum CarType {
   MINIBUS
   PICKUP
   LUXURY
+  // Specialized / commercial
+  TRUCK
+  VAN
+  COLD_TRUCK
+  TRACTOR
+  BUS
+  MOTORBIKE
+  AMBULANCE
+  CONSTRUCTION
 }
 
 enum ListingType {
