@@ -201,7 +201,7 @@ async function main() {
     isAvailable: true, isVerified: true, instantBooking: false,
     hasAC: true, hasGPS: true, smokingAllowed: false,
     mileageLimit: 300, fuelPolicy: 'Return Full',
-    rating: 5.0, totalTrips: 124,
+    rating: 4.9, totalTrips: 124,
     isSafariCapable: true,
   }});
 
@@ -225,7 +225,7 @@ async function main() {
     isAvailable: true, isVerified: true, instantBooking: true,
     hasAC: true, smokingAllowed: false,
     mileageLimit: 200, fuelPolicy: 'Return Full',
-    rating: 4.9, totalTrips: 58,
+    rating: 4.6, totalTrips: 58,
     isSafariCapable: false,
   }});
 
@@ -368,7 +368,7 @@ async function main() {
     isAvailable: true, isVerified: true, instantBooking: false,
     hasAC: true, hasGPS: true, smokingAllowed: false,
     mileageLimit: 200, fuelPolicy: 'Return Full',
-    rating: 5.0, totalTrips: 45,
+    rating: 4.8, totalTrips: 45,
     isSafariCapable: false,
   }});
 
@@ -393,7 +393,7 @@ async function main() {
     isAvailable: true, isVerified: true, instantBooking: false,
     hasAC: true, hasGPS: true, smokingAllowed: false,
     mileageLimit: 300, fuelPolicy: 'Return Full',
-    rating: 5.0, totalTrips: 45,
+    rating: 4.9, totalTrips: 45,
     isSafariCapable: true,
   }});
 
@@ -539,7 +539,7 @@ async function main() {
     isAvailable: true, isVerified: true, instantBooking: false,
     hasAC: true, smokingAllowed: false,
     mileageLimit: 500, fuelPolicy: 'Return Full',
-    rating: 4.9, totalTrips: 28,
+    rating: 4.7, totalTrips: 28,
     isSafariCapable: false,
   }});
 

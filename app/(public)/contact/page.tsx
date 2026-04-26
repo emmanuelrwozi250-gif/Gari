@@ -92,7 +92,7 @@ export default function ContactPage() {
               </div>
               <div>
                 <div className="font-semibold text-text-primary dark:text-white text-sm">Office Hours</div>
-                <div className="text-xs text-text-secondary">Kigali time (CAT, UTC+2)</div>
+                <div className="text-xs text-text-secondary">Kigali time (EAT, UTC+3)</div>
               </div>
             </div>
             <p className="text-sm text-text-secondary">Mon – Sat: 8:00am – 6:00pm</p>

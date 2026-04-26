@@ -40,7 +40,7 @@ const SECTIONS = [
   },
   {
     title: '9. Contact & Data Protection',
-    body: `For any privacy-related questions, requests, or concerns, contact our Data Protection Officer at support@gari.rw. You can also reach us by WhatsApp at +250 788 123 000 or in writing at: Gari, KG 7 Ave, Kigali, Rwanda. This Privacy Policy is governed by the laws of the Republic of Rwanda.`,
+    body: `For any privacy-related questions, requests, or concerns, contact our Data Protection Officer at support@gari.rw. You can also reach us by WhatsApp at +250 788 123 000 or in writing at: Gari, KG 11 Ave, Kigali, Rwanda. This Privacy Policy is governed by the laws of the Republic of Rwanda.`,
   },
 ];
 
@@ -53,7 +53,7 @@ export default function PrivacyPage() {
             Privacy Policy
           </h1>
           <p className="text-text-secondary text-sm">
-            Last updated: January 2025 &nbsp;·&nbsp; Governing law: Republic of Rwanda
+            Last updated: April 2026 &nbsp;·&nbsp; Governing law: Republic of Rwanda
           </p>
         </div>
 

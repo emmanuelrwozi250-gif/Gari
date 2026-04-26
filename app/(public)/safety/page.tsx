@@ -27,7 +27,7 @@ export default function SafetyPage() {
           <div className="card p-6">
             <div className="flex items-center gap-3 mb-4">
               <BadgeCheck className="w-6 h-6 text-primary flex-shrink-0" />
-              <h2 className="text-lg font-bold text-text-primary dark:text-white">Identity Verification</h2>
+              <h2 className="text-lg font-bold text-text-primary dark:text-white">NIDA Verification</h2>
             </div>
             <p className="text-sm text-text-secondary leading-relaxed mb-3">
               Every renter and host on Gari must verify their identity using Rwanda&apos;s NIDA system before their first booking. This means:

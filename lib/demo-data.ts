@@ -37,8 +37,8 @@ export interface DemoTestimonial {
 }
 
 export const DEMO_STATS = [
-  { label: 'Verified Cars', value: '20+' },
-  { label: 'Trips Completed', value: '150+' },
+  { label: 'Verified Cars', value: '30+' },
+  { label: 'Trips Completed', value: '500+' },
   { label: 'Districts Covered', value: '30' },
   { label: 'Avg. Rating', value: '4.8★' },
 ];
