@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import Image from 'next/image';
-import { Send, Loader2 } from 'lucide-react';
+import { Send, Loader2, MessageCircle } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { formatDate } from '@/lib/utils';
+import { waLink } from '@/lib/config/company';
 
 interface Message {
   id: string;
@@ -22,9 +23,13 @@ interface Message {
 interface MessageThreadProps {
   bookingId: string;
   otherPartyName?: string;
+  otherPartyPhone?: string;
 }
 
-export function MessageThread({ bookingId, otherPartyName }: MessageThreadProps) {
+/** Show WhatsApp fallback if last message is from us and is > 2 hours old */
+const TWO_HOURS_MS = 2 * 60 * 60 * 1000;
+
+export function MessageThread({ bookingId, otherPartyName, otherPartyPhone }: MessageThreadProps) {
   const { data: session } = useSession();
   const [messages, setMessages] = useState<Message[]>([]);
   const [text, setText] = useState('');
@@ -32,6 +37,14 @@ export function MessageThread({ bookingId, otherPartyName }: MessageThreadProps)
   const [sending, setSending] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const myId = (session?.user as any)?.id;
+
+  const showWaFallback = useMemo(() => {
+    if (messages.length === 0) return false;
+    const last = messages[messages.length - 1];
+    const isLastMine = last.sender.id === myId;
+    const isOld = Date.now() - new Date(last.createdAt).getTime() > TWO_HOURS_MS;
+    return isLastMine && isOld;
+  }, [messages, myId]);
 
   const fetchMessages = useCallback(async () => {
     const res = await fetch(`/api/messages?bookingId=${bookingId}`);
@@ -142,6 +155,27 @@ export function MessageThread({ bookingId, otherPartyName }: MessageThreadProps)
         })}
         <div ref={bottomRef} />
       </div>
+
+      {/* WhatsApp fallback banner */}
+      {showWaFallback && (
+        <div className="px-4 py-2.5 bg-green-50 dark:bg-green-900/20 border-t border-green-200 dark:border-green-800 flex items-center justify-between gap-3">
+          <p className="text-xs text-green-800 dark:text-green-300 flex items-center gap-1.5">
+            <MessageCircle className="w-3.5 h-3.5 flex-shrink-0" />
+            No reply in 2+ hours?
+          </p>
+          <a
+            href={otherPartyPhone
+              ? `https://wa.me/${otherPartyPhone.replace(/\D/g, '')}?text=${encodeURIComponent(`Hi, I sent you a message on Gari about my booking.`)}`
+              : waLink(`Hi, I need help with my Gari booking (${bookingId}).`)
+            }
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs font-semibold text-green-700 dark:text-green-400 hover:underline whitespace-nowrap"
+          >
+            Send on WhatsApp →
+          </a>
+        </div>
+      )}
 
       {/* Input */}
       <form onSubmit={sendMessage} className="border-t border-border p-3 flex gap-2">

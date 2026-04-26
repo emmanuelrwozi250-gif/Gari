@@ -57,6 +57,7 @@ export type CarDisplay = {
   driverPricePerDay: number;
   reviews: ReviewDisplay[];
   completedBookingId?: string | null;
+  existingBookingId?: string | null;
   hostSuperhostSince?: string | null;
 };
 
@@ -324,7 +325,7 @@ function CalendarBlock({ unavailable }: { unavailable: string[] }) {
   );
 }
 
-export function CarDetailClient({ car, completedBookingId }: { car: CarDisplay; completedBookingId?: string | null }) {
+export function CarDetailClient({ car, completedBookingId, existingBookingId }: { car: CarDisplay; completedBookingId?: string | null; existingBookingId?: string | null }) {
   const router = useRouter();
   const [activePhoto, setActivePhoto] = useState(0);
   const [pickup, setPickup] = useState('');
@@ -511,6 +512,12 @@ export function CarDetailClient({ car, completedBookingId }: { car: CarDisplay; 
                 className="mt-4 flex items-center justify-center gap-2 w-full border border-primary text-primary font-semibold py-2.5 rounded-xl hover:bg-primary hover:text-white transition-colors text-sm">
                 <Phone className="w-4 h-4" /> Message on WhatsApp
               </a>
+              {existingBookingId && (
+                <Link href={`/messages?booking=${existingBookingId}`}
+                  className="mt-2 flex items-center justify-center gap-2 w-full border border-gray-300 dark:border-gray-700 text-text-secondary font-medium py-2 rounded-xl hover:border-primary/50 hover:text-primary transition-colors text-xs">
+                  💬 Message via Gari App
+                </Link>
+              )}
             </div>
 
             {/* Reviews */}

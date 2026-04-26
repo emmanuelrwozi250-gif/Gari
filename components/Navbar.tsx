@@ -10,6 +10,7 @@ import {
   Car, Menu, X, Sun, Moon, User, LogOut, LayoutDashboard,
   Bell, ChevronDown, MessageSquare, Globe,
 } from 'lucide-react';
+import { UnreadMessagesBadge } from './UnreadMessagesBadge';
 
 const LOCALE_LABELS: Record<Locale, string> = { en: 'EN', fr: 'FR', rw: 'RW' };
 const LOCALE_FLAGS: Record<Locale, string> = { en: '🇬🇧', fr: '🇫🇷', rw: '🇷🇼' };
@@ -124,7 +125,7 @@ export function Navbar() {
                       </Link>
                       <Link href="/messages" onClick={() => setUserMenuOpen(false)}
                         className="flex items-center gap-2 px-4 py-2 text-sm text-text-primary dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800">
-                        <MessageSquare className="w-4 h-4" /> Messages
+                        <MessageSquare className="w-4 h-4" /> Messages <UnreadMessagesBadge />
                       </Link>
                       {(session.user.role === 'HOST' || session.user.role === 'BOTH' || session.user.role === 'ADMIN') && (
                         <Link href="/dashboard/host" onClick={() => setUserMenuOpen(false)}
@@ -205,7 +206,7 @@ export function Navbar() {
               )}
               <Link href="/messages" onClick={() => setMenuOpen(false)}
                 className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10">
-                <MessageSquare className="w-4 h-4" /> Messages
+                <MessageSquare className="w-4 h-4" /> Messages <UnreadMessagesBadge />
               </Link>
               <button onClick={() => { setMenuOpen(false); signOut({ callbackUrl: '/' }); }}
                 className="flex items-center gap-2 w-full px-4 py-3 rounded-xl text-sm font-medium text-red-400 hover:bg-red-900/20">

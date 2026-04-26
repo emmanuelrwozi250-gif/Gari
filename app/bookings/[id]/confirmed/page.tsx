@@ -189,6 +189,12 @@ export default function BookingConfirmedPage() {
             <Camera className="w-5 h-5" /> Complete Vehicle Check-in
           </Link>
           <Link
+            href={`/messages?booking=${id}`}
+            className="flex items-center justify-center gap-2 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-medium py-3 rounded-xl hover:border-primary/40 transition-colors"
+          >
+            <MessageSquare className="w-4 h-4" /> Message Host via App
+          </Link>
+          <Link
             href="/dashboard"
             className="flex items-center justify-center gap-2 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-medium py-3 rounded-xl hover:border-primary/40 transition-colors"
           >

@@ -144,22 +144,32 @@ export default async function CarPage(
   if (!car) notFound();
 
   // 4. Check if logged-in user has a completed booking for this car (enables review form)
+  //    and any active/confirmed booking (enables in-app messaging)
   let completedBookingId: string | null = null;
+  let existingBookingId: string | null = null;
   try {
     const session = await getServerSession(authOptions);
     if (session?.user) {
       const userId = (session.user as { id?: string }).id;
       if (userId) {
-        const booking = await prisma.booking.findFirst({
-          where: { carId: id, renterId: userId, status: 'COMPLETED', review: null },
-          select: { id: true },
-        });
-        completedBookingId = booking?.id ?? null;
+        const [completed, existing] = await Promise.all([
+          prisma.booking.findFirst({
+            where: { carId: id, renterId: userId, status: 'COMPLETED', review: null },
+            select: { id: true },
+          }),
+          prisma.booking.findFirst({
+            where: { carId: id, renterId: userId, status: { in: ['PENDING', 'CONFIRMED', 'ACTIVE'] } },
+            select: { id: true },
+            orderBy: { createdAt: 'desc' },
+          }),
+        ]);
+        completedBookingId = completed?.id ?? null;
+        existingBookingId = existing?.id ?? null;
       }
     }
   } catch {
     // Session check is non-critical — silently skip
   }
 
-  return <CarDetailClient car={car} completedBookingId={completedBookingId} />;
+  return <CarDetailClient car={car} completedBookingId={completedBookingId} existingBookingId={existingBookingId} />;
 }
