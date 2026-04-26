@@ -321,6 +321,10 @@ model Booking {
   corporateAccount       CorporateAccount? @relation("CorporateBookings", fields: [corporateAccountId], references: [id])
   corporateRef           String?   // PO number or job code
   costCenter             String?   // internal cost center
+  // ── VAT & dynamic pricing ────────────────────────────────────────
+  vatAmount              Int           @default(0)   // 18% VAT collected for RRA
+  vatReceiptRef          String?                     // EBM receipt number once generated
+  dynamicMultiplier      Float         @default(1.0) // pricing engine multiplier applied
   createdAt              DateTime      @default(now())
   updatedAt              DateTime      @updatedAt
 
@@ -844,6 +848,7 @@ model BookingExtension {
   hoursAdded    Int
   newReturnDate DateTime
   feeCharged    Int
+  vatAmount     Int      @default(0)
   paymentMethod String
   paymentRef    String?
   status        String   @default("CONFIRMED")

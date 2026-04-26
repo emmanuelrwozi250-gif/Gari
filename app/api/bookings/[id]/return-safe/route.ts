@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { DepositStatus } from '@prisma/client';
 import { recordLateReturn } from '@/lib/reputation';
+import { generateEBMReceipt } from '@/lib/ebm';
 
 export const dynamic = 'force-dynamic';
 
@@ -19,7 +21,12 @@ export async function POST(
     const booking = await prisma.booking.findUnique({
       where: { id: params.id },
       include: {
-        car: { select: { hostId: true, make: true, model: true, year: true } },
+        car: {
+          select: {
+            hostId: true, make: true, model: true, year: true, pricePerDay: true,
+            host: { select: { name: true } },
+          },
+        },
         renter: { select: { name: true, phone: true, whatsappNumber: true } },
       },
     });
@@ -31,22 +38,45 @@ export async function POST(
     }
 
     const now = new Date();
-    const updateBooking = prisma.booking.update({
-      where: { id: params.id },
-      data: {
-        status: 'COMPLETED',
-        carReturnedSafelyAt: now,
-        carReturnedSafelyBy: userId,
-        completedAt: now,
-        depositStatus: booking.depositAmount > 0 ? 'REFUNDED' : 'NOT_APPLICABLE',
-        depositRefundedAt: booking.depositAmount > 0 ? now : undefined,
-        depositRefundAmount: booking.depositAmount > 0 ? booking.depositAmount : undefined,
+
+    // Generate EBM receipt number
+    const receipt = generateEBMReceipt({
+      id: booking.id,
+      subtotal: booking.subtotal,
+      driverFee: booking.driverFee,
+      platformFee: booking.platformFee,
+      insuranceFee: booking.insuranceFee,
+      vatAmount: booking.vatAmount,
+      totalAmount: booking.totalAmount,
+      totalDays: booking.totalDays,
+      withDriver: booking.withDriver,
+      car: {
+        make: booking.car.make,
+        model: booking.car.model,
+        year: booking.car.year,
+        pricePerDay: booking.car.pricePerDay,
       },
+      renter: {
+        name: booking.renter.name,
+        phone: booking.renter.whatsappNumber ?? booking.renter.phone,
+      },
+      host: { name: booking.car.host?.name ?? null },
     });
+
+    const updateData = {
+      status: 'COMPLETED' as const,
+      carReturnedSafelyAt: now,
+      carReturnedSafelyBy: userId,
+      completedAt: now,
+      vatReceiptRef: receipt.receiptNo,
+      depositStatus: booking.depositAmount > 0 ? DepositStatus.REFUNDED : DepositStatus.NOT_APPLICABLE,
+      depositRefundedAt: booking.depositAmount > 0 ? now : undefined,
+      depositRefundAmount: booking.depositAmount > 0 ? booking.depositAmount : undefined,
+    };
 
     if (booking.depositAmount > 0) {
       await prisma.$transaction([
-        updateBooking,
+        prisma.booking.update({ where: { id: params.id }, data: updateData }),
         prisma.refund.create({
           data: {
             bookingId: params.id,
@@ -58,7 +88,7 @@ export async function POST(
         }),
       ]);
     } else {
-      await updateBooking;
+      await prisma.booking.update({ where: { id: params.id }, data: updateData });
     }
 
     // Record late return against renter reputation (non-blocking)
@@ -75,11 +105,11 @@ export async function POST(
       (booking.depositAmount > 0
         ? `Your deposit of RWF ${booking.depositAmount.toLocaleString()} will be refunded within 48 hours. `
         : '') +
-      `Please leave a review on Gari — it means a lot! 🌟`
+      `Your EBM receipt: ${receipt.receiptNo}. Please leave a review on Gari 🌟`
     );
     const waLink = renterWA ? `https://wa.me/${renterWA}?text=${msg}` : null;
 
-    return NextResponse.json({ success: true, waLink });
+    return NextResponse.json({ success: true, waLink, receiptNo: receipt.receiptNo });
   } catch (err) {
     console.error('[return-safe]', err);
     return NextResponse.json({ error: 'Failed to mark trip as returned' }, { status: 500 });

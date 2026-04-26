@@ -7,7 +7,7 @@ import { formatRWF, formatDate, getBookingStatusColor, getCarTypeLabel } from '@
 import {
   TrendingUp, Car, Users, Star, PlusCircle, ChevronRight,
   CheckCircle, X, Clock, Banknote, ArrowRight, BarChart3, Lightbulb,
-  Lock, AlertTriangle,
+  Lock, AlertTriangle, Shield,
 } from 'lucide-react';
 import { EarningsDashboard } from '@/components/EarningsDashboard';
 import { BookingActionButtons } from '@/components/BookingActionButtons';
@@ -61,7 +61,10 @@ export default async function HostDashboardPage() {
   const thisMonthBookings = allBookings.filter(
     b => b.createdAt >= thisMonthStart && b.paymentStatus === 'PAID'
   );
-  const thisMonthEarnings = Math.round(thisMonthBookings.reduce((s, b) => s + b.totalAmount * 0.90, 0));
+  const thisMonthEarnings = Math.round(thisMonthBookings.reduce(
+    (s, b) => s + b.totalAmount - (b.vatAmount ?? 0) - b.platformFee, 0
+  ));
+  const thisMonthVATHeld = Math.round(thisMonthBookings.reduce((s, b) => s + (b.vatAmount ?? 0), 0));
   const pendingBookings = allBookings.filter(b => b.status === 'PENDING');
   const confirmedBookings = allBookings.filter(b => b.status === 'CONFIRMED');
   const activeBookings = allBookings.filter(b => b.status === 'ACTIVE');
@@ -71,9 +74,13 @@ export default async function HostDashboardPage() {
   // A) Total lifetime earnings — query all paid bookings (not limited to take: 50)
   const lifetimeAgg = await prisma.booking.aggregate({
     where: { carId: { in: carIds }, paymentStatus: 'PAID' },
-    _sum: { totalAmount: true },
+    _sum: { totalAmount: true, vatAmount: true, platformFee: true },
   });
-  const lifetimeEarnings = Math.round((lifetimeAgg._sum.totalAmount ?? 0) * 0.9);
+  const lifetimeEarnings = Math.round(
+    (lifetimeAgg._sum.totalAmount ?? 0)
+    - (lifetimeAgg._sum.vatAmount ?? 0)
+    - (lifetimeAgg._sum.platformFee ?? 0)
+  );
 
   // C) Deposit status summary — direct aggregates to cover all bookings
   const depositsHeldAgg = await prisma.booking.aggregate({
@@ -100,14 +107,18 @@ export default async function HostDashboardPage() {
   const carAllTimeAgg = await prisma.booking.groupBy({
     by: ['carId'],
     where: { carId: { in: carIds }, paymentStatus: 'PAID' },
-    _sum: { totalAmount: true },
+    _sum: { totalAmount: true, vatAmount: true, platformFee: true },
   });
   const carCompletedAgg = await prisma.booking.groupBy({
     by: ['carId'],
     where: { carId: { in: carIds }, paymentStatus: 'PAID', status: 'COMPLETED' },
     _count: { id: true },
   });
-  const carAllTimeMap = new Map(carAllTimeAgg.map(r => [r.carId, r._sum.totalAmount ?? 0]));
+  const carAllTimeMap = new Map(carAllTimeAgg.map(r => [r.carId, {
+    total: r._sum.totalAmount ?? 0,
+    vat: r._sum.vatAmount ?? 0,
+    fee: r._sum.platformFee ?? 0,
+  }]));
   const carCompletedMap = new Map(carCompletedAgg.map(r => [r.carId, r._count.id]));
 
   type CarRevenueRow = {
@@ -125,10 +136,11 @@ export default async function HostDashboardPage() {
       b => b.carId === car.id && b.paymentStatus === 'PAID' && b.createdAt >= thisMonthStart
     );
     const thisMonthCarRevenue = Math.round(
-      carBookingsThisMonth.reduce((s, b) => s + b.totalAmount * 0.9, 0)
+      carBookingsThisMonth.reduce((s, b) => s + b.totalAmount - (b.vatAmount ?? 0) - b.platformFee, 0)
     );
     const completedCount = carCompletedMap.get(car.id) ?? 0;
-    const allTimeCarRevenue = Math.round((carAllTimeMap.get(car.id) ?? 0) * 0.9);
+    const carData = carAllTimeMap.get(car.id);
+    const allTimeCarRevenue = Math.round((carData?.total ?? 0) - (carData?.vat ?? 0) - (carData?.fee ?? 0));
     const avgPerBooking = Math.round(allTimeCarRevenue / Math.max(completedCount, 1));
     return {
       id: car.id,
@@ -150,7 +162,7 @@ export default async function HostDashboardPage() {
     );
     return {
       month: format(date, 'MMM'),
-      earnings: Math.round(mBookings.reduce((s, b) => s + b.totalAmount * 0.90, 0)),
+      earnings: Math.round(mBookings.reduce((s, b) => s + b.totalAmount - (b.vatAmount ?? 0) - b.platformFee, 0)),
       trips: mBookings.length,
     };
   });
@@ -165,8 +177,12 @@ export default async function HostDashboardPage() {
   const carEarnings = await Promise.all(
     cars.map(async car => {
       const carBookings = allBookings.filter(b => b.carId === car.id && b.paymentStatus === 'PAID');
-      const monthE = carBookings.filter(b => b.createdAt >= monthStart2).reduce((s, b) => s + b.totalAmount * 0.9, 0);
-      const yearE = carBookings.filter(b => b.createdAt >= yearStart).reduce((s, b) => s + b.totalAmount * 0.9, 0);
+      const monthE = carBookings.filter(b => b.createdAt >= monthStart2).reduce(
+        (s, b) => s + b.totalAmount - (b.vatAmount ?? 0) - b.platformFee, 0
+      );
+      const yearE = carBookings.filter(b => b.createdAt >= yearStart).reduce(
+        (s, b) => s + b.totalAmount - (b.vatAmount ?? 0) - b.platformFee, 0
+      );
       const completed = carBookings.filter(b => b.status === 'COMPLETED').length;
       // Utilisation: booked days / total days this year
       const daysSinceYearStart = Math.max(1, Math.floor((now2.getTime() - yearStart.getTime()) / 86400000));
@@ -266,6 +282,18 @@ export default async function HostDashboardPage() {
             </div>
           ))}
         </div>
+        {thisMonthVATHeld > 0 && (
+          <div className="mb-6 text-xs text-text-secondary flex items-center gap-1.5 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl px-4 py-2.5">
+            <Shield className="w-3.5 h-3.5 text-blue-500 flex-shrink-0" />
+            <span>
+              <span className="font-semibold text-blue-700 dark:text-blue-300">
+                {formatRWF(thisMonthVATHeld)}
+              </span>{' '}
+              VAT collected this month — held by Gari and remitted to Rwanda Revenue Authority (RRA) on your behalf.
+              Earnings shown are net of VAT &amp; platform fee.
+            </span>
+          </div>
+        )}
 
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Earnings Chart */}

@@ -5,6 +5,8 @@ import { prisma } from '@/lib/prisma';
 import { z } from 'zod';
 import { notifyUser } from '@/lib/notifications';
 import { checkSuspension } from '@/lib/reputation';
+import { calculateVAT } from '@/config/vat';
+import { getDynamicMultiplier, applyMultiplier } from '@/lib/pricing';
 
 export const dynamic = 'force-dynamic';
 
@@ -20,6 +22,7 @@ const bookingSchema = z.object({
   subtotal: z.number().min(0),
   platformFee: z.number().min(0),
   driverFee: z.number().default(0),
+  insuranceFee: z.number().default(0),
   totalAmount: z.number().min(0),
   paymentMethod: z.enum(['MTN_MOMO', 'AIRTEL_MONEY', 'CARD']),
   referralCode: z.string().optional(),
@@ -79,13 +82,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Verify car is available
+    // Verify car is available and fetch pricing mode
     const car = await prisma.car.findUnique({
       where: { id: data.carId },
       select: {
         isAvailable: true,
         pricePerDay: true,
         driverPricePerDay: true,
+        pricingMode: true,
+        district: true,
         make: true,
         model: true,
         year: true,
@@ -96,7 +101,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'This car is not available' }, { status: 400 });
     }
 
-    // Double-booking prevention: check for date overlaps with existing bookings
+    // Double-booking prevention
     const pickupDt = new Date(data.pickupDate);
     const returnDt = new Date(data.returnDate);
 
@@ -135,7 +140,33 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Validate referral code and calculate agent commission (5% of platform fee)
+    // ── Dynamic pricing (server-authoritative) ──────────────────────────────
+    let dynamicMultiplier = 1.0;
+    let adjustedSubtotal = data.subtotal;
+
+    if (car.pricingMode === 'dynamic') {
+      const pricing = await getDynamicMultiplier(
+        data.pickupDate,
+        data.returnDate,
+        car.district,
+        prisma
+      );
+      dynamicMultiplier = pricing.multiplier;
+      // Recompute subtotal from server-side base price to prevent tampering
+      const serverBaseSubtotal = car.pricePerDay * data.totalDays;
+      adjustedSubtotal = applyMultiplier(serverBaseSubtotal, dynamicMultiplier);
+    }
+
+    // ── VAT (18%) — server-authoritative ───────────────────────────────────
+    const vatAmount = calculateVAT(adjustedSubtotal, data.driverFee);
+
+    // Platform fee based on adjusted subtotal
+    const serverPlatformFee = Math.round(adjustedSubtotal * 0.10);
+
+    // Final total: rental + platform fee + driver + insurance + VAT
+    const serverTotalAmount = adjustedSubtotal + serverPlatformFee + data.driverFee + data.insuranceFee + vatAmount;
+
+    // ── Referral commission ────────────────────────────────────────────────
     let referralCommission = 0;
     let validReferralCode: string | undefined;
     if (data.referralCode) {
@@ -145,7 +176,7 @@ export async function POST(req: NextRequest) {
       });
       if (referrer && referrer.id !== (session.user as any).id) {
         validReferralCode = data.referralCode;
-        referralCommission = Math.round(data.platformFee * 0.05);
+        referralCommission = Math.round(serverPlatformFee * 0.05);
       }
     }
 
@@ -153,17 +184,20 @@ export async function POST(req: NextRequest) {
       data: {
         carId: data.carId,
         renterId: (session.user as any).id,
-        pickupDate: new Date(data.pickupDate),
-        returnDate: new Date(data.returnDate),
+        pickupDate: pickupDt,
+        returnDate: returnDt,
         withDriver: data.withDriver,
         pickupLocation: data.pickupLocation,
         pickupLat: data.pickupLat,
         pickupLng: data.pickupLng,
         totalDays: data.totalDays,
-        subtotal: data.subtotal,
-        platformFee: data.platformFee,
+        subtotal: adjustedSubtotal,
+        platformFee: serverPlatformFee,
         driverFee: data.driverFee,
-        totalAmount: data.totalAmount,
+        insuranceFee: data.insuranceFee,
+        vatAmount,
+        dynamicMultiplier,
+        totalAmount: serverTotalAmount,
         paymentMethod: data.paymentMethod,
         referralCode: validReferralCode,
         referralCommission,
@@ -173,7 +207,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // Notify host of new booking request
+    // Notify host
     void notifyUser('booking.created', car.hostId, {
       bookingId: booking.id,
       renterName: (session.user as any).name || 'A renter',

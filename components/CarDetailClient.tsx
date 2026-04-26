@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
   MapPin, Star, Users, Zap, Shield, Phone, Navigation,
-  Calendar, ChevronLeft, BadgeCheck, Clock, Car, CheckCircle, ArrowRight
+  Calendar, ChevronLeft, BadgeCheck, Clock, Car, CheckCircle, ArrowRight,
+  TrendingUp,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { DEMO_RENTAL_CARS } from '@/lib/demo-data';
@@ -15,9 +16,17 @@ import { RWANDA_DISTRICTS } from '@/lib/districts';
 import { RecentlyViewedCars } from './RecentlyViewedCars';
 import { COMPANY } from '@/lib/config/company';
 import { POLICY_TIERS } from '@/config/cancellation';
+import { calculateVAT, VAT_LABEL } from '@/config/vat';
 
 const FALLBACK = 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=800&q=80';
 const PLATFORM_FEE_RATE = 0.10;
+
+interface DynamicPricingData {
+  multiplier: number;
+  adjustedPricePerDay: number;
+  factors: Array<{ name: string; delta: number; reason: string }>;
+  reason: string;
+}
 
 export type ReviewDisplay = {
   id: string;
@@ -340,20 +349,42 @@ export function CarDetailClient({ car, completedBookingId, existingBookingId }: 
   const [guaranteeOpen, setGuaranteeOpen] = useState(true);
   const [withInsurance, setWithInsurance] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<'MTN_MOMO' | 'AIRTEL_MONEY' | 'CARD'>('MTN_MOMO');
+  const [dynamicPricing, setDynamicPricing] = useState<DynamicPricingData | null>(null);
 
   const today = new Date().toISOString().split('T')[0];
 
   // Use `data` alias for compatibility with all the UI references below
   const data = car;
 
+  // ── Dynamic pricing fetch (debounced, triggers on date change) ─────────────
+  const fetchDynamicPricing = useCallback(async (p: string, r: string) => {
+    try {
+      const res = await fetch(`/api/cars/${data.id}/pricing?pickupDate=${p}&returnDate=${r}`);
+      if (res.ok) setDynamicPricing(await res.json());
+    } catch {
+      // Non-critical — fall back to static pricing
+    }
+  }, [data.id]);
+
+  useEffect(() => {
+    if (!pickup || !returnDate) { setDynamicPricing(null); return; }
+    const timer = setTimeout(() => fetchDynamicPricing(pickup, returnDate), 400);
+    return () => clearTimeout(timer);
+  }, [pickup, returnDate, fetchDynamicPricing]);
+
   const photos = data.images.length > 0 ? data.images : [FALLBACK];
   const district = RWANDA_DISTRICTS.find(d => d.id === data.district);
   const unavailable = getUnavailableDates(data.id);
   const days = daysBetween(pickup, returnDate);
-  const subtotal = data.pricePerDay * Math.max(days, 1);
+
+  // Use dynamic-adjusted price if available, else static base price
+  const effectivePricePerDay = dynamicPricing ? dynamicPricing.adjustedPricePerDay : data.pricePerDay;
+  const subtotal = effectivePricePerDay * Math.max(days, 1);
   const platformFee = Math.round(subtotal * PLATFORM_FEE_RATE);
+  const driverFee = withDriver ? (data.driverPricePerDay ?? 0) * Math.max(days, 1) : 0;
   const insuranceFee = withInsurance ? 5000 * Math.max(days, 1) : 0;
-  const total = subtotal + platformFee + insuranceFee;
+  const vatAmount = calculateVAT(subtotal, driverFee);
+  const total = subtotal + platformFee + driverFee + insuranceFee + vatAmount;
   const depositAmount = data.depositAmount ?? 0;
   const grandTotal = total + depositAmount;
   const similar = DEMO_RENTAL_CARS.filter(c => c.id !== data.id && (c.type === data.type || c.district === data.district)).slice(0, 3);
@@ -361,7 +392,6 @@ export function CarDetailClient({ car, completedBookingId, existingBookingId }: 
   function requestBooking() {
     if (!pickup || !returnDate) { toast.error('Please select pick-up and return dates'); return; }
     if (!pickupLocation) { toast.error('Please select a pickup location'); return; }
-    const driverFee = withDriver ? data.driverPricePerDay * days : 0;
     const params = new URLSearchParams({
       carId: data.id,
       pickupDate: pickup,
@@ -372,6 +402,8 @@ export function CarDetailClient({ car, completedBookingId, existingBookingId }: 
       subtotal: String(subtotal),
       platformFee: String(platformFee),
       driverFee: String(driverFee),
+      insuranceFee: String(insuranceFee),
+      vatAmount: String(vatAmount),
       totalAmount: String(total),
       depositAmount: String(depositAmount),
       paymentMethod,
@@ -658,43 +690,84 @@ export function CarDetailClient({ car, completedBookingId, existingBookingId }: 
 
               {/* Price breakdown */}
               {pickup && returnDate ? (
-                <div className="bg-gray-bg dark:bg-gray-800 rounded-xl p-4 mb-4 space-y-2 text-sm">
-                  <div className="flex justify-between text-text-secondary">
-                    <span>{formatRWF(data.pricePerDay)} × {days} day{days !== 1 ? 's' : ''}</span>
-                    <span>{formatRWF(subtotal)}</span>
-                  </div>
-                  <div className="flex justify-between text-text-secondary">
-                    <span>Service fee (10%)</span>
-                    <span>{formatRWF(platformFee)}</span>
-                  </div>
-                  {withInsurance && (
-                    <div className="flex justify-between text-primary font-medium">
-                      <span>Gari Protect</span>
-                      <span>{formatRWF(insuranceFee)}</span>
+                <div className="mb-4 space-y-2">
+                  {/* Dynamic pricing surge/discount banner */}
+                  {dynamicPricing && dynamicPricing.multiplier !== 1.0 && (
+                    <div className={`rounded-xl border px-3 py-2.5 text-xs ${
+                      dynamicPricing.multiplier > 1
+                        ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-700'
+                        : 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-700'
+                    }`}>
+                      <div className={`font-semibold flex items-center gap-1.5 mb-1 ${
+                        dynamicPricing.multiplier > 1 ? 'text-amber-700 dark:text-amber-300' : 'text-green-700 dark:text-green-300'
+                      }`}>
+                        <TrendingUp className="w-3.5 h-3.5" />
+                        {dynamicPricing.multiplier > 1 ? '🔥' : '💸'} {dynamicPricing.reason}
+                      </div>
+                      {dynamicPricing.factors.map(f => (
+                        <p key={f.name} className={`text-[11px] ${dynamicPricing.multiplier > 1 ? 'text-amber-600 dark:text-amber-400' : 'text-green-600 dark:text-green-400'}`}>
+                          {f.name}: {f.delta > 0 ? '+' : ''}{Math.round(f.delta * 100)}% — {f.reason}
+                        </p>
+                      ))}
+                      {data.pricePerDay !== effectivePricePerDay && (
+                        <p className="text-[11px] text-text-light mt-1">
+                          Base rate: <span className="line-through">{formatRWF(data.pricePerDay)}</span> → {formatRWF(effectivePricePerDay)}/day
+                        </p>
+                      )}
                     </div>
                   )}
-                  <div className="flex justify-between font-bold text-text-primary dark:text-white border-t border-border pt-2 mt-2">
-                    <span>{depositAmount > 0 ? 'Rental total' : 'Total'}</span>
-                    <div className="text-right">
-                      <span className="text-primary">{formatRWF(total)}</span>
-                      {depositAmount === 0 && <span className="block text-xs text-text-light font-normal">{toUSD(total)}</span>}
+
+                  <div className="bg-gray-bg dark:bg-gray-800 rounded-xl p-4 space-y-2 text-sm">
+                    <div className="flex justify-between text-text-secondary">
+                      <span>{formatRWF(effectivePricePerDay)} × {days} day{days !== 1 ? 's' : ''}</span>
+                      <span>{formatRWF(subtotal)}</span>
                     </div>
-                  </div>
-                  {depositAmount > 0 && (
-                    <>
-                      <div className="flex justify-between text-text-secondary text-xs">
-                        <span>Security deposit <span className="text-green-600 font-medium">(refundable)</span></span>
-                        <span>{formatRWF(depositAmount)}</span>
+                    {driverFee > 0 && (
+                      <div className="flex justify-between text-text-secondary">
+                        <span>Driver fee × {days} day{days !== 1 ? 's' : ''}</span>
+                        <span>{formatRWF(driverFee)}</span>
                       </div>
-                      <div className="flex justify-between font-bold text-text-primary dark:text-white border-t border-border pt-2 mt-1">
-                        <span>Total due today</span>
-                        <div className="text-right">
-                          <span className="text-primary">{formatRWF(grandTotal)}</span>
-                          <span className="block text-xs text-text-light font-normal">{toUSD(grandTotal)}</span>
+                    )}
+                    <div className="flex justify-between text-text-secondary">
+                      <span>Service fee (10%)</span>
+                      <span>{formatRWF(platformFee)}</span>
+                    </div>
+                    {withInsurance && (
+                      <div className="flex justify-between text-primary font-medium">
+                        <span>Gari Protect</span>
+                        <span>{formatRWF(insuranceFee)}</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between text-text-secondary">
+                      <span className="flex items-center gap-1">
+                        {VAT_LABEL}
+                        <span className="text-[10px] bg-gray-200 dark:bg-gray-700 text-text-light px-1.5 py-0.5 rounded-full">RRA</span>
+                      </span>
+                      <span>{formatRWF(vatAmount)}</span>
+                    </div>
+                    <div className="flex justify-between font-bold text-text-primary dark:text-white border-t border-border pt-2 mt-2">
+                      <span>{depositAmount > 0 ? 'Rental total' : 'Total'}</span>
+                      <div className="text-right">
+                        <span className="text-primary">{formatRWF(total)}</span>
+                        {depositAmount === 0 && <span className="block text-xs text-text-light font-normal">{toUSD(total)}</span>}
+                      </div>
+                    </div>
+                    {depositAmount > 0 && (
+                      <>
+                        <div className="flex justify-between text-text-secondary text-xs">
+                          <span>Security deposit <span className="text-green-600 font-medium">(refundable)</span></span>
+                          <span>{formatRWF(depositAmount)}</span>
                         </div>
-                      </div>
-                    </>
-                  )}
+                        <div className="flex justify-between font-bold text-text-primary dark:text-white border-t border-border pt-2 mt-1">
+                          <span>Total due today</span>
+                          <div className="text-right">
+                            <span className="text-primary">{formatRWF(grandTotal)}</span>
+                            <span className="block text-xs text-text-light font-normal">{toUSD(grandTotal)}</span>
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </div>
                 </div>
               ) : (
                 <div className="bg-gray-bg dark:bg-gray-800 rounded-xl p-3 mb-4 text-center text-xs text-text-light">
