@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import { Car, Star, MapPin } from 'lucide-react';
+import { FallbackImage } from '@/components/FallbackImage';
 import { prisma } from '@/lib/prisma';
 import { DEMO_RENTAL_CARS } from '@/lib/demo-data';
 import { formatRWF } from '@/lib/utils';
@@ -86,13 +86,13 @@ export default async function NotFound() {
                   className="card overflow-hidden hover:shadow-lg transition-shadow group block"
                 >
                   <div className="relative h-36 overflow-hidden">
-                    <Image
+                    <FallbackImage
                       src={car.photos?.[0] ?? FALLBACK}
+                      fallback={FALLBACK}
                       alt={`${car.make} ${car.model}`}
                       fill className="object-cover group-hover:scale-105 transition-transform duration-300"
                       sizes="(max-width: 640px) calc(100vw - 32px), 280px"
                       quality={60}
-                      onError={(e) => { e.currentTarget.src = FALLBACK; }}
                     />
                   </div>
                   <div className="p-3">

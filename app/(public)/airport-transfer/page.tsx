@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import Image from 'next/image';
+import { FallbackImage } from '@/components/FallbackImage';
 import Link from 'next/link';
 import { Plane, MapPin, Star, Users, CheckCircle, Clock, Shield, Phone } from 'lucide-react';
 import { DEMO_RENTAL_CARS } from '@/lib/demo-data';
@@ -92,7 +93,6 @@ export default async function AirportTransferPage() {
             src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1200&q=80"
             alt="Kigali International Airport"
             fill className="object-cover" priority
-            onError={() => {}}
           />
         </div>
         <div className="absolute inset-0 bg-gradient-to-b from-dark-bg/60 to-dark-bg/90" />
@@ -224,13 +224,13 @@ export default async function AirportTransferPage() {
                   className="card overflow-hidden hover:shadow-lg transition-shadow group block"
                 >
                   <div className="relative h-44 overflow-hidden">
-                    <Image
+                    <FallbackImage
                       src={img}
+                      fallback={FALLBACK}
                       alt={`${(car as any).make} ${(car as any).model}`}
                       fill className="object-cover group-hover:scale-105 transition-transform duration-300"
                       sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(50vw - 24px), 320px"
                       quality={70}
-                      onError={(e) => { e.currentTarget.src = FALLBACK; }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                     <div className="absolute bottom-3 left-3 flex items-center gap-1.5">
