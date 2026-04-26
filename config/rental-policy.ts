@@ -13,8 +13,8 @@ export const RENTAL_POLICY = {
 
   // ── Extension pricing ───────────────────────────────────────────
   EXTENSION_RATE_MULTIPLIER: 1.0,    // same as daily rate, pro-rated per hour
-  EXTENSION_MIN_HOURS: 1,
-  EXTENSION_MAX_HOURS: 24,
+  EXTENSION_MIN_HOURS: 24,           // minimum 1 full day
+  EXTENSION_MAX_HOURS: 168,          // maximum 7 days
 
   // ── Notification timing (minutes relative to returnDate) ────────
   NOTIF_2H_MINUTES: 120,             // send 2h before return

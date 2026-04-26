@@ -178,6 +178,7 @@ export default async function DashboardPage() {
                   make: b.car.make,
                   model: b.car.model,
                   photos: b.car.photos,
+                  pricePerDay: b.car.pricePerDay,
                 },
                 review: !!b.review,
                 dispute: (b as any).dispute ?? null,

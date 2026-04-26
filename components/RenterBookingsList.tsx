@@ -2,9 +2,10 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Car, Calendar, MapPin, Star, Loader2, AlertTriangle, CheckCircle } from 'lucide-react';
+import { Car, Calendar, MapPin, Star, Loader2, AlertTriangle, CheckCircle, PlusCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { POLICY_TIERS, calcRenterRefundPct, type PolicyTier } from '@/config/cancellation';
+import { ExtendTripModal } from './ExtendTripModal';
 
 interface BookingData {
   id: string;
@@ -27,6 +28,7 @@ interface BookingData {
     make: string;
     model: string;
     photos: string[];
+    pricePerDay: number;
   };
   review: boolean;
   dispute: {
@@ -202,6 +204,9 @@ interface Props {
 
 export function RenterBookingsList({ bookings }: Props) {
   const [activeTab, setActiveTab] = useState<TabKey>('upcoming');
+  const [extendingId, setExtendingId] = useState<string | null>(null);
+
+  const extendingBooking = extendingId ? bookings.find(b => b.id === extendingId) : null;
 
   const counts: Record<TabKey, number> = {
     upcoming: bookings.filter(b => ['PENDING', 'CONFIRMED'].includes(b.status)).length,
@@ -214,7 +219,7 @@ export function RenterBookingsList({ bookings }: Props) {
   const filtered = bookings.filter(b => current.statuses.includes(b.status));
 
   return (
-    <div>
+    <div className="relative">
       {/* Tabs */}
       <div className="flex gap-1 bg-gray-100 dark:bg-gray-800 rounded-xl p-1 mb-6">
         {TABS.map(tab => (
@@ -314,6 +319,18 @@ export function RenterBookingsList({ bookings }: Props) {
                       />
                     )}
 
+                    {/* Extend Trip — always on ACTIVE; on CONFIRMED if return is within 7 days */}
+                    {(booking.status === 'ACTIVE' ||
+                      (booking.status === 'CONFIRMED' &&
+                        new Date(booking.returnDate).getTime() - Date.now() < 7 * 24 * 60 * 60 * 1000)) && (
+                      <button
+                        onClick={() => setExtendingId(booking.id)}
+                        className="text-xs text-primary font-semibold hover:underline inline-flex items-center gap-1"
+                      >
+                        <PlusCircle className="w-3.5 h-3.5" /> Extend Trip
+                      </button>
+                    )}
+
                     {booking.status === 'COMPLETED' && !booking.review && (
                       <Link href={`/review/${booking.id}`} className="text-xs text-primary font-semibold hover:underline inline-flex items-center gap-1">
                         <Star className="w-3 h-3" /> Write Review
@@ -330,6 +347,18 @@ export function RenterBookingsList({ bookings }: Props) {
             </div>
           ))}
         </div>
+      )}
+
+      {/* Extend Trip Modal */}
+      {extendingBooking && (
+        <ExtendTripModal
+          bookingId={extendingBooking.id}
+          carName={`${extendingBooking.car.year} ${extendingBooking.car.make} ${extendingBooking.car.model}`}
+          pricePerDay={extendingBooking.car.pricePerDay}
+          currentReturnDate={extendingBooking.returnDate}
+          onClose={() => setExtendingId(null)}
+          onSuccess={() => { setExtendingId(null); window.location.reload(); }}
+        />
       )}
     </div>
   );
