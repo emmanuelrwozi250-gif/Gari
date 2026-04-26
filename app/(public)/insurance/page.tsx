@@ -93,7 +93,7 @@ export default function InsurancePage() {
               <li className="flex items-start gap-2"><XCircle className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" /> Driving under the influence of alcohol or drugs</li>
               <li className="flex items-start gap-2"><XCircle className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" /> Off-road use (unless the car is listed as an SUV/4x4 safari vehicle)</li>
               <li className="flex items-start gap-2"><XCircle className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" /> Personal belongings left in the car</li>
-              <li className="flex items-start gap-2"><XCircle className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" /> Damage reported after 24 hours without notification to Gari</li>
+              <li className="flex items-start gap-2"><XCircle className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" /> Damage reported after 48 hours without notification to Gari</li>
               <li className="flex items-start gap-2"><XCircle className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" /> Use of the vehicle outside Rwanda without prior written approval</li>
             </ul>
           </div>
@@ -105,7 +105,7 @@ export default function InsurancePage() {
               <h2 className="text-lg font-bold text-text-primary dark:text-white">How to File a Claim</h2>
             </div>
             <ol className="space-y-3 text-sm text-text-secondary list-decimal list-inside">
-              <li>Contact Gari support within <strong className="text-text-primary dark:text-white">24 hours</strong> of the incident via WhatsApp (+250 788 123 000)</li>
+              <li>Contact Gari support within <strong className="text-text-primary dark:text-white">48 hours</strong> of the incident via WhatsApp (+250 788 123 000)</li>
               <li>Take photos of any damage — all angles</li>
               <li>Do not move the vehicle if it is unsafe to do so</li>
               <li>Complete the incident report form sent by our team via WhatsApp</li>
