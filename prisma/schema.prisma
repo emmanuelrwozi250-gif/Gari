@@ -104,6 +104,10 @@ model User {
   kycVerification       RenterVerification?    @relation("UserKYC")
   hostReviewsGiven      HostReview[]           @relation("HostReviewsByHost")
   hostReviewsReceived   HostReview[]           @relation("HostReviewsAboutRenter")
+  corporateAccountId    String?
+  corporateAccount      CorporateAccount?      @relation("CorporateUsers", fields: [corporateAccountId], references: [id])
+  corporateMemberships  CorporateMember[]      @relation("CorporateMemberships")
+  corporateAdminOf      CorporateAccount[]     @relation("CorporateAdmin")
 }
 
 enum Role {
@@ -311,6 +315,11 @@ model Booking {
   // ── renter on-my-way signal ─────────────────────────────────────
   renterOnMyWayAt        DateTime?
   renterOnMyWayMessage   String?
+  // ── corporate billing ───────────────────────────────────────────
+  corporateAccountId     String?
+  corporateAccount       CorporateAccount? @relation("CorporateBookings", fields: [corporateAccountId], references: [id])
+  corporateRef           String?   // PO number or job code
+  costCenter             String?   // internal cost center
   createdAt              DateTime      @default(now())
   updatedAt              DateTime      @updatedAt
 
@@ -870,5 +879,48 @@ model NotificationLog {
   errorMsg  String?
 
   @@index([bookingId])
+  @@index([userId])
+}
+
+// ─── CORPORATE / NGO ACCOUNTS ─────────────────────────────────────────────────
+
+model CorporateAccount {
+  id             String    @id @default(cuid())
+  orgName        String
+  orgType        String    @default("CORPORATE") // CORPORATE | NGO | GOVERNMENT | SME
+  taxId          String?
+  billingAddress String?
+  billingEmail   String
+  contactName    String
+  contactPhone   String?
+  creditLimit    Int       @default(0)
+  creditUsed     Int       @default(0)
+  status         String    @default("PENDING") // PENDING | ACTIVE | SUSPENDED
+  adminUserId    String
+  adminUser      User      @relation("CorporateAdmin", fields: [adminUserId], references: [id])
+  approvedAt     DateTime?
+  approvedBy     String?
+  notes          String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  members  CorporateMember[]
+  bookings Booking[]         @relation("CorporateBookings")
+  users    User[]            @relation("CorporateUsers")
+}
+
+model CorporateMember {
+  id                 String           @id @default(cuid())
+  corporateAccountId String
+  account            CorporateAccount @relation(fields: [corporateAccountId], references: [id], onDelete: Cascade)
+  userId             String
+  user               User             @relation("CorporateMemberships", fields: [userId], references: [id])
+  role               String           @default("MEMBER") // ADMIN | MEMBER | VIEWER
+  costCenter         String?
+  monthlyLimit       Int?
+  createdAt          DateTime         @default(now())
+
+  @@unique([corporateAccountId, userId])
+  @@index([corporateAccountId])
   @@index([userId])
 }
