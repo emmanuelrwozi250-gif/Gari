@@ -48,7 +48,7 @@ const SECTIONS = [
   },
   {
     title: '11. Governing Law',
-    body: `These Terms are governed by the laws of the Republic of Rwanda. Any disputes arising from these Terms shall be resolved in the competent courts of Rwanda. For any questions about these Terms, contact us at support@gari.rw or via WhatsApp at +250 788 123 000.`,
+    body: `These Terms are governed by the laws of the Republic of Rwanda. Any disputes arising from these Terms shall be resolved in the competent courts of Rwanda. For any questions about these Terms, contact us at legal@gari.rw or via WhatsApp at +250 788 123 000.`,
   },
 ];
 
@@ -61,7 +61,7 @@ export default function TermsPage() {
             Terms of Service
           </h1>
           <p className="text-text-secondary text-sm">
-            Last updated: January 2025 &nbsp;·&nbsp; Governing law: Republic of Rwanda
+            Last updated: April 2026 &nbsp;·&nbsp; Governing law: Republic of Rwanda
           </p>
         </div>
 
@@ -76,7 +76,7 @@ export default function TermsPage() {
 
         <p className="text-center text-xs text-text-light mt-8">
           Questions? Email{' '}
-          <a href="mailto:support@gari.rw" className="text-primary hover:underline">support@gari.rw</a>
+          <a href="mailto:legal@gari.rw" className="text-primary hover:underline">legal@gari.rw</a>
           {' '}or{' '}
           <a href="https://wa.me/250788123000" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
             WhatsApp us
