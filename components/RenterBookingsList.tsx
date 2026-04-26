@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Car, Calendar, MapPin, Star, Loader2, AlertTriangle, CheckCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { POLICY_TIERS, calcRenterRefundPct, type PolicyTier } from '@/config/cancellation';
 
 interface BookingData {
   id: string;
@@ -11,6 +12,7 @@ interface BookingData {
   status: string;
   pickupDate: string;
   returnDate: string;
+  createdAt: string;
   pickupLocation: string;
   totalAmount: number;
   depositAmount: number;
@@ -19,6 +21,7 @@ interface BookingData {
   depositRefundAmount: number | null;
   cancelledAt: string | null;
   completedAt: string | null;
+  cancellationPolicy: PolicyTier;
   car: {
     year: number;
     make: string;
@@ -60,11 +63,21 @@ function formatDate(d: string) {
   return new Date(d).toLocaleDateString('en-RW', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
-function CancelButton({ bookingId }: { bookingId: string }) {
+function CancelButton({ bookingId, totalAmount, pickupDate, createdAt, policy }: {
+  bookingId: string;
+  totalAmount: number;
+  pickupDate: string;
+  createdAt: string;
+  policy: PolicyTier;
+}) {
+  const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const refundPct = calcRenterRefundPct(policy, pickupDate, createdAt);
+  const refundAmount = Math.round(totalAmount * refundPct / 100);
+  const cfg = POLICY_TIERS[policy];
+
   async function cancel() {
-    if (!confirm('Are you sure you want to cancel this booking?')) return;
     setLoading(true);
     try {
       const res = await fetch(`/api/bookings/${bookingId}/cancel`, {
@@ -78,20 +91,48 @@ function CancelButton({ bookingId }: { bookingId: string }) {
       window.location.reload();
     } catch (err: any) {
       toast.error(err.message || 'Failed to cancel');
+      setShow(false);
     } finally {
       setLoading(false);
     }
   }
 
+  if (!show) {
+    return (
+      <button
+        onClick={() => setShow(true)}
+        className="text-xs text-red-500 hover:text-red-700 hover:underline inline-flex items-center gap-1"
+      >
+        Cancel booking
+      </button>
+    );
+  }
+
   return (
-    <button
-      onClick={cancel}
-      disabled={loading}
-      className="text-xs text-red-500 hover:text-red-700 hover:underline disabled:opacity-60 inline-flex items-center gap-1"
-    >
-      {loading && <Loader2 className="w-3 h-3 animate-spin" />}
-      Cancel booking
-    </button>
+    <div className="mt-3 bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800 rounded-xl p-4">
+      <p className="text-sm font-semibold text-red-800 dark:text-red-300 mb-1">Cancel this booking?</p>
+      <p className="text-xs text-red-700 dark:text-red-400 mb-1">
+        <span className="font-semibold">{cfg.label} policy</span> — {cfg.description}
+      </p>
+      <p className="text-xs text-red-700 dark:text-red-400 mb-3">
+        You will receive a refund of{' '}
+        <strong>{formatRWF(refundAmount)}</strong>{' '}
+        ({refundPct}% of {formatRWF(totalAmount)}).
+      </p>
+      <div className="flex gap-2">
+        <button onClick={() => setShow(false)} className="text-xs text-text-secondary hover:underline">
+          Keep booking
+        </button>
+        <button
+          onClick={cancel}
+          disabled={loading}
+          className="text-xs bg-red-600 text-white px-3 py-1.5 rounded-lg font-semibold disabled:opacity-60 inline-flex items-center gap-1 hover:bg-red-700 transition-colors"
+        >
+          {loading && <Loader2 className="w-3 h-3 animate-spin" />}
+          Confirm cancellation
+        </button>
+      </div>
+    </div>
   );
 }
 
@@ -263,8 +304,14 @@ export function RenterBookingsList({ bookings }: Props) {
                       View Car
                     </Link>
 
-                    {['CONFIRMED'].includes(booking.status) && (
-                      <CancelButton bookingId={booking.id} />
+                    {['PENDING', 'CONFIRMED'].includes(booking.status) && (
+                      <CancelButton
+                        bookingId={booking.id}
+                        totalAmount={booking.totalAmount}
+                        pickupDate={booking.pickupDate}
+                        createdAt={booking.createdAt}
+                        policy={booking.cancellationPolicy}
+                      />
                     )}
 
                     {booking.status === 'COMPLETED' && !booking.review && (

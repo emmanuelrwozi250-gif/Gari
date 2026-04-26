@@ -167,9 +167,10 @@ model Car {
   isSafariCapable   Boolean       @default(false)
   isFeatured        Boolean       @default(false)
   featuredUntil     DateTime?
-  minDays           Int           @default(1)
-  advanceNotice     Int           @default(0)
-  createdAt         DateTime      @default(now())
+  minDays               Int                  @default(1)
+  advanceNotice         Int                  @default(0)
+  cancellationPolicy    CancellationPolicy   @default(MODERATE)
+  createdAt             DateTime             @default(now())
   updatedAt         DateTime      @updatedAt
 
   bookings           Booking[]
@@ -366,6 +367,12 @@ enum DepositStatus {
   PARTIALLY_HELD
   WITHHELD
   DISPUTED
+}
+
+enum CancellationPolicy {
+  FLEXIBLE
+  MODERATE
+  STRICT
 }
 
 // Insurance certificate linked to a confirmed booking

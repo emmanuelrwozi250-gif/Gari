@@ -163,6 +163,7 @@ export default async function DashboardPage() {
                 status: b.status,
                 pickupDate: b.pickupDate.toISOString(),
                 returnDate: b.returnDate.toISOString(),
+                createdAt: b.createdAt.toISOString(),
                 pickupLocation: b.pickupLocation,
                 totalAmount: b.totalAmount,
                 depositAmount: b.depositAmount,
@@ -171,6 +172,7 @@ export default async function DashboardPage() {
                 depositRefundAmount: (b as any).depositRefundAmount ?? null,
                 cancelledAt: (b as any).cancelledAt?.toISOString() ?? null,
                 completedAt: (b as any).completedAt?.toISOString() ?? null,
+                cancellationPolicy: ((b.car as any).cancellationPolicy ?? 'MODERATE') as 'FLEXIBLE' | 'MODERATE' | 'STRICT',
                 car: {
                   year: b.car.year,
                   make: b.car.make,

@@ -51,6 +51,9 @@ export default function EditCarPage() {
   const [blockReason, setBlockReason] = useState('');
   const [blockingDate, setBlockingDate] = useState(false);
 
+  // Cancellation policy
+  const [cancellationPolicy, setCancellationPolicy] = useState<'FLEXIBLE' | 'MODERATE' | 'STRICT'>('MODERATE');
+
   // Status
   const [isAvailable, setIsAvailable] = useState(true);
 
@@ -77,6 +80,7 @@ export default function EditCarPage() {
         setDriverAvailable(data.driverAvailable || false);
         setDriverPricePerDay(data.driverPricePerDay || 0);
         setInstantBooking(data.instantBooking || false);
+        setCancellationPolicy(data.cancellationPolicy || 'MODERATE');
         setIsAvailable(data.isAvailable ?? true);
         setLoading(false);
       })
@@ -415,8 +419,34 @@ export default function EditCarPage() {
               )}
             </div>
 
+            {/* Cancellation policy */}
+            <div>
+              <label className="text-sm font-semibold text-text-primary dark:text-white block mb-2">Cancellation Policy</label>
+              <div className="grid grid-cols-3 gap-2">
+                {([
+                  { value: 'FLEXIBLE', label: 'Flexible', desc: 'Full refund up to 24 h before pickup', color: 'text-green-600' },
+                  { value: 'MODERATE', label: 'Moderate', desc: 'Full refund up to 3 days before pickup', color: 'text-amber-600' },
+                  { value: 'STRICT', label: 'Strict', desc: 'Full refund within 24 h of booking only', color: 'text-red-500' },
+                ] as const).map(({ value, label, desc, color }) => (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() => setCancellationPolicy(value)}
+                    className={`rounded-xl border-2 p-3 text-left transition-all ${
+                      cancellationPolicy === value
+                        ? 'border-primary bg-primary/5'
+                        : 'border-border hover:border-primary/40'
+                    }`}
+                  >
+                    <div className={`text-xs font-bold mb-1 ${color}`}>{label}</div>
+                    <div className="text-[10px] text-text-secondary leading-tight">{desc}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <button
-              onClick={() => saveSection('pricing', { pricePerDay, depositAmount, driverAvailable, driverPricePerDay: driverAvailable ? driverPricePerDay : 0, instantBooking })}
+              onClick={() => saveSection('pricing', { pricePerDay, depositAmount, driverAvailable, driverPricePerDay: driverAvailable ? driverPricePerDay : 0, instantBooking, cancellationPolicy })}
               disabled={saving === 'pricing'}
               className="btn-primary w-full justify-center">
               {saving === 'pricing' ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}

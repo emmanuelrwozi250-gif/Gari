@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import { CANCELLATION_POLICY } from '@/config/cancellation';
+import { calcRenterRefundPct, CANCELLATION_POLICY, type PolicyTier } from '@/config/cancellation';
 
 export const dynamic = 'force-dynamic';
 
@@ -21,7 +21,7 @@ export async function POST(
 
     const booking = await prisma.booking.findUnique({
       where: { id: params.id },
-      include: { car: { select: { hostId: true } } },
+      include: { car: { select: { hostId: true, cancellationPolicy: true } } },
     });
 
     if (!booking) return NextResponse.json({ error: 'Booking not found' }, { status: 404 });
@@ -38,20 +38,19 @@ export async function POST(
       return NextResponse.json({ error: 'Cannot cancel booking in current status' }, { status: 400 });
     }
 
-    // Determine refund amount based on cancellation policy
+    // Determine refund amount based on tier-aware cancellation policy
     let refundPct = 0;
-    if (isHost) {
-      // Host cancels → full refund to renter
+    if (isHost || isAdmin) {
+      // Host or admin cancels → full refund to renter always
       refundPct = CANCELLATION_POLICY.HOST_CANCEL_RENTER_REFUND;
     } else {
-      // Renter cancels — check free window
-      const bookingAgeHours =
-        (Date.now() - new Date(booking.createdAt).getTime()) / (1000 * 60 * 60);
-      if (bookingAgeHours <= CANCELLATION_POLICY.RENTER_FREE_WINDOW_HOURS) {
-        refundPct = 100;
-      } else {
-        refundPct = CANCELLATION_POLICY.RENTER_PARTIAL_REFUND_PERCENT;
-      }
+      // Renter cancels — use the car's tier policy
+      const policy = (booking.car.cancellationPolicy ?? 'MODERATE') as PolicyTier;
+      refundPct = calcRenterRefundPct(
+        policy,
+        booking.pickupDate.toISOString(),
+        booking.createdAt.toISOString(),
+      );
     }
 
     const refundAmount = Math.round((booking.totalAmount * refundPct) / 100);

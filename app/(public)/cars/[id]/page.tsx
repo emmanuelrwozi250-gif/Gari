@@ -63,6 +63,7 @@ async function getCar(id: string): Promise<CarDisplay | null> {
       instantBooking: car.instantBooking,
       driverPricePerDay: car.driverPricePerDay ?? 0,
       reviews,
+      cancellationPolicy: (car.cancellationPolicy ?? 'MODERATE') as 'FLEXIBLE' | 'MODERATE' | 'STRICT',
       hostSuperhostSince: car.host?.superhostSince
         ? car.host.superhostSince.toISOString()
         : null,

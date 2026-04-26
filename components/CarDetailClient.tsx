@@ -14,6 +14,7 @@ import { formatRWF, toUSD } from '@/lib/utils';
 import { RWANDA_DISTRICTS } from '@/lib/districts';
 import { RecentlyViewedCars } from './RecentlyViewedCars';
 import { COMPANY } from '@/lib/config/company';
+import { POLICY_TIERS } from '@/config/cancellation';
 
 const FALLBACK = 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=800&q=80';
 const PLATFORM_FEE_RATE = 0.10;
@@ -59,6 +60,7 @@ export type CarDisplay = {
   completedBookingId?: string | null;
   existingBookingId?: string | null;
   hostSuperhostSince?: string | null;
+  cancellationPolicy?: 'FLEXIBLE' | 'MODERATE' | 'STRICT';
 };
 
 // Generate 8 "unavailable" future dates for realism
@@ -739,16 +741,35 @@ export function CarDetailClient({ car, completedBookingId, existingBookingId }: 
               </button>
 
               {pickup && (() => {
-                const deadline = new Date(new Date(pickup).getTime() - 86400000);
+                const policy = (data.cancellationPolicy ?? 'MODERATE') as 'FLEXIBLE' | 'MODERATE' | 'STRICT';
+                const cfg = POLICY_TIERS[policy];
+                const pickupMs = new Date(pickup).getTime();
+                const freeUntilMs = cfg.freeWindowHoursBeforePickup > 0
+                  ? pickupMs - cfg.freeWindowHoursBeforePickup * 3600000
+                  : null;
+                const coolingOffUntilMs = Date.now() + cfg.coolingOffHours * 3600000;
+                // The later of the two free windows
+                const freeUntil = new Date(Math.max(freeUntilMs ?? 0, coolingOffUntilMs));
+                const fmt = (d: Date) =>
+                  d.toLocaleDateString('en-RW', { weekday: 'short', day: 'numeric', month: 'short' }) + ' ' +
+                  d.toLocaleTimeString('en-RW', { hour: '2-digit', minute: '2-digit' });
+                const policyColour = policy === 'FLEXIBLE'
+                  ? 'text-green-600 dark:text-green-400'
+                  : policy === 'STRICT'
+                  ? 'text-red-500 dark:text-red-400'
+                  : 'text-amber-600 dark:text-amber-400';
                 return (
                   <div className="mt-2 space-y-1">
+                    <div className="flex items-center justify-center gap-1.5 text-xs">
+                      <span className={`font-semibold ${policyColour}`}>{cfg.label}</span>
+                      <span className="text-text-light">cancellation policy</span>
+                    </div>
                     <p className="text-xs text-text-light text-center">
                       Free cancellation before{' '}
-                      <strong className="text-text-secondary">
-                        {deadline.toLocaleDateString('en-RW', { weekday: 'short', day: 'numeric', month: 'short' })}{' '}
-                        {deadline.toLocaleTimeString('en-RW', { hour: '2-digit', minute: '2-digit' })}
-                      </strong>
-                      . 50% refund after that.
+                      <strong className="text-text-secondary">{fmt(freeUntil)}</strong>
+                      {cfg.partialRefundPercent > 0
+                        ? `. ${cfg.partialRefundPercent}% refund after that.`
+                        : '. No refund after that.'}
                     </p>
                     <p className="text-xs text-text-light text-center">
                       Late returns: RWF 5,000/hr after 30-min grace ·{' '}
