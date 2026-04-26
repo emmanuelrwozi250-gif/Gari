@@ -173,6 +173,21 @@ export default async function HostDashboardPage() {
       const bookedDays = carBookings.reduce((s, b) => s + b.totalDays, 0);
       const utilisation = Math.min(100, Math.round((bookedDays / daysSinceYearStart) * 100));
       const nextBooking = allBookings.find(b => b.carId === car.id && b.status === 'CONFIRMED' && new Date(b.pickupDate) > now2);
+
+      // Dead days: remaining days this month that have no booking
+      const monthEnd = new Date(now2.getFullYear(), now2.getMonth() + 1, 0);
+      const daysLeftThisMonth = Math.max(0, monthEnd.getDate() - now2.getDate() + 1);
+      const activeCarBookings = allBookings.filter(b => b.carId === car.id && ['CONFIRMED', 'ACTIVE'].includes(b.status));
+      // Count booked days within remaining days of this month
+      let bookedDaysThisMonth = 0;
+      for (const b of activeCarBookings) {
+        const start = new Date(Math.max(b.pickupDate.getTime(), now2.getTime()));
+        const end = new Date(Math.min(b.returnDate.getTime(), monthEnd.getTime()));
+        if (end > start) bookedDaysThisMonth += Math.ceil((end.getTime() - start.getTime()) / 86400000);
+      }
+      const deadDaysThisMonth = Math.max(0, daysLeftThisMonth - bookedDaysThisMonth);
+      const projectedAnnual = monthE > 0 ? Math.round(monthE * 12) : Math.round(yearE);
+
       return {
         id: car.id, make: car.make, model: car.model, year: car.year,
         source: (car as any).source || 'OWNER',
@@ -183,6 +198,9 @@ export default async function HostDashboardPage() {
         yearEarnings: Math.round(yearE),
         utilisation,
         completedBookings: completed,
+        deadDaysThisMonth,
+        daysLeftThisMonth,
+        projectedAnnual,
         nextBooking: nextBooking ? { pickupDate: nextBooking.pickupDate.toISOString(), returnDate: nextBooking.returnDate.toISOString() } : null,
       };
     })
