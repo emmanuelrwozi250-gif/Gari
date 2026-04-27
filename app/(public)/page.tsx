@@ -8,6 +8,7 @@ import { prisma } from '@/lib/prisma';
 import { DEMO_RENTAL_CARS, DEMO_TESTIMONIALS } from '@/lib/demo-data';
 import { PLATFORM_STATS } from '@/lib/config/stats';
 import { EarningsEstimator } from '@/components/home/EarningsEstimator';
+import { ActivityTicker } from '@/components/ActivityTicker';
 import {
   Shield, BadgeCheck, Phone, Star, ArrowRight,
   Car, Users, Globe,
@@ -268,6 +269,9 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ── Live Activity Ticker ─────────────────────────────────────────── */}
+      <ActivityTicker />
 
       {/* ── Featured Cars (FIX 7: mixed pricing) ─────────────────────────── */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
