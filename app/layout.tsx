@@ -15,7 +15,9 @@ import { MobileNav } from '@/components/MobileNav';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
 import { PushNotificationInit } from '@/components/PushNotificationInit';
 import PWABanner from '@/components/PWABanner';
+import { DemoBanner } from '@/components/DemoBanner';
 import { Toaster } from 'react-hot-toast';
+import { Suspense } from 'react';
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXTAUTH_URL || 'https://gari.rw'),
@@ -56,6 +58,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning className={inter.variable}>
       <body className={`antialiased ${inter.className}`}>
         <Providers>
+          <Suspense><DemoBanner /></Suspense>
           <Navbar />
           <main className="main-content min-h-screen">
             {children}
