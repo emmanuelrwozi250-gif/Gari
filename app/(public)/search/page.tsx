@@ -84,6 +84,7 @@ function filterDemoCars(params: SearchParamsShape) {
   if (params.sort === 'price_asc') cars.sort((a, b) => a.pricePerDay - b.pricePerDay);
   else if (params.sort === 'price_desc') cars.sort((a, b) => b.pricePerDay - a.pricePerDay);
   else if (params.sort === 'newest') cars.reverse();
+  else if (params.sort === 'popular') cars.sort((a, b) => (b.totalTrips - a.totalTrips) || (b.rating - a.rating));
   else cars.sort((a, b) => b.rating - a.rating);
 
   return cars;

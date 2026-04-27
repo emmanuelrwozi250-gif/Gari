@@ -4,6 +4,8 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { CheckCircle, Car, Banknote, Shield, Star, ArrowRight, Users, Globe } from 'lucide-react';
 import { STATS } from '@/config/social-proof';
+import { ActivityTicker } from '@/components/ActivityTicker';
+import { HostMobileCTA } from '@/components/HostMobileCTA';
 
 export const metadata: Metadata = {
   title: 'Become a Host — Earn with Your Car | Gari',
@@ -73,6 +75,30 @@ export default function BeAHostPage() {
         </div>
       </section>
 
+      {/* Live activity ticker */}
+      <ActivityTicker />
+
+      {/* 8 minutes to list */}
+      <section className="py-5 px-4 bg-accent-yellow/10 dark:bg-accent-yellow/5">
+        <div className="max-w-4xl mx-auto text-center">
+          <p className="text-sm font-semibold text-amber-700 dark:text-accent-yellow mb-3">⏱️ List your car in about 8 minutes</p>
+          <div className="flex flex-wrap gap-3 justify-center items-center">
+            {[
+              { step: '1', label: 'Take photos', time: '2 min' },
+              { step: '2', label: 'Set your price', time: '3 min' },
+              { step: '3', label: 'Go live', time: '3 min' },
+            ].map(({ step, label, time }, i, arr) => (
+              <div key={step} className="flex items-center gap-2">
+                <span className="w-6 h-6 rounded-full bg-accent-yellow text-gray-900 text-xs font-bold flex items-center justify-center flex-shrink-0">{step}</span>
+                <span className="text-sm font-medium text-text-secondary dark:text-gray-300">{label}</span>
+                <span className="text-xs text-text-light">({time})</span>
+                {i < arr.length - 1 && <span className="hidden sm:inline text-text-light mx-1">→</span>}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Benefits */}
       <section className="py-16 px-4 max-w-6xl mx-auto">
         <div className="text-center mb-12">
@@ -135,6 +161,32 @@ export default function BeAHostPage() {
         <p className="text-center text-xs text-text-light mt-4">* Estimates based on average host utilization. Results vary.</p>
       </section>
 
+      {/* Host success story */}
+      <section className="py-12 px-4">
+        <div className="max-w-xl mx-auto">
+          <h2 className="section-title text-center mb-6">Host Success Story</h2>
+          <div className="card p-6 border-l-4 border-primary">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-lg flex-shrink-0">
+                JP
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-1 flex-wrap">
+                  <p className="font-bold text-text-primary dark:text-white">Jean-Pierre M.</p>
+                  <span className="text-xs bg-amber-400/20 text-amber-700 dark:text-accent-yellow px-2 py-0.5 rounded-full font-medium">⭐ Superhost</span>
+                </div>
+                <p className="text-xs text-text-secondary mb-3">Kigali, Rwanda · 47 trips completed</p>
+                <blockquote className="text-sm text-text-secondary dark:text-gray-400 italic leading-relaxed">
+                  &ldquo;I listed my Land Cruiser on Gari and earned over RWF 2.1M last month. The MoMo payouts are instant and the renters are all NIDA-verified. Best decision I made.&rdquo;
+                </blockquote>
+                <div className="mt-3 text-2xl font-extrabold text-primary">RWF 2,100,000</div>
+                <p className="text-xs text-text-light">earned last month · 1 vehicle</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="py-16 bg-primary text-white text-center px-4">
         <div className="max-w-xl mx-auto">
@@ -146,6 +198,7 @@ export default function BeAHostPage() {
           </Link>
         </div>
       </section>
+      <HostMobileCTA />
     </div>
   );
 }

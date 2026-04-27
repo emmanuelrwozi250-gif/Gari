@@ -145,6 +145,25 @@ export function CarCard({ car, compact = false, pickupDate, returnDate }: CarCar
           <span className="truncate">{district?.name || car.district}{district ? `, ${district.province.replace(' Province', '')}` : ''}</span>
         </div>
 
+        {/* Rwanda context tags */}
+        {(() => {
+          const tags: string[] = [];
+          if (car.type === 'SUV_4X4' && car.district === 'MUSANZE') tags.push('🦍 Gorilla Trek');
+          if (car.district === 'KAYONZA') tags.push('🐘 Akagera');
+          if (car.type === 'LUXURY') tags.push('💼 Business Class');
+          if (car.pricePerDay <= 35000) tags.push('💚 Best Value');
+          if (tags.length === 0) return null;
+          return (
+            <div className="flex flex-wrap gap-1 mb-2">
+              {tags.map(tag => (
+                <span key={tag} className="text-[10px] bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary-light px-1.5 py-0.5 rounded-full font-medium">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          );
+        })()}
+
         {/* Specs */}
         {!compact && (
           <div className="flex items-center gap-3 text-xs text-text-secondary mb-3 pb-3 border-b border-border">

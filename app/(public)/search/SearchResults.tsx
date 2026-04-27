@@ -23,6 +23,7 @@ interface SearchResultsProps {
 
 const SORT_OPTIONS = [
   { value: 'rating', label: 'Best Match' },
+  { value: 'popular', label: 'Most Popular' },
   { value: 'price_asc', label: 'Price: Low to High' },
   { value: 'price_desc', label: 'Price: High to Low' },
   { value: 'newest', label: 'Newest First' },

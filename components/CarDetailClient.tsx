@@ -472,9 +472,26 @@ export function CarDetailClient({ car, completedBookingId, existingBookingId, si
                   {data.available ? '✓ Available' : 'Unavailable'}
                 </span>
               </div>
-              <h1 className="text-2xl font-extrabold text-text-primary dark:text-white">
-                {data.year} {data.make} {data.model}
-              </h1>
+              <div className="flex items-start justify-between gap-3">
+                <h1 className="text-2xl font-extrabold text-text-primary dark:text-white">
+                  {data.year} {data.make} {data.model}
+                </h1>
+                <button
+                  onClick={() => {
+                    if (typeof navigator !== 'undefined' && navigator.share) {
+                      navigator.share({ title: `${data.year} ${data.make} ${data.model}`, url: window.location.href }).catch(() => {});
+                    } else {
+                      navigator.clipboard.writeText(window.location.href);
+                      toast.success('Link copied!');
+                    }
+                  }}
+                  className="flex-shrink-0 p-2 rounded-xl border border-border text-text-secondary hover:text-primary hover:border-primary transition-colors mt-0.5"
+                  aria-label="Share this car"
+                  title="Share"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" /></svg>
+                </button>
+              </div>
               <div className="flex flex-wrap items-center gap-4 mt-2 text-sm text-text-secondary">
                 <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> {district?.name || data.district}</span>
                 <span className="flex items-center gap-1"><Users className="w-3.5 h-3.5" /> {data.seats} seats</span>
@@ -583,10 +600,34 @@ export function CarDetailClient({ car, completedBookingId, existingBookingId, si
           <div className="lg:sticky lg:top-24 space-y-4 h-fit">
             <div className="card p-6">
               {/* Price header */}
-              <div className="flex items-baseline gap-2 mb-5">
+              <div className="flex items-baseline gap-2 mb-1">
                 <div className="text-3xl font-extrabold text-primary">{formatRWF(data.pricePerDay)}</div>
                 <div className="text-sm text-text-secondary">/ day</div>
                 <div className="text-xs text-text-light ml-1">{toUSD(data.pricePerDay)}</div>
+              </div>
+
+              {/* Trust signals */}
+              <div className="flex flex-wrap gap-2 mb-4">
+                {similar.length > 0 && (() => {
+                  const min = similar.reduce((m, c) => Math.min(m, c.pricePerDay), Infinity);
+                  if (min < data.pricePerDay) {
+                    return (
+                      <span className="text-xs text-text-secondary">
+                        Similar from <strong className="text-text-primary dark:text-white">{formatRWF(min)}</strong>/day
+                      </span>
+                    );
+                  }
+                  return null;
+                })()}
+                {(() => {
+                  const ADVANCE: Record<string, number> = { SUV_4X4: 5, LUXURY: 7, EXECUTIVE: 6, ECONOMY: 3, MINIBUS: 4 };
+                  const days = ADVANCE[data.type] ?? 4;
+                  return (
+                    <span className="text-xs text-text-light flex items-center gap-1">
+                      ℹ️ Typically booked {days} days in advance
+                    </span>
+                  );
+                })()}
               </div>
 
               <div className="space-y-3 mb-4">
