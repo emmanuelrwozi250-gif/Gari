@@ -18,7 +18,7 @@ export function UnreadMessagesBadge() {
     }
 
     poll();
-    const id = setInterval(poll, 30_000);
+    const id = setInterval(poll, 120_000);
     return () => clearInterval(id);
   }, [session]);
 

@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
@@ -7,7 +8,9 @@ import { DEMO_RENTAL_CARS } from '@/lib/demo-data';
 import { CarDetailClient, type CarDisplay, type ReviewDisplay } from '@/components/CarDetailClient';
 import { formatRWF } from '@/lib/utils';
 
-async function getCar(id: string): Promise<CarDisplay | null> {
+// cache() deduplicates calls within a single render — generateMetadata + page component
+// both call getCar but only one DB round-trip is made per request
+const getCar = cache(async function getCar(id: string): Promise<CarDisplay | null> {
   try {
     const include = {
       host: { select: { id: true, name: true, avatar: true, createdAt: true, nidaVerified: true, superhostSince: true } },
@@ -71,7 +74,7 @@ async function getCar(id: string): Promise<CarDisplay | null> {
   } catch {
     return null;
   }
-}
+});
 
 export async function generateMetadata(
   { params }: { params: Promise<{ id: string }> }

@@ -180,6 +180,12 @@ model Car {
   holds              BookingHold[]
   images             CarImage[]
   blockedDates       BlockedDate[]
+
+  @@index([hostId])
+  @@index([isAvailable, district])
+  @@index([isAvailable, type])
+  @@index([isAvailable, rating])
+  @@index([isAvailable, pricePerDay])
 }
 
 enum CarType {
@@ -336,6 +342,10 @@ model Booking {
   dispute          Dispute?
   inspectionPhotos InspectionPhoto[]
   notificationLogs NotificationLog[]
+
+  @@index([carId, status])
+  @@index([renterId, status])
+  @@index([status, createdAt])
 }
 
 enum BookingStatus {
@@ -440,6 +450,8 @@ model Notification {
   type      String
   read      Boolean  @default(false)
   createdAt DateTime @default(now())
+
+  @@index([userId, read])
 }
 
 // In-app messaging between renter and host per booking
@@ -452,6 +464,9 @@ model Message {
   content   String   @db.Text
   read      Boolean  @default(false)
   createdAt DateTime @default(now())
+
+  @@index([senderId, read])
+  @@index([bookingId])
 }
 
 // Host blocks dates their car is unavailable

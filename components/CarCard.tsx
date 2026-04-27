@@ -1,11 +1,9 @@
-'use client';
-
-import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Star, MapPin, Users, Fuel, BadgeCheck, Zap, Award } from 'lucide-react';
 import { formatRWF, toUSD, getCarTypeLabel, getFuelLabel } from '@/lib/utils';
 import { RWANDA_DISTRICTS } from '@/lib/districts';
+import { FallbackImage } from './FallbackImage';
 
 interface CarCardProps {
   car: {
@@ -44,7 +42,7 @@ const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1544636331-e26879cd4d9
 export function CarCard({ car, compact = false, pickupDate, returnDate }: CarCardProps) {
   const district = RWANDA_DISTRICTS.find(d => d.id === car.district);
   const rawPhoto = car.photos[0] || FALLBACK_IMAGE;
-  const [imgSrc, setImgSrc] = useState(rawPhoto.startsWith('http') ? rawPhoto : FALLBACK_IMAGE);
+  const imgSrc = rawPhoto.startsWith('http') ? rawPhoto : FALLBACK_IMAGE;
   const isSuperhost = !!car.host?.superhostSince;
 
   const tripDays = (pickupDate && returnDate)
@@ -56,15 +54,13 @@ export function CarCard({ car, compact = false, pickupDate, returnDate }: CarCar
     <Link href={`/cars/${car.slug ?? car.id}`} className="card block group overflow-hidden hover:shadow-lg transition-shadow duration-300">
       {/* Photo */}
       <div className={`relative overflow-hidden ${compact ? 'h-40' : 'h-52'}`}>
-        <Image
+        <FallbackImage
           src={imgSrc}
           alt={`${car.make} ${car.model}`}
           fill
           className="object-cover group-hover:scale-105 transition-transform duration-300"
           sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) calc(50vw - 24px), 400px"
           quality={60}
-          onError={() => setImgSrc('/images/car-placeholder.svg')}
-          unoptimized={imgSrc === '/images/car-placeholder.svg'}
         />
         {/* Overlay gradient */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
