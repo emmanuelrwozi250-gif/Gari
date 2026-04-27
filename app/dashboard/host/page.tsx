@@ -13,6 +13,7 @@ import { EarningsDashboard } from '@/components/EarningsDashboard';
 import { BookingActionButtons } from '@/components/BookingActionButtons';
 import { LateReturnPanel } from '@/components/LateReturnPanel';
 import { HostReviewForm } from '@/components/HostReviewForm';
+import { InternationalHostSettings } from '@/components/InternationalHostSettings';
 
 export const metadata: Metadata = { title: 'Host Dashboard — Gari' };
 
@@ -581,6 +582,9 @@ export default async function HostDashboardPage() {
                 Configure Payout
               </Link>
             </div>
+
+            {/* International Hosting opt-in */}
+            <InternationalHostSettings />
 
             {/* C) Deposit Status Summary */}
             <div className="card p-5">
