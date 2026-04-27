@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { CheckCircle, Car, Banknote, Shield, Star, ArrowRight, Users, Globe } from 'lucide-react';
