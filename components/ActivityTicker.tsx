@@ -2,33 +2,44 @@
 
 import { useEffect, useState } from 'react';
 
-const FEED = [
+const FALLBACK_FEED = [
   "Amina K. just booked a Toyota RAV4 in Gasabo · 4 min ago",
-  "Emmanuel R. listed a Toyota Hilux in Rubavu · 12 min ago",
   "David N. received a 5★ review for his Land Cruiser V8 · 1 hour ago",
   "3 cars booked in Musanze this week 🦍 · 2 hours ago",
   "Jean-Pierre earned RWF 225,000 this week · Today",
   "Kalisa E. just booked a Mitsubishi Pajero for a safari · 8 min ago",
-  "New host Uwimana C. listed a Mercedes C200 in Kicukiro · 35 min ago",
   "Patrick M. completed a 5-day Akagera safari trip · 3 hours ago",
-  "Grace N. booked airport transfer — Kigali to Musanze · 6 min ago",
   "18 bookings made in the last 24 hours 🚗 · Just now",
 ];
 
 export function ActivityTicker() {
+  const [feed, setFeed] = useState<string[]>(FALLBACK_FEED);
   const [index, setIndex] = useState(0);
   const [fade, setFade] = useState(true);
+
+  // Fetch live events once on mount; fall back to static list on any error
+  useEffect(() => {
+    fetch('/api/activity')
+      .then(r => r.ok ? r.json() : null)
+      .then((data: { events?: string[] } | null) => {
+        if (data?.events && data.events.length > 0) {
+          setFeed(data.events);
+          setIndex(0);
+        }
+      })
+      .catch(() => { /* keep fallback */ });
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
       setFade(false);
       setTimeout(() => {
-        setIndex(i => (i + 1) % FEED.length);
+        setIndex(i => (i + 1) % feed.length);
         setFade(true);
       }, 400);
     }, 6000);
     return () => clearInterval(timer);
-  }, []);
+  }, [feed.length]);
 
   return (
     <div className="w-full bg-primary/5 dark:bg-primary/10 border-y border-primary/10 py-2 px-4 overflow-hidden">
@@ -40,7 +51,7 @@ export function ActivityTicker() {
           aria-live="polite"
           aria-label="Live activity feed"
         >
-          {FEED[index]}
+          {feed[index]}
         </p>
       </div>
     </div>
