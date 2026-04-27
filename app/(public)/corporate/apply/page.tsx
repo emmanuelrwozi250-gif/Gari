@@ -119,7 +119,7 @@ export default function CorporateApplyPage() {
             <div>
               <label className="label">Billing address <span className="text-text-light font-normal">(optional)</span></label>
               <input value={form.billingAddress} onChange={e => set('billingAddress', e.target.value)}
-                placeholder="KG 7 Ave, Kigali, Rwanda" className="input w-full" />
+                placeholder="KG 11 Ave, Kigali, Rwanda" className="input w-full" />
             </div>
           </div>
 

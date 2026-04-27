@@ -112,15 +112,6 @@ function LoginForm() {
         </Link>
       </p>
 
-      {/* Demo accounts */}
-      <div className="mt-4 p-3 bg-primary-light dark:bg-primary/10 rounded-xl text-xs text-text-secondary">
-        <strong className="text-primary">Demo accounts:</strong>
-        <div className="mt-1 space-y-0.5">
-          <div>Host: jean@gari.rw / password123</div>
-          <div>Renter: amina@gari.rw / password123</div>
-          <div>Admin: admin@gari.rw / password123</div>
-        </div>
-      </div>
     </div>
   );
 }
