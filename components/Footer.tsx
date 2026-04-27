@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Car, MapPin, Phone, Mail, Facebook, Twitter, Instagram } from 'lucide-react';
+import { Car, MapPin, Phone, Mail, Twitter, Instagram } from 'lucide-react';
 import { DISTRICTS_BY_PROVINCE } from '@/lib/districts';
 import { COMPANY } from '@/lib/config/company';
 
@@ -35,9 +35,6 @@ export function Footer() {
               </div>
             </div>
             <div className="flex gap-3 mt-6">
-              <a href="#" className="p-2 rounded-xl bg-white/10 hover:bg-primary/20 transition-colors">
-                <Facebook className="w-4 h-4" />
-              </a>
               <a href={COMPANY.twitter} target="_blank" rel="noopener noreferrer" className="p-2 rounded-xl bg-white/10 hover:bg-primary/20 transition-colors">
                 <Twitter className="w-4 h-4" />
               </a>
@@ -69,6 +66,7 @@ export function Footer() {
               <li><Link href="/contact" className="hover:text-primary transition-colors">Contact Us</Link></li>
               <li><Link href="/terms" className="hover:text-primary transition-colors">Terms of Service</Link></li>
               <li><Link href="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
+              <li><Link href="/press" className="hover:text-primary transition-colors">Press</Link></li>
             </ul>
           </div>
 

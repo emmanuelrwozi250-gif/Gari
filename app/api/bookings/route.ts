@@ -101,10 +101,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'This car is not available' }, { status: 400 });
     }
 
-    // Double-booking prevention
+    // Date validation
     const pickupDt = new Date(data.pickupDate);
     const returnDt = new Date(data.returnDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (pickupDt < today) {
+      return NextResponse.json({ error: 'Pickup date cannot be in the past' }, { status: 400 });
+    }
+    if (returnDt <= pickupDt) {
+      return NextResponse.json({ error: 'Return date must be after pickup date' }, { status: 400 });
+    }
 
+    // Double-booking prevention
     const [overlappingBookings, blockedDates] = await Promise.all([
       prisma.booking.count({
         where: {

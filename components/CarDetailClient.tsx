@@ -392,6 +392,7 @@ export function CarDetailClient({ car, completedBookingId, existingBookingId }: 
   function requestBooking() {
     if (!pickup || !returnDate) { toast.error('Please select pick-up and return dates'); return; }
     if (!pickupLocation) { toast.error('Please select a pickup location'); return; }
+    setBooking(true);
     const params = new URLSearchParams({
       carId: data.id,
       pickupDate: pickup,

@@ -4,6 +4,8 @@ import { prisma } from '@/lib/prisma';
 import { SearchResults, SearchSkeleton } from './SearchResults';
 import { DEMO_RENTAL_CARS } from '@/lib/demo-data';
 
+export const dynamic = 'force-dynamic';
+
 export async function generateMetadata(
   { searchParams }: SearchPageProps
 ): Promise<Metadata> {

@@ -8,6 +8,25 @@ import { STATS } from '@/config/social-proof';
 export const metadata: Metadata = {
   title: 'Become a Host — Earn with Your Car | Gari',
   description: 'List your car on Gari and earn money in Rwanda. MTN MoMo payouts, NIDA-verified renters, and insurance on every trip.',
+  openGraph: {
+    title: 'Earn with Your Car — Gari',
+    description: 'List your car on Gari and earn RWF 550,000–2,600,000/month. Free to list, instant MoMo payouts.',
+    url: 'https://gari.rw/host',
+    siteName: 'Gari',
+    images: [{
+      url: 'https://gari.rw/og?title=Earn+with+Your+Car&sub=RWF+550k%E2%80%932.6M%2Fmonth&type=host',
+      width: 1200,
+      height: 630,
+      alt: 'Earn with Your Car on Gari',
+    }],
+    locale: 'en_RW',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Earn with Your Car — Gari',
+    description: 'List your car on Gari and earn RWF 550,000–2,600,000/month. Free to list.',
+  },
 };
 
 const BENEFITS = [

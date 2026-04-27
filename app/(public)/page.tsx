@@ -5,7 +5,8 @@ import { SearchBar } from '@/components/SearchBar';
 import { CarCard } from '@/components/CarCard';
 import { STATS } from '@/config/social-proof';
 import { prisma } from '@/lib/prisma';
-import { DEMO_RENTAL_CARS, DEMO_STATS, DEMO_TESTIMONIALS } from '@/lib/demo-data';
+import { DEMO_RENTAL_CARS, DEMO_TESTIMONIALS } from '@/lib/demo-data';
+import { PLATFORM_STATS } from '@/lib/config/stats';
 import { EarningsEstimator } from '@/components/home/EarningsEstimator';
 import {
   Shield, BadgeCheck, Phone, Star, ArrowRight,
@@ -249,7 +250,12 @@ export default async function HomePage() {
 
           {/* Stats */}
           <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 mt-8 sm:mt-10">
-            {DEMO_STATS.map(({ label, value }, i) => {
+            {([
+              { label: 'Verified Cars', value: PLATFORM_STATS.verifiedCars },
+              { label: 'Trips Completed', value: PLATFORM_STATS.tripsCompleted },
+              { label: 'Districts Covered', value: PLATFORM_STATS.districtsActive },
+              { label: 'Avg. Rating', value: `${PLATFORM_STATS.avgRating}★` },
+            ] as const).map(({ label, value }, i) => {
               const Icon = STAT_ICONS[i];
               return (
                 <div key={label} className="flex items-center gap-2 text-gray-400">
