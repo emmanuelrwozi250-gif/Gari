@@ -10,7 +10,6 @@ import {
   TrendingUp,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { DEMO_RENTAL_CARS } from '@/lib/demo-data';
 import { formatRWF, toUSD } from '@/lib/utils';
 import { RWANDA_DISTRICTS } from '@/lib/districts';
 import { RecentlyViewedCars } from './RecentlyViewedCars';
@@ -36,6 +35,16 @@ export type ReviewDisplay = {
   reviewerName: string;
   reviewerAvatar: string | null;
   isRevealed?: boolean;
+};
+
+export type SimilarCar = {
+  id: string;
+  make: string;
+  model: string;
+  year: number;
+  pricePerDay: number;
+  rating: number;
+  images: string[];
 };
 
 export type CarDisplay = {
@@ -336,7 +345,7 @@ function CalendarBlock({ unavailable }: { unavailable: string[] }) {
   );
 }
 
-export function CarDetailClient({ car, completedBookingId, existingBookingId }: { car: CarDisplay; completedBookingId?: string | null; existingBookingId?: string | null }) {
+export function CarDetailClient({ car, completedBookingId, existingBookingId, similarCars = [] }: { car: CarDisplay; completedBookingId?: string | null; existingBookingId?: string | null; similarCars?: SimilarCar[] }) {
   const router = useRouter();
   const [activePhoto, setActivePhoto] = useState(0);
   const [pickup, setPickup] = useState('');
@@ -387,7 +396,7 @@ export function CarDetailClient({ car, completedBookingId, existingBookingId }: 
   const total = subtotal + platformFee + driverFee + insuranceFee + vatAmount;
   const depositAmount = data.depositAmount ?? 0;
   const grandTotal = total + depositAmount;
-  const similar = DEMO_RENTAL_CARS.filter(c => c.id !== data.id && (c.type === data.type || c.district === data.district)).slice(0, 3);
+  const similar = similarCars;
 
   function requestBooking() {
     if (!pickup || !returnDate) { toast.error('Please select pick-up and return dates'); return; }

@@ -5,7 +5,7 @@ import { getServerSession } from 'next-auth';
 import { prisma } from '@/lib/prisma';
 import { authOptions } from '@/lib/auth';
 import { DEMO_RENTAL_CARS } from '@/lib/demo-data';
-import { CarDetailClient, type CarDisplay, type ReviewDisplay } from '@/components/CarDetailClient';
+import { CarDetailClient, type CarDisplay, type ReviewDisplay, type SimilarCar } from '@/components/CarDetailClient';
 import { formatRWF } from '@/lib/utils';
 
 // cache() deduplicates calls within a single render — generateMetadata + page component
@@ -154,7 +154,38 @@ export default async function CarPage(
   // 3. Proper 404 — shows custom not-found page
   if (!car) notFound();
 
-  // 4. Check if logged-in user has a completed booking for this car (enables review form)
+  // 4. Fetch similar cars from DB (same type → any, max 3, never demo IDs)
+  let similarCars: SimilarCar[] = [];
+  try {
+    const sameType = await prisma.car.findMany({
+      where: { id: { not: id }, type: car.type as any, isAvailable: true },
+      orderBy: { rating: 'desc' },
+      take: 3,
+      select: { id: true, make: true, model: true, year: true, pricePerDay: true, rating: true, photos: true, slug: true },
+    });
+    const results = sameType.length >= 3 ? sameType : [
+      ...sameType,
+      ...(await prisma.car.findMany({
+        where: { id: { notIn: [id, ...sameType.map(c => c.id)] }, isAvailable: true },
+        orderBy: { rating: 'desc' },
+        take: 3 - sameType.length,
+        select: { id: true, make: true, model: true, year: true, pricePerDay: true, rating: true, photos: true, slug: true },
+      })),
+    ];
+    similarCars = results.map(c => ({
+      id: c.slug ?? c.id,
+      make: c.make,
+      model: c.model,
+      year: c.year,
+      pricePerDay: c.pricePerDay,
+      rating: c.rating,
+      images: c.photos,
+    }));
+  } catch {
+    // non-critical — falls back to empty array
+  }
+
+  // 5. Check if logged-in user has a completed booking for this car (enables review form)
   //    and any active/confirmed booking (enables in-app messaging)
   let completedBookingId: string | null = null;
   let existingBookingId: string | null = null;
@@ -222,7 +253,7 @@ export default async function CarPage(
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <CarDetailClient car={car} completedBookingId={completedBookingId} existingBookingId={existingBookingId} />
+      <CarDetailClient car={car} completedBookingId={completedBookingId} existingBookingId={existingBookingId} similarCars={similarCars} />
     </>
   );
 }
