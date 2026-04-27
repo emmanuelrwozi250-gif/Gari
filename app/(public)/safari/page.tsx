@@ -2,7 +2,6 @@ import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Mountain, MapPin, Star, Users, CheckCircle, ArrowRight, Zap, Clock, AlertTriangle } from 'lucide-react';
-import { DEMO_RENTAL_CARS } from '@/lib/demo-data';
 import { formatRWF, toUSD } from '@/lib/utils';
 import { prisma } from '@/lib/prisma';
 
@@ -110,11 +109,9 @@ async function getSafariCars() {
     });
     if (dbCars.length > 0) return dbCars;
   } catch {
-    // fall through to demo data
+    // DB unavailable — return empty, UI shows empty state
   }
-  return DEMO_RENTAL_CARS.filter(
-    c => c.type === 'SUV / 4x4' || c.type === 'Pickup'
-  ).slice(0, 6);
+  return [];
 }
 
 export default async function SafariPage() {
@@ -259,6 +256,14 @@ export default async function SafariPage() {
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {safariCars.length === 0 && (
+            <div className="col-span-3 text-center py-16 text-text-secondary">
+              <p className="text-lg font-semibold mb-2">No safari vehicles listed yet</p>
+              <Link href="/search?type=SUV_4X4" className="text-primary underline text-sm">
+                Browse all SUV &amp; 4x4 cars →
+              </Link>
+            </div>
+          )}
           {safariCars.map((car: any) => {
             const photo = (car.photos ?? car.images)?.[0];
             const verified = car.isVerified ?? car.hostVerified ?? false;
