@@ -4,41 +4,105 @@ import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Car, Mail, Lock, User, Phone, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Car, Mail, Lock, User, Phone, Eye, EyeOff, Loader2, Upload, Globe } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { STATS } from '@/config/social-proof';
 
 type Role = 'RENTER' | 'HOST' | 'BOTH';
+type RenterType = 'LOCAL' | 'FOREIGN';
+
+// 195 countries, abbreviated list (most common for Rwanda visitors + all continents)
+const COUNTRIES = [
+  'Afghanistan','Albania','Algeria','Angola','Argentina','Armenia','Australia','Austria',
+  'Azerbaijan','Bahrain','Bangladesh','Belgium','Benin','Bolivia','Bosnia and Herzegovina',
+  'Botswana','Brazil','Bulgaria','Burkina Faso','Burundi','Cambodia','Cameroon','Canada',
+  'Central African Republic','Chad','Chile','China','Colombia','Congo (DRC)','Congo (Republic)',
+  'Costa Rica','Croatia','Cuba','Czech Republic','Denmark','Djibouti','Ecuador','Egypt',
+  'El Salvador','Eritrea','Ethiopia','Finland','France','Gabon','Gambia','Georgia','Germany',
+  'Ghana','Greece','Guatemala','Guinea','Guinea-Bissau','Haiti','Honduras','Hungary','India',
+  'Indonesia','Iran','Iraq','Ireland','Israel','Italy','Ivory Coast','Jamaica','Japan','Jordan',
+  'Kazakhstan','Kenya','Kosovo','Kuwait','Kyrgyzstan','Laos','Latvia','Lebanon','Liberia',
+  'Libya','Lithuania','Luxembourg','Madagascar','Malawi','Malaysia','Mali','Malta','Mauritania',
+  'Mauritius','Mexico','Moldova','Mongolia','Morocco','Mozambique','Myanmar','Namibia','Nepal',
+  'Netherlands','New Zealand','Nicaragua','Niger','Nigeria','North Korea','North Macedonia',
+  'Norway','Oman','Pakistan','Palestine','Panama','Paraguay','Peru','Philippines','Poland',
+  'Portugal','Qatar','Romania','Russia','Senegal','Serbia','Sierra Leone','Singapore',
+  'Slovakia','Slovenia','Somalia','South Africa','South Korea','South Sudan','Spain','Sri Lanka',
+  'Sudan','Sweden','Switzerland','Syria','Taiwan','Tajikistan','Tanzania','Thailand','Togo',
+  'Tunisia','Turkey','Turkmenistan','Uganda','Ukraine','United Arab Emirates','United Kingdom',
+  'United States','Uruguay','Uzbekistan','Venezuela','Vietnam','Yemen','Zambia','Zimbabwe',
+].sort();
 
 export default function RegisterPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [role, setRole] = useState<Role>('RENTER');
+  const [renterType, setRenterType] = useState<RenterType>('LOCAL');
+  const [passportFile, setPassportFile] = useState<File | null>(null);
   const [form, setForm] = useState({
     name: '', email: '', phone: '', password: '',
+    nationality: '', passportNumber: '', passportExpiry: '',
   });
+
+  async function uploadPassport(file: File): Promise<string | null> {
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('bucket', 'kyc-docs');
+    const res = await fetch('/api/upload', { method: 'POST', body: fd });
+    if (!res.ok) return null;
+    const { url } = await res.json();
+    return url;
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (form.password.length < 8) {
-      toast.error('Password must be at least 8 characters');
-      return;
+    if (form.password.length < 8) { toast.error('Password must be at least 8 characters'); return; }
+
+    if (renterType === 'FOREIGN') {
+      if (!form.nationality) { toast.error('Please select your nationality'); return; }
+      if (!form.passportNumber) { toast.error('Please enter your passport number'); return; }
+      if (!form.passportExpiry) { toast.error('Please enter your passport expiry date'); return; }
+      if (new Date(form.passportExpiry) <= new Date()) { toast.error('Passport must not be expired'); return; }
+      if (!passportFile) { toast.error('Please upload a photo of your passport'); return; }
     }
+
     setLoading(true);
     try {
+      let passportImageUrl: string | undefined;
+      if (renterType === 'FOREIGN' && passportFile) {
+        passportImageUrl = (await uploadPassport(passportFile)) ?? undefined;
+        if (!passportImageUrl) throw new Error('Failed to upload passport photo');
+      }
+
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, role }),
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          phone: renterType === 'LOCAL' ? form.phone : undefined,
+          password: form.password,
+          role,
+          renterType,
+          nationality: renterType === 'FOREIGN' ? form.nationality : undefined,
+          passportNumber: renterType === 'FOREIGN' ? form.passportNumber : undefined,
+          passportExpiry: renterType === 'FOREIGN' ? form.passportExpiry : undefined,
+          passportImageUrl,
+        }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Registration failed');
 
-      // Auto sign in
       await signIn('credentials', { email: form.email, password: form.password, redirect: false });
-      toast.success('Account created! Welcome to Gari.');
-      router.push('/dashboard');
+
+      if (renterType === 'FOREIGN') {
+        toast.success('Account created! Our team will verify your passport within 2 hours.');
+        router.push('/dashboard?verified=pending');
+      } else {
+        toast.success('Account created! Welcome to Gari.');
+        router.push('/dashboard');
+      }
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Registration failed');
     } finally {
@@ -58,7 +122,7 @@ export default function RegisterPage() {
             </span>
           </Link>
           <h1 className="text-2xl font-bold text-text-primary dark:text-white">Create your account</h1>
-          <p className="text-text-secondary mt-1">Join {STATS.tripsCompleted} Rwandans already on Gari</p>
+          <p className="text-text-secondary mt-1">Join {STATS.tripsCompleted} people already on Gari</p>
         </div>
 
         <div className="card p-8">
@@ -82,6 +146,40 @@ export default function RegisterPage() {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
+
+            {/* WHERE ARE YOU FROM */}
+            <div>
+              <label className="label">I am a:</label>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setRenterType('LOCAL')}
+                  className={`flex flex-col items-center gap-1.5 p-4 rounded-xl border-2 text-sm font-medium transition-all ${
+                    renterType === 'LOCAL'
+                      ? 'border-primary bg-primary/10 text-primary'
+                      : 'border-border text-text-secondary hover:border-primary/50'
+                  }`}
+                >
+                  <span className="text-2xl">🇷🇼</span>
+                  <span className="font-semibold">Rwandan Resident</span>
+                  <span className="text-xs text-text-light">Verify with NIDA</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setRenterType('FOREIGN')}
+                  className={`flex flex-col items-center gap-1.5 p-4 rounded-xl border-2 text-sm font-medium transition-all ${
+                    renterType === 'FOREIGN'
+                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'
+                      : 'border-border text-text-secondary hover:border-blue-400/50'
+                  }`}
+                >
+                  <span className="text-2xl">🌍</span>
+                  <span className="font-semibold">International Visitor</span>
+                  <span className="text-xs text-text-light">Verify with Passport</span>
+                </button>
+              </div>
+            </div>
+
             {/* Role selection */}
             <div>
               <label className="label">I want to</label>
@@ -106,17 +204,24 @@ export default function RegisterPage() {
               </div>
             </div>
 
+            {/* Full name */}
             <div>
-              <label className="label">Full Name</label>
+              <label className="label">
+                Full Name {renterType === 'FOREIGN' && <span className="text-text-light font-normal">(as in passport)</span>}
+              </label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-light" />
                 <input type="text" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })}
-                  placeholder="Jean-Pierre Habimana" className="input pl-10" required />
+                  placeholder={renterType === 'FOREIGN' ? 'As it appears in your passport' : 'Jean-Pierre Habimana'}
+                  className="input pl-10" required />
               </div>
             </div>
 
+            {/* Email */}
             <div>
-              <label className="label">Email Address</label>
+              <label className="label">
+                Email Address {renterType === 'FOREIGN' && <span className="text-red-500 font-normal text-xs">(required — booking confirmations sent here)</span>}
+              </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-light" />
                 <input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })}
@@ -124,16 +229,114 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            <div>
-              <label className="label">Phone Number (Rwanda)</label>
-              <div className="relative">
-                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-light" />
-                <span className="absolute left-9 top-1/2 -translate-y-1/2 text-sm text-text-secondary">+250</span>
-                <input type="tel" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })}
-                  placeholder="7XX XXX XXX" className="input pl-20" />
+            {/* LOCAL: Rwanda phone */}
+            {renterType === 'LOCAL' && (
+              <div>
+                <label className="label">Phone Number (Rwanda)</label>
+                <div className="relative">
+                  <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-light" />
+                  <span className="absolute left-9 top-1/2 -translate-y-1/2 text-sm text-text-secondary">+250</span>
+                  <input type="tel" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })}
+                    placeholder="7XX XXX XXX" className="input pl-20" />
+                </div>
               </div>
-            </div>
+            )}
 
+            {/* FOREIGN: nationality + passport fields */}
+            {renterType === 'FOREIGN' && (
+              <div className="space-y-4 rounded-2xl border-2 border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/10 p-4">
+                <div className="flex items-center gap-2 mb-1">
+                  <Globe className="w-4 h-4 text-blue-500" />
+                  <p className="text-sm font-semibold text-blue-700 dark:text-blue-300">International Visitor Verification</p>
+                </div>
+
+                {/* Nationality */}
+                <div>
+                  <label className="label text-xs">Nationality</label>
+                  <select
+                    value={form.nationality}
+                    onChange={e => setForm({ ...form, nationality: e.target.value })}
+                    className="input text-sm"
+                    required={renterType === 'FOREIGN'}
+                  >
+                    <option value="">Select your country…</option>
+                    {COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </div>
+
+                {/* Phone (international, optional) */}
+                <div>
+                  <label className="label text-xs">Phone Number <span className="text-text-light font-normal">(optional — WhatsApp if available)</span></label>
+                  <div className="relative">
+                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-light" />
+                    <input type="tel" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })}
+                      placeholder="+1 555 000 0000" className="input pl-9 text-sm" />
+                  </div>
+                </div>
+
+                {/* Passport number */}
+                <div>
+                  <label className="label text-xs">Passport Number</label>
+                  <input
+                    type="text"
+                    value={form.passportNumber}
+                    onChange={e => setForm({ ...form, passportNumber: e.target.value.toUpperCase() })}
+                    placeholder="e.g. AB1234567"
+                    className="input text-sm font-mono tracking-wider"
+                    required={renterType === 'FOREIGN'}
+                  />
+                </div>
+
+                {/* Passport expiry */}
+                <div>
+                  <label className="label text-xs">Passport Expiry Date</label>
+                  <input
+                    type="date"
+                    value={form.passportExpiry}
+                    onChange={e => setForm({ ...form, passportExpiry: e.target.value })}
+                    min={new Date().toISOString().split('T')[0]}
+                    className="input text-sm"
+                    required={renterType === 'FOREIGN'}
+                  />
+                </div>
+
+                {/* Passport photo upload */}
+                <div>
+                  <label className="label text-xs">Passport Photo Page</label>
+                  <p className="text-xs text-text-light mb-2">Upload a clear photo of the page with your photo and personal details. JPEG, PNG or PDF · Max 5MB.</p>
+                  <label className={`flex items-center gap-3 cursor-pointer border-2 border-dashed rounded-xl p-3 transition-colors ${
+                    passportFile
+                      ? 'border-blue-400 bg-blue-50 dark:bg-blue-900/20'
+                      : 'border-border hover:border-blue-400/60'
+                  }`}>
+                    <Upload className="w-5 h-5 text-blue-500 flex-shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      {passportFile ? (
+                        <p className="text-xs font-medium text-blue-700 dark:text-blue-300 truncate">{passportFile.name}</p>
+                      ) : (
+                        <p className="text-xs text-text-secondary">Click to upload passport photo page</p>
+                      )}
+                    </div>
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,application/pdf"
+                      className="hidden"
+                      onChange={e => {
+                        const f = e.target.files?.[0];
+                        if (f && f.size > 5 * 1024 * 1024) { toast.error('File too large — max 5MB'); return; }
+                        setPassportFile(f ?? null);
+                      }}
+                    />
+                  </label>
+                </div>
+
+                <div className="text-xs text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30 rounded-xl p-3">
+                  ℹ️ Our team verifies passports within <strong>2 hours</strong>. You&apos;ll receive an email confirmation before making your first booking.
+                </div>
+              </div>
+            )}
+
+            {/* Password */}
             <div>
               <label className="label">Password</label>
               <div className="relative">
@@ -156,17 +359,27 @@ export default function RegisterPage() {
             </p>
 
             <button type="submit" disabled={loading} className="btn-primary w-full justify-center py-3 text-base">
-              {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Creating account...</> : 'Create Account'}
+              {loading ? (
+                <><Loader2 className="w-4 h-4 animate-spin" /> {renterType === 'FOREIGN' ? 'Uploading & creating account…' : 'Creating account…'}</>
+              ) : (
+                renterType === 'FOREIGN' ? 'Submit for Verification' : 'Create Account'
+              )}
             </button>
           </form>
 
           <p className="text-center text-sm text-text-secondary mt-6">
             Already have an account?{' '}
-            <Link href="/login" className="text-primary font-semibold hover:text-primary-dark">
-              Sign in
-            </Link>
+            <Link href="/login" className="text-primary font-semibold hover:text-primary-dark">Sign in</Link>
           </p>
         </div>
+
+        {renterType === 'FOREIGN' && (
+          <div className="mt-4 text-center">
+            <Link href="/international" className="text-sm text-primary hover:underline">
+              Learn more about renting as an international visitor →
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

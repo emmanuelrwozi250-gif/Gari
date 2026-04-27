@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Shield, CheckCircle, XCircle, FileText, Phone } from 'lucide-react';
+import { Shield, CheckCircle, XCircle, FileText, Phone, Globe } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Insurance — Gari',
@@ -126,6 +126,34 @@ export default function InsurancePage() {
               An insurance certificate is automatically generated after your payment is confirmed. You can find it in your booking dashboard under any confirmed or active booking. The certificate includes your policy number, coverage period, and the insurer&apos;s claims contact. Print or screenshot it to keep in the car during your trip.
             </p>
           </div>
+
+          {/* International Renters */}
+          <div className="card p-6 border-l-4 border-blue-400">
+            <div className="flex items-center gap-3 mb-4">
+              <Globe className="w-6 h-6 text-blue-500 flex-shrink-0" />
+              <h2 className="text-lg font-bold text-text-primary dark:text-white">Coverage for International Renters</h2>
+            </div>
+            <div className="space-y-3 text-sm text-text-secondary leading-relaxed">
+              <p>
+                All Gari insurance coverage applies equally to foreign national renters. Your nationality does not affect the scope of coverage — the policy is tied to the vehicle and the booking, not the renter&apos;s citizenship.
+              </p>
+              <p>
+                <strong className="text-text-primary dark:text-white">Important:</strong> To be covered while driving, international renters must carry both their home country driving licence and a valid International Driving Permit (IDP). Driving without an IDP may void coverage and violate Rwandan traffic law.
+              </p>
+              <div className="rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 p-4 space-y-2">
+                <p className="font-semibold text-blue-800 dark:text-blue-200">Coverage limits (same for all renters)</p>
+                <ul className="space-y-1 text-blue-700 dark:text-blue-300">
+                  <li className="flex items-center gap-2"><CheckCircle className="w-3.5 h-3.5 flex-shrink-0" /> Third-party liability: up to RWF 20,000,000</li>
+                  <li className="flex items-center gap-2"><CheckCircle className="w-3.5 h-3.5 flex-shrink-0" /> Vehicle damage (Gari Protect): up to RWF 2,000,000</li>
+                  <li className="flex items-center gap-2"><CheckCircle className="w-3.5 h-3.5 flex-shrink-0" /> Medical expenses: up to RWF 3,000,000 per person</li>
+                </ul>
+              </div>
+              <p>
+                Claims must be reported within 48 hours of the incident via WhatsApp or the Gari dashboard. Provide a passport copy, IDP copy, and incident photos when filing.
+              </p>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>

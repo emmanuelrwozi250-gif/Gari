@@ -4,6 +4,8 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { z } from 'zod';
 import { notifyUser } from '@/lib/notifications';
+import { sendEmail } from '@/lib/notifications/email';
+import { formatRWF } from '@/lib/utils';
 import { checkSuspension } from '@/lib/reputation';
 import { calculateVAT } from '@/config/vat';
 import { getDynamicMultiplier, applyMultiplier } from '@/lib/pricing';
@@ -95,6 +97,7 @@ export async function POST(req: NextRequest) {
         model: true,
         year: true,
         hostId: true,
+        instantBooking: true,
       },
     });
     if (!car?.isAvailable) {
@@ -229,6 +232,59 @@ export async function POST(req: NextRequest) {
       totalAmount: booking.totalAmount,
       pickupLocation: booking.pickupLocation,
     });
+
+    // Send confirmation email to renter (especially valuable for foreign renters)
+    const renterEmail = (session.user as any).email;
+    const renterType = (session.user as any).renterType ?? 'LOCAL';
+    if (renterEmail) {
+      const appUrl = process.env.NEXTAUTH_URL || 'https://gari.rw';
+      const bookingRef = booking.id.slice(0, 8).toUpperCase();
+      const isInstant = car.instantBooking;
+      const usdEquiv = Math.round(booking.totalAmount / 1450);
+
+      const htmlBody = `
+<h2 style="margin:0 0 16px;font-size:20px;color:#1a2332;">
+  ${isInstant ? '✅ Booking Confirmed!' : '🕐 Booking Request Received'}
+</h2>
+<p>Hi ${(session.user as any).name?.split(' ')[0] || 'there'},</p>
+<p>${isInstant
+  ? `Your booking is <strong>confirmed</strong>. The host will contact you 1 hour before pickup.`
+  : `Your booking request has been sent to the host. You'll be notified once they accept (within 24 hours).`
+}</p>
+
+<table style="width:100%;border-collapse:collapse;margin:20px 0;font-size:14px;">
+  <tr><td style="padding:8px 0;border-bottom:1px solid #e2e8ef;color:#6b7a8d;">Booking Ref</td><td style="padding:8px 0;border-bottom:1px solid #e2e8ef;font-weight:700;font-family:monospace;">GARI-${bookingRef}</td></tr>
+  <tr><td style="padding:8px 0;border-bottom:1px solid #e2e8ef;color:#6b7a8d;">Vehicle</td><td style="padding:8px 0;border-bottom:1px solid #e2e8ef;">${car.year} ${car.make} ${car.model}</td></tr>
+  <tr><td style="padding:8px 0;border-bottom:1px solid #e2e8ef;color:#6b7a8d;">Pickup</td><td style="padding:8px 0;border-bottom:1px solid #e2e8ef;">${new Date(booking.pickupDate).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })}</td></tr>
+  <tr><td style="padding:8px 0;border-bottom:1px solid #e2e8ef;color:#6b7a8d;">Return</td><td style="padding:8px 0;border-bottom:1px solid #e2e8ef;">${new Date(booking.returnDate).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })}</td></tr>
+  <tr><td style="padding:8px 0;border-bottom:1px solid #e2e8ef;color:#6b7a8d;">Location</td><td style="padding:8px 0;border-bottom:1px solid #e2e8ef;">${booking.pickupLocation}</td></tr>
+  <tr><td style="padding:8px 0;border-bottom:1px solid #e2e8ef;color:#6b7a8d;">Total</td><td style="padding:8px 0;border-bottom:1px solid #e2e8ef;font-weight:700;color:#1a7a4a;">${formatRWF(booking.totalAmount)}${renterType === 'FOREIGN' ? ` <span style="color:#6b7a8d;font-weight:normal;font-size:12px;">(≈ $${usdEquiv} USD)</span>` : ''}</td></tr>
+  <tr><td style="padding:8px 0;color:#6b7a8d;">Payment</td><td style="padding:8px 0;">${booking.paymentMethod === 'MTN_MOMO' ? 'MTN MoMo' : booking.paymentMethod === 'AIRTEL_MONEY' ? 'Airtel Money' : 'Visa / Mastercard'}</td></tr>
+</table>
+
+${renterType === 'FOREIGN' ? `
+<div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:16px;margin:16px 0;font-size:13px;color:#1e40af;">
+  <strong>🌍 International renter reminder</strong><br/>
+  Please bring your <strong>passport</strong>, <strong>home driving licence</strong>, and your <strong>International Driving Permit (IDP)</strong> to the pickup. The host will verify these before handing over the keys.
+</div>
+` : ''}
+
+<p style="text-align:center;margin:24px 0;">
+  <a href="${appUrl}/dashboard" style="background:#1a7a4a;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px;">View my booking →</a>
+</p>
+
+<p style="font-size:13px;color:#6b7a8d;">
+  Questions? WhatsApp us at <a href="https://wa.me/250788123000" style="color:#1a7a4a;">+250 788 123 000</a> or email <a href="mailto:hello@gari.rw" style="color:#1a7a4a;">hello@gari.rw</a>
+</p>`;
+
+      void sendEmail(
+        renterEmail,
+        isInstant
+          ? `Booking confirmed — ${car.make} ${car.model} (GARI-${bookingRef})`
+          : `Booking request sent — ${car.make} ${car.model} (GARI-${bookingRef})`,
+        htmlBody
+      ).catch(e => console.error('[bookings] email send failed:', e));
+    }
 
     return NextResponse.json(booking, { status: 201 });
   } catch (err) {

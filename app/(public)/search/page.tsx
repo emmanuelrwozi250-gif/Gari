@@ -106,6 +106,9 @@ async function getCars(params: SearchParamsShape) {
       where.pricePerDay = priceFilter;
     }
     if (params.instantBooking === 'true') where.instantBooking = true;
+    if ((params as any).intl === 'true') {
+      where.host = { internationalReady: true };
+    }
 
     const orderBy: Record<string, string> =
       params.sort === 'price_asc' ? { pricePerDay: 'asc' } :
@@ -121,7 +124,7 @@ async function getCars(params: SearchParamsShape) {
     const [dbCars, total] = await Promise.all([
       prisma.car.findMany({
         where,
-        include: { host: { select: { name: true, avatar: true, superhostSince: true } } },
+        include: { host: { select: { name: true, avatar: true, superhostSince: true, internationalReady: true, airportPickup: true } } },
         orderBy,
         take,
         skip,

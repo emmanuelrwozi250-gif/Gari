@@ -207,11 +207,36 @@ export function FilterSidebar({ searchParams, onChange }: FilterSidebarProps) {
         <p className="text-xs text-text-light mt-1.5 px-1">Confirmed immediately — no waiting for host approval</p>
       </div>
 
+      {/* 🌍 International Friendly */}
+      <div>
+        <button
+          type="button"
+          onClick={() => onChange('intl', (searchParams as any).intl === 'true' ? null : 'true')}
+          className={`flex items-center justify-between w-full px-4 py-3 rounded-xl border-2 transition-colors ${
+            (searchParams as any).intl === 'true'
+              ? 'border-blue-400 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300'
+              : 'border-border text-text-secondary hover:border-blue-300'
+          }`}
+        >
+          <span className="text-sm font-semibold flex items-center gap-2">
+            🌍 International Friendly
+          </span>
+          <span className={`w-10 h-5 rounded-full transition-colors relative ${
+            (searchParams as any).intl === 'true' ? 'bg-blue-500' : 'bg-gray-200 dark:bg-gray-700'
+          }`}>
+            <span className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${
+              (searchParams as any).intl === 'true' ? 'translate-x-5' : 'translate-x-0.5'
+            }`} />
+          </span>
+        </button>
+        <p className="text-xs text-text-light mt-1.5 px-1">Hosts with English-speaking service &amp; airport pickup</p>
+      </div>
+
       {/* Clear all */}
       <button
         type="button"
         onClick={() => {
-          ['district', 'driver', 'type', 'listingType', 'minPrice', 'maxPrice', 'seats', 'transmission', 'instantBooking'].forEach(k => onChange(k, null));
+          ['district', 'driver', 'type', 'listingType', 'minPrice', 'maxPrice', 'seats', 'transmission', 'instantBooking', 'intl'].forEach(k => onChange(k, null));
         }}
         className="w-full py-2 text-sm text-text-secondary hover:text-red-500 transition-colors"
       >

@@ -42,10 +42,20 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger }) {
       if (user) {
         token.id = user.id;
         token.role = (user as any).role;
+        // Fetch renterType + foreignVerified from DB on sign-in
+        const dbUser = await prisma.user.findUnique({
+          where: { id: user.id as string },
+          select: { renterType: true, foreignVerified: true, nationality: true },
+        }).catch(() => null);
+        if (dbUser) {
+          token.renterType = dbUser.renterType;
+          token.foreignVerified = dbUser.foreignVerified;
+          token.nationality = dbUser.nationality;
+        }
       }
       return token;
     },
@@ -53,6 +63,9 @@ export const authOptions: NextAuthOptions = {
       if (session.user) {
         (session.user as any).id = token.id;
         (session.user as any).role = token.role;
+        (session.user as any).renterType = token.renterType ?? 'LOCAL';
+        (session.user as any).foreignVerified = token.foreignVerified ?? false;
+        (session.user as any).nationality = token.nationality ?? null;
       }
       return session;
     },

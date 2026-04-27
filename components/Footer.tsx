@@ -56,6 +56,17 @@ export function Footer() {
             </ul>
           </div>
 
+          {/* For Visitors */}
+          <div>
+            <h4 className="text-white font-semibold mb-4">For Visitors</h4>
+            <ul className="space-y-2 text-sm">
+              <li><Link href="/international" className="hover:text-primary transition-colors">🌍 International Guide</Link></li>
+              <li><Link href="/international#driving" className="hover:text-primary transition-colors">Driving Permit (IDP)</Link></li>
+              <li><Link href="/airport-transfer" className="hover:text-primary transition-colors">Airport Transfers</Link></li>
+              <li><Link href="/register?intent=foreign" className="hover:text-primary transition-colors">Register as Visitor</Link></li>
+            </ul>
+          </div>
+
           {/* Support */}
           <div>
             <h4 className="text-white font-semibold mb-4">Support</h4>

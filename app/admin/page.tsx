@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import Link from 'next/link';
 import { formatRWF, formatDate, getBookingStatusColor, getCarTypeLabel } from '@/lib/utils';
-import { Users, Car, CalendarDays, TrendingUp, BadgeCheck, AlertCircle, Shield, BarChart3, Tag, Building2, ShieldCheck, ExternalLink } from 'lucide-react';
+import { Users, Car, CalendarDays, TrendingUp, BadgeCheck, AlertCircle, Shield, BarChart3, Tag, Building2, ShieldCheck, ExternalLink, Globe } from 'lucide-react';
 
 export const metadata: Metadata = { title: 'Admin Panel — Gari' };
 
@@ -89,6 +89,10 @@ export default async function AdminPage() {
             </Link>
             <Link href="/admin/trust-circles" className="flex items-center gap-1.5 text-xs btn-secondary py-1.5 px-3">
               <ShieldCheck className="w-3.5 h-3.5" /> Trust Circles
+              <ExternalLink className="w-3 h-3 opacity-60" />
+            </Link>
+            <Link href="/admin/foreign-verifications" className="flex items-center gap-1.5 text-xs btn-secondary py-1.5 px-3">
+              <Globe className="w-3.5 h-3.5" /> Foreign Verifications
               <ExternalLink className="w-3 h-3 opacity-60" />
             </Link>
           </div>

@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import { CardPaymentForm } from './CardPaymentForm';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -347,6 +349,8 @@ function CalendarBlock({ unavailable }: { unavailable: string[] }) {
 
 export function CarDetailClient({ car, completedBookingId, existingBookingId, similarCars = [] }: { car: CarDisplay; completedBookingId?: string | null; existingBookingId?: string | null; similarCars?: SimilarCar[] }) {
   const router = useRouter();
+  const { data: session } = useSession();
+  const isForeign = (session?.user as any)?.renterType === 'FOREIGN';
   const [activePhoto, setActivePhoto] = useState(0);
   const [pickup, setPickup] = useState('');
   const [returnDate, setReturnDate] = useState('');
@@ -358,7 +362,13 @@ export function CarDetailClient({ car, completedBookingId, existingBookingId, si
   const [guaranteeOpen, setGuaranteeOpen] = useState(true);
   const [withInsurance, setWithInsurance] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<'MTN_MOMO' | 'AIRTEL_MONEY' | 'CARD'>('MTN_MOMO');
+  const [cardValid, setCardValid] = useState(false);
   const [dynamicPricing, setDynamicPricing] = useState<DynamicPricingData | null>(null);
+
+  // Set card-first default for foreign renters once session loads
+  useEffect(() => {
+    if (isForeign) setPaymentMethod('CARD');
+  }, [isForeign]);
 
   const today = new Date().toISOString().split('T')[0];
 
@@ -800,7 +810,7 @@ export function CarDetailClient({ car, completedBookingId, existingBookingId, si
                       <span>{depositAmount > 0 ? 'Rental total' : 'Total'}</span>
                       <div className="text-right">
                         <span className="text-primary">{formatRWF(total)}</span>
-                        {depositAmount === 0 && <span className="block text-xs text-text-light font-normal">{toUSD(total)}</span>}
+                        <span className="block text-xs text-text-light font-normal">{toUSD(total)}</span>
                       </div>
                     </div>
                     {depositAmount > 0 && (
@@ -826,15 +836,19 @@ export function CarDetailClient({ car, completedBookingId, existingBookingId, si
                 </div>
               )}
 
-              {/* Payment method — mobile money first */}
+              {/* Payment method — card first for foreign renters */}
               <div className="mb-3">
                 <label className="text-xs font-semibold text-text-secondary uppercase tracking-wide block mb-2">Pay with</label>
                 <div className="grid grid-cols-3 gap-1.5">
-                  {([
-                    { id: 'MTN_MOMO', label: 'MTN MoMo', color: 'bg-yellow-400', text: 'text-yellow-900' },
-                    { id: 'AIRTEL_MONEY', label: 'Airtel', color: 'bg-red-500', text: 'text-white' },
-                    { id: 'CARD', label: 'Card', color: 'bg-gray-700', text: 'text-white' },
-                  ] as const).map(({ id, label, color, text }) => (
+                  {(isForeign ? [
+                    { id: 'CARD' as const, label: '💳 Card', color: 'bg-gray-700', text: 'text-white' },
+                    { id: 'MTN_MOMO' as const, label: 'MTN MoMo', color: 'bg-yellow-400', text: 'text-yellow-900' },
+                    { id: 'AIRTEL_MONEY' as const, label: 'Airtel', color: 'bg-red-500', text: 'text-white' },
+                  ] : [
+                    { id: 'MTN_MOMO' as const, label: 'MTN MoMo', color: 'bg-yellow-400', text: 'text-yellow-900' },
+                    { id: 'AIRTEL_MONEY' as const, label: 'Airtel', color: 'bg-red-500', text: 'text-white' },
+                    { id: 'CARD' as const, label: 'Card', color: 'bg-gray-700', text: 'text-white' },
+                  ]).map(({ id, label, color, text }) => (
                     <button
                       key={id}
                       type="button"
@@ -849,9 +863,19 @@ export function CarDetailClient({ car, completedBookingId, existingBookingId, si
                     </button>
                   ))}
                 </div>
+                {/* Card form — shown when CARD is selected */}
+                {paymentMethod === 'CARD' && (
+                  <CardPaymentForm
+                    totalUSD={Math.round(grandTotal / 1450)}
+                    onValid={() => setCardValid(true)}
+                    onInvalid={() => setCardValid(false)}
+                  />
+                )}
               </div>
 
-              <button onClick={requestBooking} disabled={booking || !pickup || !returnDate}
+              <button
+                onClick={requestBooking}
+                disabled={booking || !pickup || !returnDate || (paymentMethod === 'CARD' && !cardValid)}
                 className="btn-primary w-full justify-center py-3 text-base font-bold disabled:opacity-60">
                 {booking ? (
                   <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" /> Sending...</>

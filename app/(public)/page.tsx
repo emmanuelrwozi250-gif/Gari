@@ -9,6 +9,7 @@ import { DEMO_RENTAL_CARS, DEMO_TESTIMONIALS } from '@/lib/demo-data';
 import { PLATFORM_STATS } from '@/lib/config/stats';
 import { EarningsEstimator } from '@/components/home/EarningsEstimator';
 import { ActivityTicker } from '@/components/ActivityTicker';
+import { InternationalBanner } from '@/components/InternationalBanner';
 import {
   Shield, BadgeCheck, Phone, Star, ArrowRight,
   Car, Users, Globe,
@@ -103,7 +104,7 @@ const STAT_ICONS = [Car, Users, Globe, Star];
 
 const HOW_IT_WORKS = [
   { icon: SearchIcon, step: '01', title: 'Find Your Car', desc: 'Search across 30 districts. Filter by type, budget, and whether you want a driver.' },
-  { icon: BadgeCheck, step: '02', title: 'Book Instantly', desc: 'Confirm your dates, choose MTN MoMo, Airtel Money, or card. No hidden fees.' },
+  { icon: BadgeCheck, step: '02', title: 'Book Instantly', desc: 'Confirm your dates, pay with MTN MoMo, Airtel Money, or Visa/Mastercard. No hidden fees.' },
   { icon: Car, step: '03', title: 'Pick Up & Go', desc: 'Meet the host, inspect the car together, and start your journey.' },
   { icon: Star, step: '04', title: 'Rate & Review', desc: 'Share your experience and help build trust in the community.' },
 ];
@@ -192,6 +193,9 @@ export default async function HomePage() {
 
   return (
     <div className="min-h-screen">
+      {/* Dismissible banner for international visitors */}
+      <InternationalBanner />
+
       {/* JSON-LD */}
       <Script
         id="json-ld-autorental"
@@ -224,7 +228,7 @@ export default async function HomePage() {
             <span className="text-accent-yellow">Rwanda</span>
           </h1>
           <p className="text-base sm:text-lg md:text-xl text-gray-400 mb-8 sm:mb-10 max-w-2xl mx-auto px-2">
-            The simplest way to rent a verified car in Rwanda — with or without a driver. Pay with MTN MoMo.
+            The simplest way to rent a verified car in Rwanda — with or without a driver. Pay with MoMo or card.
           </p>
 
           <div className="max-w-5xl mx-auto">
@@ -323,7 +327,7 @@ export default async function HomePage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { icon: BadgeCheck, title: 'NIDA Verified', desc: 'All renters verified with Rwanda National ID (NIDA).' },
+              { icon: BadgeCheck, title: 'ID Verified', desc: 'Rwandan renters verified via NIDA. International visitors verified by passport.' },
               { icon: Shield, title: 'Insured Trips', desc: 'Comprehensive insurance coverage on every rental.' },
               { icon: Phone, title: 'MoMo Payments', desc: 'Secure mobile money payments — MTN MoMo & Airtel Money.' },
               { icon: Clock, title: '24/7 Support', desc: 'Our team is available around the clock to help you.' },
@@ -406,7 +410,7 @@ export default async function HomePage() {
           <HeartHandshake className="w-12 h-12 text-primary mx-auto mb-4" />
           <h2 className="text-3xl font-extrabold mb-4">Your Next Drive Starts Here</h2>
           <p className="text-gray-400 mb-8">
-            Join {STATS.tripsCompleted} Rwandans who have rented on Gari. NIDA-verified hosts, MTN MoMo payments.
+            Join {STATS.tripsCompleted} renters who trust Gari. ID-verified hosts, MTN MoMo &amp; card payments.
           </p>
           <Link href="/search" className="btn-primary text-base px-12 py-4 inline-flex items-center gap-2">
             Browse Cars <ArrowRight className="w-5 h-5" />

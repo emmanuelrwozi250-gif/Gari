@@ -30,6 +30,8 @@ interface CarCardProps {
       name?: string | null;
       avatar?: string | null;
       superhostSince?: Date | string | null;
+      internationalReady?: boolean;
+      airportPickup?: boolean;
     };
   };
   compact?: boolean;
@@ -84,7 +86,7 @@ export function CarCard({ car, compact = false, pickupDate, returnDate }: CarCar
           )}
         </div>
 
-        {/* Badges top-right: listing type + superhost */}
+        {/* Badges top-right: listing type + superhost + international */}
         <div className="absolute top-3 right-3 flex flex-col items-end gap-1">
           {car.listingType === 'P2P' ? (
             <span className="badge bg-blue-500/90 text-white text-xs backdrop-blur-sm">P2P</span>
@@ -94,6 +96,16 @@ export function CarCard({ car, compact = false, pickupDate, returnDate }: CarCar
           {isSuperhost && (
             <span className="badge bg-amber-400/90 text-amber-900 text-xs backdrop-blur-sm font-bold">
               ⭐ Superhost
+            </span>
+          )}
+          {car.host?.internationalReady && (
+            <span className="badge bg-blue-600/90 text-white text-xs backdrop-blur-sm font-bold">
+              🌍 Intl Friendly
+            </span>
+          )}
+          {car.host?.airportPickup && (
+            <span className="badge bg-sky-500/90 text-white text-xs backdrop-blur-sm">
+              ✈️ Airport
             </span>
           )}
         </div>

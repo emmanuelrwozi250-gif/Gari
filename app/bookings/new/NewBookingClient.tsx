@@ -6,7 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import {
   Car, Calendar, MapPin, ChevronLeft, Shield, BadgeCheck,
-  Clock, ArrowRight,
+  Clock, ArrowRight, Globe,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { formatRWF } from '@/lib/utils';
@@ -58,13 +58,17 @@ interface Props {
   userId: string;
   userName: string;
   userEmail: string;
+  renterType?: 'LOCAL' | 'FOREIGN';
   params: BookingParams;
 }
 
-export function NewBookingClient({ car, userName, params }: Props) {
+export function NewBookingClient({ car, userName, renterType = 'LOCAL', params }: Props) {
   const router = useRouter();
   const [notes, setNotes] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [idpAcknowledged, setIdpAcknowledged] = useState(false);
+  // IDP gate: required for foreign self-drive renters
+  const needsIdpGate = renterType === 'FOREIGN' && !params.withDriver;
   const district = RWANDA_DISTRICTS.find(d => d.id === car.district);
   const grandTotal = params.totalAmount + params.depositAmount;
 
@@ -92,6 +96,7 @@ export function NewBookingClient({ car, userName, params }: Props) {
           driverFee: params.driverFee,
           totalAmount: params.totalAmount,
           paymentMethod: params.paymentMethod,
+          idpAcknowledged: needsIdpGate ? idpAcknowledged : undefined,
           notes: notes.trim() || undefined,
         }),
       });
@@ -272,10 +277,39 @@ export function NewBookingClient({ car, userName, params }: Props) {
           </ul>
         </div>
 
+        {/* IDP gate — mandatory for foreign self-drive renters */}
+        {needsIdpGate && (
+          <div className="rounded-xl border-2 border-blue-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/20 p-4 mb-4">
+            <div className="flex items-start gap-3">
+              <Globe className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <p className="text-sm font-bold text-blue-800 dark:text-blue-200 mb-1">
+                  International Driving Permit (IDP) required
+                </p>
+                <p className="text-xs text-blue-700 dark:text-blue-300 mb-3">
+                  Rwanda law requires foreign nationals driving without a Rwandan driver renting without a driver to carry a valid IDP alongside their national/home driving licence.{' '}
+                  <Link href="/international#driving" className="underline font-medium">Learn more →</Link>
+                </p>
+                <label className="flex items-start gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={idpAcknowledged}
+                    onChange={e => setIdpAcknowledged(e.target.checked)}
+                    className="mt-0.5 w-4 h-4 rounded accent-blue-600 cursor-pointer flex-shrink-0"
+                  />
+                  <span className="text-xs font-medium text-blue-800 dark:text-blue-200">
+                    I confirm I hold a valid IDP (or will obtain one before pickup) and understand I may be turned away without it.
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Confirm button */}
         <button
           onClick={handleConfirm}
-          disabled={submitting}
+          disabled={submitting || (needsIdpGate && !idpAcknowledged)}
           className="btn-primary w-full justify-center py-4 text-base font-bold disabled:opacity-60"
         >
           {submitting ? (

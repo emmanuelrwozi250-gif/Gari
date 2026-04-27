@@ -69,7 +69,7 @@ export default async function NewBookingPage({ searchParams }: PageProps) {
 
   if (!car) redirect('/search');
 
-  const user = session.user as { id?: string; name?: string | null; email?: string | null };
+  const user = session.user as { id?: string; name?: string | null; email?: string | null; renterType?: string };
 
   return (
     <NewBookingClient
@@ -77,6 +77,7 @@ export default async function NewBookingPage({ searchParams }: PageProps) {
       userId={user.id ?? ''}
       userName={user.name ?? ''}
       userEmail={user.email ?? ''}
+      renterType={(user.renterType as 'LOCAL' | 'FOREIGN') ?? 'LOCAL'}
       params={{
         pickupDate: sp.pickupDate ?? '',
         returnDate: sp.returnDate ?? '',

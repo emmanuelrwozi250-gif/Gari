@@ -77,6 +77,15 @@ model User {
   // Platform roles (can hold multiple)
   isSeller          Boolean   @default(false)
   isInvestor        Boolean   @default(false)
+  // International renter / host
+  renterType        String    @default("LOCAL")
+  nationality       String?
+  foreignVerified   Boolean   @default(false)
+  foreignVerifiedAt DateTime?
+  speaksEnglish     Boolean   @default(false)
+  speaksFrench      Boolean   @default(false)
+  airportPickup     Boolean   @default(false)
+  internationalReady Boolean  @default(false)
   // Repeat-offender / reputation
   renterRating      Float     @default(0)
   lateReturnCount   Int       @default(0)
@@ -303,6 +312,7 @@ model Booking {
   totalWithDeposit       Int?
   insuranceFee           Int           @default(0)
   pickupLocationLabel    String?
+  idpAcknowledged        Boolean       @default(false)
   // ── late return tracking ────────────────────────────────────────
   gracePeriodMinutes     Int           @default(30)
   lateFeePerHour         Int           @default(5000)

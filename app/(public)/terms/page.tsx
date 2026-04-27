@@ -50,6 +50,10 @@ const SECTIONS = [
     title: '11. Governing Law',
     body: `These Terms are governed by the laws of the Republic of Rwanda. Any disputes arising from these Terms shall be resolved in the competent courts of Rwanda. For any questions about these Terms, contact us at legal@gari.rw or via WhatsApp at +250 788 123 000.`,
   },
+  {
+    title: '12. International Renters',
+    body: `Foreign nationals renting vehicles on Gari must: (a) present a valid passport at pickup; (b) hold a valid driving licence from their home country together with an International Driving Permit (IDP) issued by their national motoring authority — this is a requirement under Rwandan traffic law for non-citizen drivers; (c) not book self-drive vehicles without a confirmed IDP. Foreigners who have not completed Gari's passport verification may have booking access limited at Gari's discretion. Card payments (Visa / Mastercard) are available for international renters in addition to MTN MoMo and Airtel Money. Prices are displayed in Rwandan Francs (RWF); approximate USD equivalents are shown for reference only. Gari is not liable for any costs incurred due to failure to obtain a valid IDP prior to travel.`,
+  },
 ];
 
 export default function TermsPage() {
