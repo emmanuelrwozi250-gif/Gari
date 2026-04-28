@@ -170,10 +170,13 @@ export async function POST(req: NextRequest) {
     }
 
     // ── VAT (18%) — server-authoritative ───────────────────────────────────
-    const vatAmount = calculateVAT(adjustedSubtotal, data.driverFee);
+    // If host's listed price already includes VAT, no extra charge; otherwise add 18% on top
+    const vatAmount = (car as { priceIncludesVat?: boolean }).priceIncludesVat
+      ? 0
+      : calculateVAT(adjustedSubtotal, data.driverFee);
 
-    // Platform fee based on adjusted subtotal
-    const serverPlatformFee = Math.round(adjustedSubtotal * 0.10);
+    // Platform fee based on adjusted subtotal (12%)
+    const serverPlatformFee = Math.round(adjustedSubtotal * 0.12);
 
     // Final total: rental + platform fee + driver + insurance + VAT
     const serverTotalAmount = adjustedSubtotal + serverPlatformFee + data.driverFee + data.insuranceFee + vatAmount;

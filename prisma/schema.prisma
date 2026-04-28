@@ -178,6 +178,7 @@ model Car {
   featuredUntil     DateTime?
   minDays               Int                  @default(1)
   advanceNotice         Int                  @default(0)
+  priceIncludesVat      Boolean              @default(false)
   cancellationPolicy    CancellationPolicy   @default(MODERATE)
   createdAt             DateTime             @default(now())
   updatedAt         DateTime      @updatedAt

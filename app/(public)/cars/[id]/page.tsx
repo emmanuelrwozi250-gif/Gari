@@ -69,6 +69,7 @@ const getCar = cache(async function getCar(id: string): Promise<CarDisplay | nul
       hostSuperhostSince: car.host?.superhostSince
         ? car.host.superhostSince.toISOString()
         : null,
+      priceIncludesVat: (car as { priceIncludesVat?: boolean }).priceIncludesVat ?? false,
     };
   } catch {
     return null;

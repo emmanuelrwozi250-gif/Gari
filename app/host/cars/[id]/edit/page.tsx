@@ -45,6 +45,7 @@ export default function EditCarPage() {
   const [driverPricePerDay, setDriverPricePerDay] = useState(0);
   const [instantBooking, setInstantBooking] = useState(false);
   const [pricingMode, setPricingMode] = useState<'static' | 'dynamic'>('static');
+  const [priceIncludesVat, setPriceIncludesVat] = useState(false);
 
   // Availability
   const [blockedDates, setBlockedDates] = useState<{ id: string; date: string }[]>([]);
@@ -82,6 +83,7 @@ export default function EditCarPage() {
         setDriverPricePerDay(data.driverPricePerDay || 0);
         setInstantBooking(data.instantBooking || false);
         setPricingMode(data.pricingMode === 'dynamic' ? 'dynamic' : 'static');
+        setPriceIncludesVat(data.priceIncludesVat ?? false);
         setCancellationPolicy(data.cancellationPolicy || 'MODERATE');
         setIsAvailable(data.isAvailable ?? true);
         setLoading(false);
@@ -370,7 +372,7 @@ export default function EditCarPage() {
             <div>
               <label className="label">Price per Day (RWF)</label>
               <input type="number" value={pricePerDay} onChange={e => setPricePerDay(+e.target.value)} min={5000} step={1000} className="input" />
-              {pricePerDay > 0 && <p className="text-xs text-text-secondary mt-1">You earn ~{Math.round(pricePerDay * 0.90).toLocaleString()} RWF/day after 10% fee</p>}
+              {pricePerDay > 0 && <p className="text-xs text-text-secondary mt-1">You earn ~{Math.round(pricePerDay * 0.88).toLocaleString()} RWF/day after 12% fee</p>}
             </div>
 
             <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-xl">
@@ -472,8 +474,27 @@ export default function EditCarPage() {
               </div>
             </div>
 
+            {/* VAT toggle */}
+            <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-xl border border-border">
+              <div>
+                <p className="font-semibold text-sm">My price includes 18% VAT</p>
+                <p className="text-xs text-text-secondary mt-0.5">
+                  {priceIncludesVat
+                    ? 'Your listed price already includes VAT — no extra charge at checkout.'
+                    : 'Gari will add 18% VAT on top of your price at checkout (collected for RRA).'}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setPriceIncludesVat(v => !v)}
+                className={`relative flex-shrink-0 w-12 h-6 rounded-full transition-colors ml-4 ${priceIncludesVat ? 'bg-green-500' : 'bg-gray-300 dark:bg-gray-600'}`}
+              >
+                <span className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all ${priceIncludesVat ? 'left-7' : 'left-1'}`} />
+              </button>
+            </div>
+
             <button
-              onClick={() => saveSection('pricing', { pricePerDay, depositAmount, driverAvailable, driverPricePerDay: driverAvailable ? driverPricePerDay : 0, instantBooking, cancellationPolicy, pricingMode })}
+              onClick={() => saveSection('pricing', { pricePerDay, depositAmount, driverAvailable, driverPricePerDay: driverAvailable ? driverPricePerDay : 0, instantBooking, cancellationPolicy, pricingMode, priceIncludesVat })}
               disabled={saving === 'pricing'}
               className="btn-primary w-full justify-center">
               {saving === 'pricing' ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}

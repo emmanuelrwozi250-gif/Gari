@@ -20,7 +20,7 @@ import { POLICY_TIERS } from '@/config/cancellation';
 import { calculateVAT, VAT_LABEL } from '@/config/vat';
 
 const FALLBACK = 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=800&q=80';
-const PLATFORM_FEE_RATE = 0.10;
+const PLATFORM_FEE_RATE = 0.12;
 
 interface DynamicPricingData {
   multiplier: number;
@@ -81,6 +81,7 @@ export type CarDisplay = {
   existingBookingId?: string | null;
   hostSuperhostSince?: string | null;
   cancellationPolicy?: 'FLEXIBLE' | 'MODERATE' | 'STRICT';
+  priceIncludesVat?: boolean;
 };
 
 // Generate 8 "unavailable" future dates for realism
@@ -402,7 +403,8 @@ export function CarDetailClient({ car, completedBookingId, existingBookingId, si
   const platformFee = Math.round(subtotal * PLATFORM_FEE_RATE);
   const driverFee = withDriver ? (data.driverPricePerDay ?? 0) * Math.max(days, 1) : 0;
   const insuranceFee = withInsurance ? 5000 * Math.max(days, 1) : 0;
-  const vatAmount = calculateVAT(subtotal, driverFee);
+  // If host's listed price already includes VAT, don't add extra; otherwise add 18% on top
+  const vatAmount = data.priceIncludesVat ? 0 : calculateVAT(subtotal, driverFee);
   const total = subtotal + platformFee + driverFee + insuranceFee + vatAmount;
   const depositAmount = data.depositAmount ?? 0;
   const grandTotal = total + depositAmount;
@@ -614,6 +616,11 @@ export function CarDetailClient({ car, completedBookingId, existingBookingId, si
                 <div className="text-3xl font-extrabold text-primary">{formatRWF(data.pricePerDay)}</div>
                 <div className="text-sm text-text-secondary">/ day</div>
                 <div className="text-xs text-text-light ml-1">{toUSD(data.pricePerDay)}</div>
+                {data.priceIncludesVat ? (
+                  <span className="text-[10px] bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-1.5 py-0.5 rounded-full font-semibold">VAT incl.</span>
+                ) : (
+                  <span className="text-[10px] bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 px-1.5 py-0.5 rounded-full font-semibold">+ 18% VAT</span>
+                )}
               </div>
 
               {/* Trust signals */}
@@ -790,7 +797,7 @@ export function CarDetailClient({ car, completedBookingId, existingBookingId, si
                       </div>
                     )}
                     <div className="flex justify-between text-text-secondary">
-                      <span>Service fee (10%)</span>
+                      <span>Service fee (12%)</span>
                       <span>{formatRWF(platformFee)}</span>
                     </div>
                     {withInsurance && (
@@ -803,8 +810,11 @@ export function CarDetailClient({ car, completedBookingId, existingBookingId, si
                       <span className="flex items-center gap-1">
                         {VAT_LABEL}
                         <span className="text-[10px] bg-gray-200 dark:bg-gray-700 text-text-light px-1.5 py-0.5 rounded-full">RRA</span>
+                        {data.priceIncludesVat && (
+                          <span className="text-[10px] bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-1.5 py-0.5 rounded-full font-medium">incl.</span>
+                        )}
                       </span>
-                      <span>{formatRWF(vatAmount)}</span>
+                      <span>{data.priceIncludesVat ? 'Included in price' : formatRWF(vatAmount)}</span>
                     </div>
                     <div className="flex justify-between font-bold text-text-primary dark:text-white border-t border-border pt-2 mt-2">
                       <span>{depositAmount > 0 ? 'Rental total' : 'Total'}</span>
