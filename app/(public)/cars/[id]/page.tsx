@@ -34,7 +34,7 @@ const getCar = cache(async function getCar(id: string): Promise<CarDisplay | nul
       createdAt: r.createdAt.toISOString(),
       reviewerName: r.reviewer?.name ?? 'Anonymous',
       reviewerAvatar: r.reviewer?.avatar ?? null,
-      isRevealed: (r as { isRevealed?: boolean }).isRevealed ?? true,
+      isRevealed: true, // Always visible on public car detail; isRevealed is a host-management concept
     }));
 
     return {
