@@ -142,7 +142,7 @@ export default function BeAHostPage() {
       <section className="py-16 px-4 max-w-4xl mx-auto">
         <div className="text-center mb-10">
           <h2 className="section-title">How Much Can You Earn?</h2>
-          <p className="section-subtitle">Based on real host data — after 10% platform fee</p>
+          <p className="section-subtitle">Based on real host data — after 12% platform fee</p>
         </div>
         <div className="grid md:grid-cols-3 gap-5">
           {[

@@ -35,11 +35,11 @@ const HOST_FAQS = [
   },
   {
     q: 'When do I receive my earnings?',
-    a: 'Your earnings (rental amount minus the 10% Gari platform fee) are available to withdraw after each completed trip. Minimum payout is RWF 1,000. Payouts are sent via MTN MoMo or your preferred method.',
+    a: 'Your earnings (rental amount minus the 12% Gari platform fee) are available to withdraw after each completed trip. Minimum payout is RWF 1,000. Payouts are sent via MTN MoMo or your preferred method.',
   },
   {
     q: 'What if a renter damages my car?',
-    a: 'Report the damage within 24 hours via your host dashboard using the "Report Damage" button. Gari holds the security deposit until the dispute is reviewed. Provide photos and an estimated repair cost for faster resolution.',
+    a: 'Report the damage within 48 hours via your host dashboard using the "Report Damage" button. Gari holds the security deposit until the dispute is reviewed. Provide photos and an estimated repair cost for faster resolution.',
   },
   {
     q: 'Can I set my own rental price?',
@@ -47,7 +47,7 @@ const HOST_FAQS = [
   },
   {
     q: 'What is the Gari platform fee?',
-    a: 'Gari charges a 10% platform fee deducted from your rental earnings. This covers insurance, payment processing, customer support, and platform maintenance. Tips from renters are paid 100% to you — no deductions.',
+    a: 'Gari charges a 12% platform fee deducted from your rental earnings. This covers insurance, payment processing, customer support, and platform maintenance. Tips from renters are paid 100% to you — no deductions.',
   },
 ];
 
