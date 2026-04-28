@@ -7,7 +7,7 @@ export const COMPANY = {
   address: 'KG 11 Ave, Kigali, Rwanda',
   instagram: 'https://instagram.com/gari.rw',
   twitter: 'https://twitter.com/garirwanda',
-  founded: '2026',
+  founded: '2025',
 } as const;
 
 /** Pre-filled WhatsApp message link */
