@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Mountain, MapPin, Star, Users, CheckCircle, ArrowRight, Zap, Clock, AlertTriangle } from 'lucide-react';
-import { formatRWF, toUSD } from '@/lib/utils';
+import { formatRWF, toUSD, getCarTypeLabel, getFuelLabel } from '@/lib/utils';
 import { prisma } from '@/lib/prisma';
 
 export const metadata: Metadata = {
@@ -102,6 +102,7 @@ async function getSafariCars() {
         isAvailable: true,
         isVerified: true,
         type: { in: ['SUV_4X4', 'PICKUP', 'LUXURY', 'EXECUTIVE'] },
+        fuel: { not: 'ELECTRIC' },
       },
       include: { host: { select: { name: true, avatar: true } } },
       orderBy: [{ rating: 'desc' }, { totalTrips: 'desc' }],
@@ -304,7 +305,7 @@ export default async function SafariPage() {
                   <div className="flex items-start justify-between gap-2 mb-1">
                     <div>
                       <h3 className="font-bold text-text-primary dark:text-white">{car.make} {car.model}</h3>
-                      <p className="text-xs text-text-light">{car.year} · {car.type}</p>
+                      <p className="text-xs text-text-light">{car.year} · {getCarTypeLabel(car.type)}</p>
                     </div>
                     <div className="flex items-center gap-0.5 flex-shrink-0">
                       <Star className="w-3.5 h-3.5 fill-accent-yellow text-accent-yellow" />
@@ -316,7 +317,7 @@ export default async function SafariPage() {
                   </div>
                   <div className="flex items-center gap-3 text-xs text-text-secondary mt-2">
                     <span className="flex items-center gap-1"><Users className="w-3 h-3" /> {car.seats} seats</span>
-                    <span className="flex items-center gap-1"><Zap className="w-3 h-3" /> {car.fuel}</span>
+                    <span className="flex items-center gap-1"><Zap className="w-3 h-3" /> {getFuelLabel(car.fuel)}</span>
                     <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {car.district}</span>
                   </div>
                 </div>
