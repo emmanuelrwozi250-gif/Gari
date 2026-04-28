@@ -507,11 +507,11 @@ export function CarDetailClient({ car, completedBookingId, existingBookingId, si
                 <span className="flex items-center gap-1"><Users className="w-3.5 h-3.5" /> {data.seats} seats</span>
                 <span className="flex items-center gap-1"><Car className="w-3.5 h-3.5" /> {data.transmission}</span>
                 <span className="flex items-center gap-1"><Zap className="w-3.5 h-3.5" /> {data.fuel}</span>
-                {data.rating > 0 && (
+                {data.rating > 0 && data.reviewCount > 0 && (
                   <span className="flex items-center gap-0.5 text-accent-yellow font-semibold">
                     <Star className="w-3.5 h-3.5 fill-accent-yellow" /> {data.rating.toFixed(1)}
                     <span className="text-text-secondary font-normal ml-1">
-                      ({data.tripCount} trips · {data.reviewCount} reviews)
+                      ({data.reviewCount} review{data.reviewCount !== 1 ? 's' : ''})
                     </span>
                   </span>
                 )}
