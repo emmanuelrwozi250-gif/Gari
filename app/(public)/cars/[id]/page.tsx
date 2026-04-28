@@ -4,7 +4,6 @@ import type { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import { prisma } from '@/lib/prisma';
 import { authOptions } from '@/lib/auth';
-import { DEMO_RENTAL_CARS } from '@/lib/demo-data';
 import { CarDetailClient, type CarDisplay, type ReviewDisplay, type SimilarCar } from '@/components/CarDetailClient';
 import { formatRWF } from '@/lib/utils';
 
@@ -81,26 +80,24 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { id } = await params;
   const car = await getCar(id);
-  const demo = !car ? DEMO_RENTAL_CARS.find(c => c.id === id) : null;
-  const display = car ?? demo;
-  if (!display) return { title: 'Car Rental — Gari' };
+  if (!car) return { title: 'Car Rental — Gari' };
 
   const baseUrl = process.env.NEXTAUTH_URL || 'https://gari.rw';
-  const carTitle = `${display.year} ${display.make} ${display.model}`;
-  const ogUrl = `${baseUrl}/og?title=${encodeURIComponent(carTitle)}&sub=${encodeURIComponent('Available in Rwanda · NIDA Verified')}&price=${encodeURIComponent(formatRWF(display.pricePerDay))}`;
+  const carTitle = `${car.year} ${car.make} ${car.model}`;
+  const ogUrl = `${baseUrl}/og?title=${encodeURIComponent(carTitle)}&sub=${encodeURIComponent('Available in Rwanda · NIDA Verified')}&price=${encodeURIComponent(formatRWF(car.pricePerDay))}`;
 
   return {
     title: `${carTitle} Rental in Rwanda — Gari`,
-    description: `Rent a ${carTitle} in Rwanda from ${formatRWF(display.pricePerDay)}/day. NIDA-verified host. Book on Gari.`,
+    description: `Rent a ${carTitle} in Rwanda from ${formatRWF(car.pricePerDay)}/day. NIDA-verified host. Book on Gari.`,
     openGraph: {
-      title: `${carTitle} — ${formatRWF(display.pricePerDay)}/day`,
+      title: `${carTitle} — ${formatRWF(car.pricePerDay)}/day`,
       description: `${carTitle} available in Rwanda. Self-drive or with driver.`,
       images: [{ url: ogUrl, width: 1200, height: 630, alt: carTitle }],
       type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${carTitle} — ${formatRWF(display.pricePerDay)}/day`,
+      title: `${carTitle} — ${formatRWF(car.pricePerDay)}/day`,
       description: `${carTitle} available in Rwanda. Self-drive or with driver.`,
       images: [ogUrl],
     },
@@ -112,46 +109,8 @@ export default async function CarPage(
 ) {
   const { id } = await params;
 
-  // 1. Try DB via Prisma directly (no HTTP fetch, no failure risk)
-  let car = await getCar(id);
-
-  // 2. Fall back to demo data
-  if (!car) {
-    const demo = DEMO_RENTAL_CARS.find(c => c.id === id);
-    if (demo) {
-      car = {
-        id: demo.id,
-        make: demo.make,
-        model: demo.model,
-        year: demo.year,
-        type: demo.type,
-        pricePerDay: demo.pricePerDay,
-        district: demo.district,
-        seats: demo.seats,
-        transmission: demo.transmission,
-        drivingOption: demo.drivingOption,
-        images: demo.images,
-        hostName: demo.hostName,
-        hostAvatar: demo.hostAvatar,
-        hostVerified: demo.hostVerified,
-        hostMemberSince: demo.hostMemberSince,
-        hostResponseRate: demo.hostResponseRate,
-        rating: demo.rating,
-        tripCount: demo.reviewCount,
-        reviewCount: demo.reviewCount,
-        features: demo.features,
-        description: demo.description,
-        fuel: demo.fuel,
-        available: demo.available,
-        depositAmount: 0,
-        instantBooking: false,
-        driverPricePerDay: 0,
-        reviews: [],
-      };
-    }
-  }
-
-  // 3. Proper 404 — shows custom not-found page
+  // DB only — no demo fallback. Unknown IDs → 404.
+  const car = await getCar(id);
   if (!car) notFound();
 
   // 4. Fetch similar cars from DB (same type → any, max 3, never demo IDs)
