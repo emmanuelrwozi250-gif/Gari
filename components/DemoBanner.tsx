@@ -1,31 +1,32 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
 import { X } from 'lucide-react';
 
 const STORAGE_KEY = 'gari_demo_dismissed';
 
 export function DemoBanner() {
-  const searchParams = useSearchParams();
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    // Activate demo mode if ?demo=true is in URL — persist in sessionStorage
-    if (searchParams.get('demo') === 'true') {
+    // No useSearchParams — avoids Suspense CSR bailout; use window directly (client-only)
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('demo') === 'true') {
       sessionStorage.setItem('gari_demo_mode', 'true');
     }
     const inDemoMode = sessionStorage.getItem('gari_demo_mode') === 'true';
     const dismissed = sessionStorage.getItem(STORAGE_KEY) === 'true';
     if (inDemoMode && !dismissed) setVisible(true);
-  }, [searchParams]);
+  }, []);
 
-  if (!visible) return null;
-
+  // Always render for SSR discoverability; hidden class conceals it until demo mode activates
   return (
-    <div className="relative z-50 bg-amber-400 text-amber-900 text-xs font-medium px-4 py-1.5 flex items-center justify-between gap-4">
+    <div
+      className={`relative z-50 bg-amber-400 text-amber-900 text-xs font-medium px-4 py-1.5 flex items-center justify-between gap-4${visible ? '' : ' hidden'}`}
+      aria-hidden={!visible}
+    >
       <div className="flex-1 text-center">
-        🚀 <strong>Demo Mode</strong> — Payments are simulated. No real transactions.&nbsp;
+        🚀 <strong>Investor Demo Mode</strong> — Payments are simulated. No real transactions.{' '}
         Built for Rwanda ·{' '}
         <a href="https://gari-nu.vercel.app" className="underline font-semibold" target="_blank" rel="noopener noreferrer">
           gari-nu.vercel.app

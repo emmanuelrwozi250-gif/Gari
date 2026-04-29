@@ -59,7 +59,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning className={inter.variable}>
       <body className={`antialiased ${inter.className}`}>
         <Providers>
-          <Suspense><DemoBanner /></Suspense>
+          <DemoBanner />
           <Navbar />
           <main className="main-content min-h-screen">
             {children}
