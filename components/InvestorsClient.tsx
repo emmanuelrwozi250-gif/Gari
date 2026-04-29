@@ -39,7 +39,9 @@ export function InvestorsClient() {
     }
   }
 
-  if (!checked) return null;
+  // Do NOT guard on !checked — SSR must render the PIN gate (unlocked=false) so
+  // the "Investor Access" heading is present in the initial HTML for crawlers/curl.
+  // After hydration, useEffect checks localStorage and may switch to the deck.
 
   if (!unlocked) {
     return (
