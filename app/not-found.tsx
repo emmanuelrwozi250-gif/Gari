@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { Car, Star, MapPin } from 'lucide-react';
 import { FallbackImage } from '@/components/FallbackImage';
 import { prisma } from '@/lib/prisma';
-import { DEMO_RENTAL_CARS } from '@/lib/demo-data';
 import { formatRWF } from '@/lib/utils';
 
 const FALLBACK = 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=400&q=60';
@@ -20,11 +19,7 @@ async function getTopCars() {
     });
     if (cars.length > 0) return cars;
   } catch { /* fall through */ }
-  return DEMO_RENTAL_CARS.slice(0, 3).map(c => ({
-    id: c.id, make: c.make, model: c.model, year: c.year,
-    pricePerDay: c.pricePerDay, district: c.district, rating: c.rating,
-    photos: c.images,
-  }));
+  return [];
 }
 
 export default async function NotFound() {
