@@ -81,7 +81,7 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { id } = await params;
   const car = await getCar(id);
-  if (!car) notFound(); // ensures HTTP 404 status is set from the metadata phase
+  if (!car) return { title: 'Car not found — Gari' };
 
   const baseUrl = process.env.NEXTAUTH_URL || 'https://gari.rw';
   const carTitle = `${car.year} ${car.make} ${car.model}`;
