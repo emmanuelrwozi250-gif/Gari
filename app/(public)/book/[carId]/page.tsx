@@ -153,7 +153,7 @@ export default function BookingPage({ params }: { params: { carId: string } }) {
                 </div>
               )}
               <div className="flex justify-between text-text-secondary">
-                <span>Platform fee (10%)</span>
+                <span>Platform fee (12%)</span>
                 <span>{formatRWF(booking.platformFee)}</span>
               </div>
               <hr className="border-border" />

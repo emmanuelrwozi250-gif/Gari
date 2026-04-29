@@ -180,7 +180,7 @@ export default function ReferPage() {
               );
             })}
           </div>
-          <p className="text-xs text-text-light mt-4">Based on 5% of the 10% Gari platform fee. Paid out monthly via MoMo.</p>
+          <p className="text-xs text-text-light mt-4">Based on 5% of the 12% Gari platform fee. Paid out monthly via MoMo.</p>
         </div>
 
         {/* CTA */}

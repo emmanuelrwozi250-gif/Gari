@@ -27,7 +27,7 @@ export function EarningsCalculator() {
   const dayRate   = EARNINGS_RATES[carType] ?? 30000;
   const driverAdd = withDriver ? (DRIVER_RATES[carType] ?? 15000) : 0;
   const gross     = (dayRate + driverAdd) * days;
-  const net       = Math.round(gross * 0.9);  // after 10% Gari fee
+  const net       = Math.round(gross * 0.88); // after 12% Gari fee
   const annual    = net * 12;
   const usd       = Math.round(net / USD_RATE);
   const annualUsd = Math.round(annual / USD_RATE);
@@ -93,7 +93,7 @@ export function EarningsCalculator() {
       {/* Result */}
       <div className="bg-white/10 rounded-xl px-4 py-5">
         <p className="text-xs text-primary-light text-center mb-3">
-          ({formatRWF(dayRate + driverAdd)}/day × {days} days) − 10% Gari fee
+          ({formatRWF(dayRate + driverAdd)}/day × {days} days) − 12% Gari fee
         </p>
         <div className="text-center mb-1">
           <span className="text-3xl font-extrabold text-accent-yellow">{formatRWF(net)}</span>
@@ -138,7 +138,7 @@ export function EarningsCalculator() {
         </div>
       </div>
 
-      <p className="text-xs text-primary-light">* After 10% platform fee. Insurance included. Paid monthly via MoMo.</p>
+      <p className="text-xs text-primary-light">* After 12% platform fee. Insurance included. Paid monthly via MoMo.</p>
 
       <Link
         href="/host/new"

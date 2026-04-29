@@ -336,7 +336,7 @@ export function ListCarForm() {
                   <label className="label">Price per Day (RWF)*</label>
                   <input type="number" {...register('pricePerDay', { valueAsNumber: true })} min={5000} step={1000} className="input" placeholder="e.g. 60000" />
                   {errors.pricePerDay && <p className="text-red-500 text-xs mt-1">{errors.pricePerDay.message}</p>}
-                  {pricePerDay && <p className="text-xs text-text-secondary mt-1">You earn ~{Math.round(pricePerDay * 0.90).toLocaleString()} RWF per day (after 10% fee)</p>}
+                  {pricePerDay && <p className="text-xs text-text-secondary mt-1">You earn ~{Math.round(pricePerDay * 0.88).toLocaleString()} RWF per day (after 12% fee)</p>}
                 </div>
 
                 <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-xl">

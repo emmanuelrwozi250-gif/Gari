@@ -128,7 +128,7 @@ export function PricingWidget({ carId, pickupDate, returnDate, withDriver, onPri
           </div>
         )}
         <div className="flex justify-between text-sm text-gray-600">
-          <span>Platform fee (10%)</span>
+          <span>Platform fee (12%)</span>
           <span>{formatRWF(data.platformFee)}</span>
         </div>
         <div className="flex justify-between font-bold text-base border-t border-gray-200 pt-2 mt-1">

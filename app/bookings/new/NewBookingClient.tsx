@@ -203,7 +203,7 @@ export function NewBookingClient({ car, userName, renterType = 'LOCAL', params }
               </div>
             )}
             <div className="flex justify-between text-text-secondary">
-              <span>Service fee (10%)</span>
+              <span>Service fee (12%)</span>
               <span>{formatRWF(params.platformFee)}</span>
             </div>
             <div className="flex justify-between font-bold text-text-primary dark:text-white border-t border-border pt-2.5 mt-1">

@@ -196,7 +196,7 @@ export function InvestorsClient() {
           </h2>
           <div className="grid sm:grid-cols-3 gap-4">
             {[
-              { stream: 'Platform Fee', value: '10%', desc: 'Taken from each booking automatically' },
+              { stream: 'Platform Fee', value: '12%', desc: 'Taken from each booking automatically' },
               { stream: 'Insurance Add-on', value: formatRWF(5000) + '/trip', desc: 'Optional coverage purchased by renter' },
               { stream: 'Security Deposit', value: 'Held & released', desc: 'Gari holds deposit; released on safe return within 48h' },
             ].map(({ stream, value, desc }) => (
@@ -221,10 +221,10 @@ export function InvestorsClient() {
                   { item: 'Average trip duration', value: '3 days' },
                   { item: 'Average daily rate', value: formatRWF(40_000) },
                   { item: 'Average booking value (GMV)', value: formatRWF(120_000) },
-                  { item: 'Platform take (10%)', value: formatRWF(12_000), highlight: true },
-                  { item: 'Host payout (90%)', value: formatRWF(108_000) },
+                  { item: 'Platform take (12%)', value: formatRWF(14_400), highlight: true },
+                  { item: 'Host payout (88%)', value: formatRWF(105_600) },
                   { item: 'Monthly GMV target (125 bookings)', value: formatRWF(15_000_000) },
-                  { item: 'Monthly platform revenue target', value: formatRWF(1_500_000), highlight: true },
+                  { item: 'Monthly platform revenue target', value: formatRWF(1_800_000), highlight: true },
                 ].map(({ item, value, highlight }) => (
                   <tr key={item} className={highlight ? 'bg-primary/5 dark:bg-primary/10' : ''}>
                     <td className="py-2.5 pr-4 text-text-secondary">{item}</td>

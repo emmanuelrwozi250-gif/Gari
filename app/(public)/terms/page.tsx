@@ -16,7 +16,7 @@ const SECTIONS = [
   },
   {
     title: '3. Booking & Payment',
-    body: `Renters can request or instantly book vehicles listed on the Platform. All prices are displayed in Rwandan Francs (RWF). Gari charges a 10% platform fee on each booking, deducted from the Host's earnings. Payment methods include MTN MoMo, Airtel Money, and card payments via Stripe. All transactions are processed securely. A booking is only confirmed once payment is received and (for non-instant listings) the Host accepts the request.`,
+    body: `Renters can request or instantly book vehicles listed on the Platform. All prices are displayed in Rwandan Francs (RWF). Gari charges a 12% platform fee on each booking, deducted from the Host's earnings. Payment methods include MTN MoMo, Airtel Money, and card payments via Stripe. All transactions are processed securely. A booking is only confirmed once payment is received and (for non-instant listings) the Host accepts the request.`,
   },
   {
     title: '4. Cancellation Policy',
