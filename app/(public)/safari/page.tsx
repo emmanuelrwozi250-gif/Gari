@@ -146,7 +146,7 @@ export default async function SafariPage() {
             <Link href="#vehicles" className="btn-primary px-8 py-3 text-base">
               Browse Safari Vehicles
             </Link>
-            <Link href="/search?type=SUV_4X4&driver=true" className="flex items-center gap-2 bg-white/15 backdrop-blur-sm border border-white/30 text-white font-semibold px-8 py-3 rounded-xl hover:bg-white/25 transition-colors text-base">
+            <Link href="/search?type=suv-4x4&driver=true" className="flex items-center gap-2 bg-white/15 backdrop-blur-sm border border-white/30 text-white font-semibold px-8 py-3 rounded-xl hover:bg-white/25 transition-colors text-base">
               With Driver <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -176,7 +176,7 @@ export default async function SafariPage() {
           {DESTINATIONS.map(dest => (
             <Link
               key={dest.name}
-              href={`/search?type=SUV_4X4&district=${dest.district}`}
+              href={`/search?type=suv-4x4&district=${dest.district}`}
               className="group relative h-52 rounded-2xl overflow-hidden block"
             >
               <Image
@@ -233,7 +233,7 @@ export default async function SafariPage() {
                   🚙 {route.recommendedCar}
                 </span>
                 <Link
-                  href={`/search?district=${route.district}&type=SUV_4X4`}
+                  href={`/search?district=${route.district}&type=suv-4x4`}
                   className="text-xs text-primary font-semibold flex items-center gap-1 hover:gap-2 transition-all"
                 >
                   Find cars <ArrowRight className="w-3 h-3" />
@@ -251,7 +251,7 @@ export default async function SafariPage() {
             <h2 className="text-2xl font-extrabold text-text-primary dark:text-white">Safari Vehicles</h2>
             <p className="text-text-secondary mt-1 text-sm">All 4WD & high-clearance — ready for any terrain</p>
           </div>
-          <Link href="/search?type=SUV_4X4" className="text-sm text-primary font-semibold flex items-center gap-1 hover:gap-2 transition-all">
+          <Link href="/search?type=suv-4x4" className="text-sm text-primary font-semibold flex items-center gap-1 hover:gap-2 transition-all">
             View all <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
@@ -260,7 +260,7 @@ export default async function SafariPage() {
           {safariCars.length === 0 && (
             <div className="col-span-3 text-center py-16 text-text-secondary">
               <p className="text-lg font-semibold mb-2">No safari vehicles listed yet</p>
-              <Link href="/search?type=SUV_4X4" className="text-primary underline text-sm">
+              <Link href="/search?type=suv-4x4" className="text-primary underline text-sm">
                 Browse all SUV &amp; 4x4 cars →
               </Link>
             </div>
@@ -341,7 +341,7 @@ export default async function SafariPage() {
           <div className="relative z-10 bg-gradient-to-r from-black/70 to-black/30 p-8 md:p-12">
             <h2 className="text-2xl md:text-3xl font-extrabold text-white mb-2">Need help planning your safari?</h2>
             <p className="text-white/80 mb-6 max-w-lg">Our hosts know Rwanda inside out. Add a driver to your booking and get local expertise included.</p>
-            <Link href="/search?type=SUV_4X4&driver=true" className="btn-primary px-8 py-3 text-base inline-flex items-center gap-2">
+            <Link href="/search?type=suv-4x4&driver=true" className="btn-primary px-8 py-3 text-base inline-flex items-center gap-2">
               Find a 4WD with Driver <ArrowRight className="w-4 h-4" />
             </Link>
           </div>

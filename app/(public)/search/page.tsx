@@ -45,6 +45,24 @@ interface SearchPageProps {
   searchParams: Promise<SearchParamsShape>;
 }
 
+// Slug → enum mapping so URLs can use human-readable type slugs
+// e.g. /search?type=suv-4x4 works alongside legacy ?type=SUV_4X4
+const TYPE_SLUG_MAP: Record<string, string> = {
+  'suv-4x4':   'SUV_4X4',
+  'pickup':    'PICKUP',
+  'executive': 'EXECUTIVE',
+  'economy':   'ECONOMY',
+  'sedan':     'SEDAN',
+  'minibus':   'MINIBUS',
+  'coaster':   'COASTER',
+  'luxury':    'LUXURY',
+  'van':       'VAN',
+};
+function resolveType(t?: string): string | undefined {
+  if (!t) return undefined;
+  return TYPE_SLUG_MAP[t.toLowerCase()] ?? t; // fall back to raw value for backward compat
+}
+
 // DEMO DATA — swap for API call
 function filterDemoCars(params: SearchParamsShape) {
   let cars = DEMO_RENTAL_CARS.map(c => ({
@@ -73,7 +91,7 @@ function filterDemoCars(params: SearchParamsShape) {
 
   if (params.district) cars = cars.filter(c => c.district === params.district);
   if (params.driver === 'true') cars = cars.filter(c => c.driverAvailable);
-  if (params.type) cars = cars.filter(c => c.type === params.type);
+  if (params.type) cars = cars.filter(c => c.type === resolveType(params.type));
   if (params.listingType) cars = cars.filter(c => c.listingType === params.listingType);
   if (params.transmission) cars = cars.filter(c => c.transmission === params.transmission);
   if (params.seats) cars = cars.filter(c => c.seats >= parseInt(params.seats!));
@@ -95,7 +113,7 @@ async function getCars(params: SearchParamsShape) {
     const where: Record<string, unknown> = { isAvailable: true };
     if (params.district) where.district = params.district;
     if (params.driver === 'true') where.driverAvailable = true;
-    if (params.type) where.type = params.type;
+    if (params.type) where.type = resolveType(params.type);
     if (params.listingType) where.listingType = params.listingType;
     if (params.transmission) where.transmission = params.transmission;
     if (params.seats) where.seats = { gte: parseInt(params.seats) };
