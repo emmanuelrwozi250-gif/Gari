@@ -318,7 +318,7 @@ export default async function SafariPage() {
                   <div className="flex items-center gap-3 text-xs text-text-secondary mt-2">
                     <span className="flex items-center gap-1"><Users className="w-3 h-3" /> {car.seats} seats</span>
                     <span className="flex items-center gap-1"><Zap className="w-3 h-3" /> {getFuelLabel(car.fuel)}</span>
-                    <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {car.district}</span>
+                    <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {car.district ? car.district.charAt(0).toUpperCase() + car.district.slice(1).toLowerCase() : ''}</span>
                   </div>
                 </div>
               </Link>
