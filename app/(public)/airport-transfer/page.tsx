@@ -93,6 +93,7 @@ export default async function AirportTransferPage() {
             src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1200&q=80"
             alt="Kigali International Airport"
             fill className="object-cover" priority
+            sizes="100vw"
           />
         </div>
         <div className="absolute inset-0 bg-gradient-to-b from-dark-bg/60 to-dark-bg/90" />
