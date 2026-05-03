@@ -114,28 +114,53 @@ export function FilterSidebar({ searchParams, onChange, priceMin, priceMax }: Fi
       {/* Price Range */}
       <div>
         <label className="label">Price per Day</label>
-        <div className="flex gap-2 items-center">
-          <input
-            type="number"
-            placeholder={priceMin ? priceMin.toLocaleString() : '15,000'}
-            value={searchParams.minPrice || ''}
-            onChange={e => onChange('minPrice', e.target.value || null)}
-            className="input text-sm"
-            min={priceMin ?? 0}
-            step={1000}
-          />
-          <span className="text-text-light text-sm">–</span>
-          <input
-            type="number"
-            placeholder={priceMax ? priceMax.toLocaleString() : '300,000'}
-            value={searchParams.maxPrice || ''}
-            onChange={e => onChange('maxPrice', e.target.value || null)}
-            className="input text-sm"
-            min={0}
-            step={1000}
-          />
+
+        {/* Current value display */}
+        <div className="flex justify-between items-center mb-2 mt-1">
+          <span className="text-sm font-semibold text-text-primary dark:text-white">
+            RWF {(Number(searchParams.minPrice) || priceMin || 0).toLocaleString()}
+          </span>
+          <span className="text-xs text-text-light">—</span>
+          <span className="text-sm font-semibold text-text-primary dark:text-white">
+            RWF {(Number(searchParams.maxPrice) || priceMax || 300000).toLocaleString()}
+          </span>
         </div>
-        <p className="text-xs text-text-light mt-1">RWF per day</p>
+
+        {/* Min slider */}
+        <input
+          type="range"
+          min={priceMin ?? 0}
+          max={priceMax ?? 300000}
+          step={5000}
+          value={Number(searchParams.minPrice) || (priceMin ?? 0)}
+          onChange={e => {
+            const v = Number(e.target.value);
+            const max = Number(searchParams.maxPrice) || (priceMax ?? 300000);
+            onChange('minPrice', v > 0 ? String(v) : null);
+            if (v > max) onChange('maxPrice', String(v));
+          }}
+          className="w-full h-1.5 rounded-lg appearance-none cursor-pointer accent-primary bg-gray-200 dark:bg-gray-700"
+          aria-label="Minimum price per day"
+        />
+
+        {/* Max slider */}
+        <input
+          type="range"
+          min={priceMin ?? 0}
+          max={priceMax ?? 300000}
+          step={5000}
+          value={Number(searchParams.maxPrice) || (priceMax ?? 300000)}
+          onChange={e => {
+            const v = Number(e.target.value);
+            const min = Number(searchParams.minPrice) || (priceMin ?? 0);
+            onChange('maxPrice', v < (priceMax ?? 300000) ? String(v) : null);
+            if (v < min) onChange('minPrice', String(v));
+          }}
+          className="w-full h-1.5 rounded-lg appearance-none cursor-pointer accent-primary bg-gray-200 dark:bg-gray-700 mt-2"
+          aria-label="Maximum price per day"
+        />
+
+        <p className="text-xs text-text-light mt-2">RWF per day · drag to filter</p>
       </div>
 
       {/* Seats */}
