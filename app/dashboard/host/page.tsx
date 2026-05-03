@@ -7,8 +7,9 @@ import { formatRWF, formatDate, getBookingStatusColor, getCarTypeLabel } from '@
 import {
   TrendingUp, Car, Users, Star, PlusCircle, ChevronRight,
   CheckCircle, X, Clock, Banknote, ArrowRight, BarChart3, Lightbulb,
-  Lock, AlertTriangle, Shield,
+  Lock, AlertTriangle, Shield, CalendarDays,
 } from 'lucide-react';
+import { getUpcomingHighDemandDates } from '@/lib/rwanda-demand-calendar';
 import { EarningsDashboard } from '@/components/EarningsDashboard';
 import { BookingActionButtons } from '@/components/BookingActionButtons';
 import { LateReturnPanel } from '@/components/LateReturnPanel';
@@ -222,6 +223,20 @@ export default async function HostDashboardPage() {
       };
     })
   );
+
+  // Upcoming high-demand dates (demand calendar nudge)
+  const upcomingDemandDates = getUpcomingHighDemandDates(60, 1.4);
+  const hasStaticPricingCars = cars.some((c) => (c as any).pricingMode !== 'dynamic');
+
+  // Co-host relations (cars I own where someone is co-hosting)
+  const coHostRelations = await prisma.coHostRelation.findMany({
+    where: { ownerId: userId },
+    include: {
+      coHost: { select: { id: true, name: true, email: true, avatar: true } },
+      car: { select: { id: true, make: true, model: true, year: true, photos: true } },
+    },
+    orderBy: { createdAt: 'desc' },
+  });
 
   // Pending pricing suggestions
   const pricingSuggestions = await prisma.pricingSuggestion.findMany({
@@ -458,7 +473,7 @@ export default async function HostDashboardPage() {
                   {cars.map(car => (
                     <div key={car.id} className="flex items-center gap-4 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                       <img
-                        src={car.photos[0] || '/images/car-placeholder.jpg'}
+                        src={car.photos[0] || '/images/car-placeholder.svg'}
                         alt={car.make}
                         className="w-14 h-10 rounded-lg object-cover flex-shrink-0"
                       />
@@ -635,6 +650,82 @@ export default async function HostDashboardPage() {
                 </div>
               ))}
             </div>
+          </div>
+        )}
+
+        {/* ── Demand Calendar Nudge ───────────────────────────────── */}
+        {upcomingDemandDates.length > 0 && (
+          <div className="mt-8 card p-5">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-bold text-text-primary dark:text-white flex items-center gap-2">
+                <CalendarDays className="w-5 h-5 text-primary" />
+                Upcoming High-Demand Dates
+              </h2>
+              {hasStaticPricingCars && (
+                <Link href="/host/cars" className="text-xs text-primary font-semibold hover:underline flex items-center gap-1">
+                  Enable Dynamic Pricing <ArrowRight className="w-3 h-3" />
+                </Link>
+              )}
+            </div>
+            <div className="space-y-2">
+              {upcomingDemandDates.map((e) => {
+                const multiplierPct = Math.round((e.demandMultiplier - 1) * 100);
+                const badgeColor =
+                  e.demandMultiplier >= 1.8 ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' :
+                  e.demandMultiplier >= 1.5 ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' :
+                  'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400';
+                return (
+                  <div key={e.name + e.date} className="flex items-center justify-between gap-3 py-2 border-b border-border last:border-0">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-text-primary dark:text-white truncate">{e.name}</p>
+                      <p className="text-xs text-text-secondary">
+                        {new Date(e.date).toLocaleDateString('en-RW', { day: 'numeric', month: 'short', year: 'numeric' })}
+                        {e.endDate && e.endDate !== e.date && ` – ${new Date(e.endDate).toLocaleDateString('en-RW', { day: 'numeric', month: 'short' })}`}
+                        {e.districts && ` · ${e.districts.slice(0, 2).join(', ')}${e.districts.length > 2 ? '…' : ''}`}
+                      </p>
+                    </div>
+                    <span className={`text-xs font-bold px-2 py-1 rounded-full flex-shrink-0 ${badgeColor}`}>
+                      +{multiplierPct}% demand
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+            {hasStaticPricingCars && (
+              <p className="text-xs text-text-secondary mt-3">
+                💡 Enable Dynamic Pricing on your cars to automatically earn more on these dates.
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* ── Co-Hosting ─────────────────────────────────────────── */}
+        {coHostRelations.length > 0 && (
+          <div className="mt-8 card p-5">
+            <h2 className="font-bold text-text-primary dark:text-white flex items-center gap-2 mb-4">
+              <Users className="w-5 h-5 text-primary" /> Co-Hosts
+            </h2>
+            <div className="space-y-3">
+              {coHostRelations.map(rel => (
+                <div key={rel.id} className="flex items-center gap-4 p-3 rounded-xl bg-gray-50 dark:bg-gray-800">
+                  <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 text-xs font-bold text-primary">
+                    {rel.coHost.name?.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase() || '?'}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-text-primary dark:text-white">{rel.coHost.name}</p>
+                    <p className="text-xs text-text-secondary truncate">
+                      {rel.car.year} {rel.car.make} {rel.car.model} · {rel.earningsSplitPct}% split · {rel.role.replace('_', ' ')}
+                    </p>
+                  </div>
+                  <span className={`text-xs font-medium px-2 py-0.5 rounded-full flex-shrink-0 ${rel.active ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'}`}>
+                    {rel.active ? 'Active' : 'Pending'}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <p className="text-xs text-text-secondary mt-3">
+              Manage co-hosts from each car&apos;s edit page. Co-hosts can manage bookings on your behalf.
+            </p>
           </div>
         )}
 

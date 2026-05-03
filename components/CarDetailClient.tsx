@@ -82,6 +82,8 @@ export type CarDisplay = {
   hostSuperhostSince?: string | null;
   cancellationPolicy?: 'FLEXIBLE' | 'MODERATE' | 'STRICT';
   priceIncludesVat?: boolean;
+  gpsVerified?: boolean;
+  gpsTrackerType?: string | null;
 };
 
 // Generate 8 "unavailable" future dates for realism
@@ -365,6 +367,8 @@ export function CarDetailClient({ car, completedBookingId, existingBookingId, si
   const [paymentMethod, setPaymentMethod] = useState<'MTN_MOMO' | 'AIRTEL_MONEY' | 'CARD'>('MTN_MOMO');
   const [cardValid, setCardValid] = useState(false);
   const [dynamicPricing, setDynamicPricing] = useState<DynamicPricingData | null>(null);
+  const [extras, setExtras] = useState<Array<{ id: string; name: string; description: string | null; icon: string | null; pricePerDay: number; isAvailable: boolean }>>([]);
+  const [selectedExtraIds, setSelectedExtraIds] = useState<string[]>([]);
 
   // Set card-first default for foreign renters once session loads
   useEffect(() => {
@@ -392,6 +396,13 @@ export function CarDetailClient({ car, completedBookingId, existingBookingId, si
     return () => clearTimeout(timer);
   }, [pickup, returnDate, fetchDynamicPricing]);
 
+  useEffect(() => {
+    fetch(`/api/cars/${data.id}/extras`)
+      .then(r => r.json())
+      .then(d => { if (d.extras) setExtras(d.extras.filter((e: { isAvailable: boolean }) => e.isAvailable)); })
+      .catch(() => {});
+  }, [data.id]);
+
   const photos = data.images.length > 0 ? data.images : [FALLBACK];
   const district = RWANDA_DISTRICTS.find(d => d.id === data.district);
   const unavailable = getUnavailableDates(data.id);
@@ -403,9 +414,13 @@ export function CarDetailClient({ car, completedBookingId, existingBookingId, si
   const platformFee = Math.round(subtotal * PLATFORM_FEE_RATE);
   const driverFee = withDriver ? (data.driverPricePerDay ?? 0) * Math.max(days, 1) : 0;
   const insuranceFee = withInsurance ? 5000 * Math.max(days, 1) : 0;
+  const extrasTotal = selectedExtraIds.reduce((sum, eid) => {
+    const ex = extras.find(e => e.id === eid);
+    return sum + (ex ? ex.pricePerDay * Math.max(days, 1) : 0);
+  }, 0);
   // If host's listed price already includes VAT, don't add extra; otherwise add 18% on top
-  const vatAmount = data.priceIncludesVat ? 0 : calculateVAT(subtotal, driverFee);
-  const total = subtotal + platformFee + driverFee + insuranceFee + vatAmount;
+  const vatAmount = data.priceIncludesVat ? 0 : calculateVAT(subtotal + extrasTotal, driverFee);
+  const total = subtotal + platformFee + driverFee + insuranceFee + extrasTotal + vatAmount;
   const depositAmount = data.depositAmount ?? 0;
   const grandTotal = total + depositAmount;
   const similar = similarCars;
@@ -429,6 +444,7 @@ export function CarDetailClient({ car, completedBookingId, existingBookingId, si
       totalAmount: String(total),
       depositAmount: String(depositAmount),
       paymentMethod,
+      ...(selectedExtraIds.length > 0 ? { extraIds: selectedExtraIds.join(','), extrasTotal: String(extrasTotal) } : {}),
     });
     router.push(`/bookings/new?${params.toString()}`);
   }
@@ -539,6 +555,50 @@ export function CarDetailClient({ car, completedBookingId, existingBookingId, si
               </div>
             </div>
 
+            {/* Optional Extras */}
+            {extras.length > 0 && (
+              <div className="card p-5">
+                <h2 className="font-bold text-text-primary dark:text-white mb-1">Optional Add-Ons</h2>
+                <p className="text-xs text-text-secondary mb-4">Select extras to add to your booking</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {extras.map(ex => {
+                    const selected = selectedExtraIds.includes(ex.id);
+                    return (
+                      <button
+                        key={ex.id}
+                        type="button"
+                        onClick={() => setSelectedExtraIds(prev =>
+                          selected ? prev.filter(id => id !== ex.id) : [...prev, ex.id]
+                        )}
+                        className={`flex items-center gap-3 p-3 rounded-xl border-2 text-left transition-all ${
+                          selected
+                            ? 'border-primary bg-primary/5 dark:bg-primary/10'
+                            : 'border-border hover:border-primary/50'
+                        }`}
+                      >
+                        <span className="text-2xl flex-shrink-0">{ex.icon || '➕'}</span>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-semibold text-sm text-text-primary dark:text-white">{ex.name}</p>
+                          {ex.description && <p className="text-xs text-text-secondary truncate">{ex.description}</p>}
+                          <p className="text-xs font-medium text-primary mt-0.5">{formatRWF(ex.pricePerDay)}/day</p>
+                        </div>
+                        <div className={`w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-colors ${
+                          selected ? 'border-primary bg-primary' : 'border-gray-300'
+                        }`}>
+                          {selected && <span className="text-white text-xs font-bold">✓</span>}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+                {selectedExtraIds.length > 0 && (
+                  <p className="text-xs text-primary font-medium mt-3">
+                    {selectedExtraIds.length} add-on{selectedExtraIds.length > 1 ? 's' : ''} selected · +{formatRWF(extrasTotal)}{days > 1 ? ` (${days} days)` : ''}
+                  </p>
+                )}
+              </div>
+            )}
+
             {/* Verification */}
             <VerificationSection isVerified={data.hostVerified} />
 
@@ -598,6 +658,21 @@ export function CarDetailClient({ car, completedBookingId, existingBookingId, si
               reviews={car.reviews ?? []}
               completedBookingId={completedBookingId}
             />
+
+            {/* GPS Tracking Badge */}
+            {data.gpsVerified && (
+              <div className="flex items-center gap-3 p-4 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
+                <MapPin className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0" />
+                <div>
+                  <p className="font-semibold text-sm text-green-800 dark:text-green-300">GPS Tracking Verified</p>
+                  <p className="text-xs text-green-700 dark:text-green-400 mt-0.5">
+                    {data.gpsTrackerType
+                      ? `${data.gpsTrackerType} tracker installed and verified`
+                      : 'Real-time GPS tracker installed and verified by Gari'}
+                  </p>
+                </div>
+              </div>
+            )}
 
             {/* Safety notice */}
             <div className="flex items-start gap-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-xl p-4">
@@ -804,6 +879,12 @@ export function CarDetailClient({ car, completedBookingId, existingBookingId, si
                       <div className="flex justify-between text-primary font-medium">
                         <span>Gari Protect</span>
                         <span>{formatRWF(insuranceFee)}</span>
+                      </div>
+                    )}
+                    {extrasTotal > 0 && (
+                      <div className="flex justify-between text-text-secondary">
+                        <span>Add-ons ({selectedExtraIds.length})</span>
+                        <span>{formatRWF(extrasTotal)}</span>
                       </div>
                     )}
                     <div className="flex justify-between text-text-secondary">

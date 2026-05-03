@@ -117,6 +117,8 @@ model User {
   corporateAccount      CorporateAccount?      @relation("CorporateUsers", fields: [corporateAccountId], references: [id])
   corporateMemberships  CorporateMember[]      @relation("CorporateMemberships")
   corporateAdminOf      CorporateAccount[]     @relation("CorporateAdmin")
+  ownedCoHosts          CoHostRelation[]       @relation("OwnedCoHosts")
+  coHostedCars          CoHostRelation[]       @relation("CoHostedCars")
 }
 
 enum Role {
@@ -159,6 +161,8 @@ model Car {
   hasAC             Boolean       @default(true)
   hasWifi           Boolean       @default(false)
   hasGPS            Boolean       @default(false)
+  gpsVerified       Boolean       @default(false)
+  gpsTrackerType    String?
   hasChildSeat      Boolean       @default(false)
   rating            Float         @default(0)
   totalTrips        Int           @default(0)
@@ -190,6 +194,8 @@ model Car {
   holds              BookingHold[]
   images             CarImage[]
   blockedDates       BlockedDate[]
+  extras             CarExtra[]
+  coHosts            CoHostRelation[]
 
   @@index([hostId])
   @@index([isAvailable, district])
@@ -353,6 +359,7 @@ model Booking {
   dispute          Dispute?
   inspectionPhotos InspectionPhoto[]
   notificationLogs NotificationLog[]
+  extras           BookingExtra[]
 
   @@index([carId, status])
   @@index([renterId, status])
@@ -961,4 +968,56 @@ model CorporateMember {
   @@unique([corporateAccountId, userId])
   @@index([corporateAccountId])
   @@index([userId])
+}
+
+// ─── CO-HOSTING ────────────────────────────────────────────────────────────────
+
+model CoHostRelation {
+  id               String    @id @default(cuid())
+  carId            String
+  car              Car       @relation(fields: [carId], references: [id], onDelete: Cascade)
+  ownerId          String
+  owner            User      @relation("OwnedCoHosts", fields: [ownerId], references: [id])
+  coHostId         String
+  coHost           User      @relation("CoHostedCars", fields: [coHostId], references: [id])
+  earningsSplitPct Int       @default(20)
+  role             String    @default("FULL_MANAGEMENT")
+  active           Boolean   @default(false)
+  invitedAt        DateTime  @default(now())
+  acceptedAt       DateTime?
+  createdAt        DateTime  @default(now())
+
+  @@index([carId])
+  @@index([coHostId])
+}
+
+// ─── EXTRAS / ADD-ONS ──────────────────────────────────────────────────────────
+
+model CarExtra {
+  id          String        @id @default(cuid())
+  carId       String
+  car         Car           @relation(fields: [carId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  icon        String?
+  pricePerDay Int           @default(0)
+  isDefault   Boolean       @default(false)
+  isAvailable Boolean       @default(true)
+  createdAt   DateTime      @default(now())
+
+  bookingExtras BookingExtra[]
+
+  @@index([carId])
+}
+
+model BookingExtra {
+  id           String   @id @default(cuid())
+  bookingId    String
+  booking      Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  extraId      String
+  extra        CarExtra @relation(fields: [extraId], references: [id])
+  priceCharged Int
+  createdAt    DateTime @default(now())
+
+  @@index([bookingId])
 }

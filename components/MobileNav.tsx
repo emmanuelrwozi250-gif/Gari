@@ -20,7 +20,9 @@ export function MobileNav() {
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-t border-border shadow-lg">
       <div className="flex items-center justify-around h-16">
         {navItems.map(({ href, icon: Icon, label }) => {
-          const active = pathname === href || (href !== '/' && pathname.startsWith(href));
+          const active = pathname === href ||
+            (href !== '/' && pathname.startsWith(href) &&
+             !(href === '/dashboard' && pathname.startsWith('/dashboard/host')));
           const isProfile = href === '/profile';
           const requiresAuth = href === '/profile' || href === '/dashboard';
           return (

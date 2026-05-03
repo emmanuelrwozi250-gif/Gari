@@ -10,7 +10,7 @@ import { RWANDA_DISTRICTS } from '@/lib/districts';
 const CAR_MAKES = ['Toyota', 'Nissan', 'Honda', 'Mitsubishi', 'Subaru', 'Suzuki', 'Mazda', 'Hyundai', 'Kia', 'BMW', 'Mercedes', 'Land Rover', 'Other'];
 const COMMON_FEATURES = ['Air Conditioning', 'GPS Tracker', 'Bluetooth Audio', 'USB Charging', 'WiFi Hotspot', 'Child Seat', 'Roof Rack', '4WD', 'Leather Seats', 'Sunroof', 'Dash Cam'];
 
-type Section = 'basic' | 'photos' | 'pricing' | 'availability' | 'status';
+type Section = 'basic' | 'photos' | 'pricing' | 'availability' | 'status' | 'extras';
 
 export default function EditCarPage() {
   const { id } = useParams<{ id: string }>();
@@ -46,6 +46,8 @@ export default function EditCarPage() {
   const [instantBooking, setInstantBooking] = useState(false);
   const [pricingMode, setPricingMode] = useState<'static' | 'dynamic'>('static');
   const [priceIncludesVat, setPriceIncludesVat] = useState(false);
+  const [gpsVerified, setGpsVerified] = useState(false);
+  const [gpsTrackerType, setGpsTrackerType] = useState('');
 
   // Availability
   const [blockedDates, setBlockedDates] = useState<{ id: string; date: string }[]>([]);
@@ -55,6 +57,14 @@ export default function EditCarPage() {
 
   // Cancellation policy
   const [cancellationPolicy, setCancellationPolicy] = useState<'FLEXIBLE' | 'MODERATE' | 'STRICT'>('MODERATE');
+
+  // Extras
+  const [carExtras, setCarExtras] = useState<{ id: string; name: string; description: string | null; icon: string | null; pricePerDay: number; isAvailable: boolean }[]>([]);
+  const [newExtraName, setNewExtraName] = useState('');
+  const [newExtraIcon, setNewExtraIcon] = useState('');
+  const [newExtraDesc, setNewExtraDesc] = useState('');
+  const [newExtraPrice, setNewExtraPrice] = useState(5000);
+  const [addingExtra, setAddingExtra] = useState(false);
 
   // Status
   const [isAvailable, setIsAvailable] = useState(true);
@@ -84,6 +94,8 @@ export default function EditCarPage() {
         setInstantBooking(data.instantBooking || false);
         setPricingMode(data.pricingMode === 'dynamic' ? 'dynamic' : 'static');
         setPriceIncludesVat(data.priceIncludesVat ?? false);
+        setGpsVerified(data.gpsVerified ?? false);
+        setGpsTrackerType(data.gpsTrackerType ?? '');
         setCancellationPolicy(data.cancellationPolicy || 'MODERATE');
         setIsAvailable(data.isAvailable ?? true);
         setLoading(false);
@@ -97,6 +109,11 @@ export default function EditCarPage() {
           setBlockedDates(data.blocked.map((b: any) => ({ id: b.id, date: b.date.split('T')[0] })));
         }
       })
+      .catch(() => {});
+
+    fetch(`/api/cars/${id}/extras`)
+      .then(r => r.json())
+      .then(data => { if (data.extras) setCarExtras(data.extras); })
       .catch(() => {});
   }, [id, router]);
 
@@ -204,6 +221,7 @@ export default function EditCarPage() {
     { key: 'photos', label: 'Photos' },
     { key: 'pricing', label: 'Pricing & Deposit' },
     { key: 'availability', label: 'Availability' },
+    { key: 'extras', label: 'Add-Ons' },
     { key: 'status', label: 'Listing Status' },
   ];
 
@@ -493,8 +511,34 @@ export default function EditCarPage() {
               </button>
             </div>
 
+            {/* GPS toggle */}
+            <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-xl border border-border">
+              <div className="flex-1 mr-4">
+                <p className="font-semibold text-sm">GPS Tracker Installed</p>
+                <p className="text-xs text-text-secondary mt-0.5">
+                  Verified tracker increases booking rate by 23%. Gari will verify before showing badge.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setGpsVerified(v => !v)}
+                className={`relative flex-shrink-0 w-12 h-6 rounded-full transition-colors ${gpsVerified ? 'bg-green-500' : 'bg-gray-300 dark:bg-gray-600'}`}
+              >
+                <span className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all ${gpsVerified ? 'left-7' : 'left-1'}`} />
+              </button>
+            </div>
+            {gpsVerified && (
+              <input
+                type="text"
+                value={gpsTrackerType}
+                onChange={e => setGpsTrackerType(e.target.value)}
+                placeholder="Tracker type (e.g. Teltonika FMC130, generic GPS)"
+                className="input text-sm"
+              />
+            )}
+
             <button
-              onClick={() => saveSection('pricing', { pricePerDay, depositAmount, driverAvailable, driverPricePerDay: driverAvailable ? driverPricePerDay : 0, instantBooking, cancellationPolicy, pricingMode, priceIncludesVat })}
+              onClick={() => saveSection('pricing', { pricePerDay, depositAmount, driverAvailable, driverPricePerDay: driverAvailable ? driverPricePerDay : 0, instantBooking, cancellationPolicy, pricingMode, priceIncludesVat, gpsVerified, gpsTrackerType: gpsVerified ? gpsTrackerType : null })}
               disabled={saving === 'pricing'}
               className="btn-primary w-full justify-center">
               {saving === 'pricing' ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
@@ -538,6 +582,106 @@ export default function EditCarPage() {
                 ))}
               </div>
             )}
+          </div>
+        )}
+
+        {/* Add-Ons / Extras */}
+        {activeSection === 'extras' && (
+          <div className="card p-6 space-y-5">
+            <h2 className="font-bold text-lg text-text-primary dark:text-white">Optional Add-Ons</h2>
+            <p className="text-sm text-text-secondary">Manage extras renters can add to their booking (child seats, coolers, Wi-Fi, etc.)</p>
+
+            {/* Existing extras */}
+            <div className="space-y-2">
+              {carExtras.length === 0 && (
+                <p className="text-sm text-text-secondary text-center py-4">No add-ons yet — add one below</p>
+              )}
+              {carExtras.map(ex => (
+                <div key={ex.id} className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-xl">
+                  <span className="text-xl">{ex.icon || '➕'}</span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-text-primary dark:text-white">{ex.name}</p>
+                    {ex.description && <p className="text-xs text-text-secondary truncate">{ex.description}</p>}
+                    <p className="text-xs text-primary font-medium">RWF {ex.pricePerDay.toLocaleString()}/day</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      await fetch(`/api/cars/${id}/extras`, {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ extraId: ex.id, isAvailable: !ex.isAvailable }),
+                      });
+                      setCarExtras(prev => prev.map(e => e.id === ex.id ? { ...e, isAvailable: !e.isAvailable } : e));
+                    }}
+                    className={`text-xs px-2 py-1 rounded-full font-medium ${ex.isAvailable ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-500'}`}
+                  >
+                    {ex.isAvailable ? 'Active' : 'Hidden'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      await fetch(`/api/cars/${id}/extras`, {
+                        method: 'DELETE',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ extraId: ex.id }),
+                      });
+                      setCarExtras(prev => prev.filter(e => e.id !== ex.id));
+                      toast.success('Add-on removed');
+                    }}
+                    className="text-xs text-red-500 hover:underline"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            {/* Add new extra */}
+            <div className="border-t border-border pt-4">
+              <p className="text-sm font-semibold text-text-primary dark:text-white mb-3">Add a new add-on</p>
+              <div className="space-y-3">
+                <div className="flex gap-2">
+                  <input value={newExtraIcon} onChange={e => setNewExtraIcon(e.target.value)}
+                    placeholder="Icon emoji 🪑" className="input w-24 text-center" maxLength={4} />
+                  <input value={newExtraName} onChange={e => setNewExtraName(e.target.value)}
+                    placeholder="Add-on name (e.g. Child Seat)" className="input flex-1" />
+                </div>
+                <input value={newExtraDesc} onChange={e => setNewExtraDesc(e.target.value)}
+                  placeholder="Short description (optional)" className="input w-full" />
+                <div className="flex gap-2 items-center">
+                  <label className="text-sm text-text-secondary">Price/day:</label>
+                  <input type="number" value={newExtraPrice} onChange={e => setNewExtraPrice(Number(e.target.value))}
+                    min={0} step={500} className="input w-32" />
+                  <button
+                    type="button"
+                    disabled={!newExtraName || addingExtra}
+                    onClick={async () => {
+                      if (!newExtraName) return;
+                      setAddingExtra(true);
+                      try {
+                        const res = await fetch(`/api/cars/${id}/extras`, {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ name: newExtraName, icon: newExtraIcon || null, description: newExtraDesc || null, pricePerDay: newExtraPrice }),
+                        });
+                        const data = await res.json();
+                        if (res.ok) {
+                          setCarExtras(prev => [...prev, data.extra]);
+                          setNewExtraName(''); setNewExtraIcon(''); setNewExtraDesc(''); setNewExtraPrice(5000);
+                          toast.success('Add-on added');
+                        }
+                      } finally {
+                        setAddingExtra(false);
+                      }
+                    }}
+                    className="btn-primary px-4 py-2 text-sm disabled:opacity-60"
+                  >
+                    {addingExtra ? <Loader2 className="w-4 h-4 animate-spin" /> : '+ Add'}
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         )}
 

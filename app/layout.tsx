@@ -14,6 +14,7 @@ import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { MobileNav } from '@/components/MobileNav';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
+import { AIChatWidget } from '@/components/AIChatWidget';
 import { PushNotificationInit } from '@/components/PushNotificationInit';
 import PWABanner from '@/components/PWABanner';
 import { DemoBanner } from '@/components/DemoBanner';
@@ -67,6 +68,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Footer />
           <MobileNav />
           <WhatsAppButton />
+          <AIChatWidget />
           <PushNotificationInit />
           <PWABanner />
           <Toaster

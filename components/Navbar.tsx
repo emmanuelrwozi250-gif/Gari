@@ -5,23 +5,19 @@ import Image from 'next/image';
 import { useSession, signOut } from 'next-auth/react';
 import { useState } from 'react';
 import { useTheme } from './ThemeProvider';
-import { useLanguage, type Locale } from '@/lib/language';
+import { useLanguage } from '@/lib/language';
 import {
   Car, Menu, X, Sun, Moon, User, LogOut, LayoutDashboard,
-  Bell, ChevronDown, MessageSquare, Globe,
+  Bell, ChevronDown, MessageSquare,
 } from 'lucide-react';
 import { UnreadMessagesBadge } from './UnreadMessagesBadge';
-
-const LOCALE_LABELS: Record<Locale, string> = { en: 'EN', fr: 'FR', rw: 'RW' };
-const LOCALE_FLAGS: Record<Locale, string> = { en: '🇬🇧', fr: '🇫🇷', rw: '🇷🇼' };
 
 export function Navbar() {
   const { data: session } = useSession();
   const { theme, toggleTheme } = useTheme();
-  const { locale, setLocale, t } = useLanguage();
+  const { t } = useLanguage();
   const [menuOpen, setMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const [langOpen, setLangOpen] = useState(false);
 
   return (
     <nav className="sticky top-0 z-50 bg-dark-bg text-white shadow-lg">
@@ -60,33 +56,6 @@ export function Navbar() {
 
           {/* Right side */}
           <div className="hidden md:flex items-center gap-3">
-            {/* Language switcher */}
-            <div className="relative">
-              <button
-                onClick={() => setLangOpen(v => !v)}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-gray-300 hover:text-white hover:bg-white/10 transition-all text-sm"
-              >
-                <Globe className="w-4 h-4" />
-                <span className="font-semibold">{LOCALE_LABELS[locale]}</span>
-              </button>
-              {langOpen && (
-                <div className="absolute right-0 mt-2 w-36 bg-gray-900 border border-white/10 rounded-xl shadow-xl py-1 z-50">
-                  {(['en', 'fr', 'rw'] as Locale[]).map(l => (
-                    <button
-                      key={l}
-                      onClick={() => { if (l === 'en') { setLocale(l); setLangOpen(false); } }}
-                      className={`flex items-center gap-2 w-full px-3 py-2 text-sm transition-colors ${
-                        locale === l ? 'text-primary font-semibold bg-primary/10' : 'text-gray-300 hover:bg-white/10'
-                      } ${l !== 'en' ? 'opacity-50 cursor-default' : ''}`}
-                    >
-                      <span>{LOCALE_FLAGS[l]}</span>
-                      <span>{{ en: 'English', fr: 'Français', rw: 'Kinyarwanda' }[l]}</span>
-                      {l !== 'en' && <span className="ml-auto text-[10px] text-gray-500">soon</span>}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
             <button
               onClick={toggleTheme}
               className="p-2 rounded-xl text-gray-400 hover:text-white hover:bg-white/10 transition-all"
@@ -230,19 +199,6 @@ export function Navbar() {
             <button onClick={toggleTheme} className="p-2 rounded-xl text-gray-400 hover:bg-white/10">
               {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
-          </div>
-          <div className="flex items-center gap-1 px-4 pt-1 pb-2">
-            {(['en', 'fr', 'rw'] as Locale[]).map(l => (
-              <button
-                key={l}
-                onClick={() => { setLocale(l); setMenuOpen(false); }}
-                className={`flex-1 py-2 rounded-xl text-xs font-semibold transition-colors ${
-                  locale === l ? 'bg-primary text-white' : 'bg-white/10 text-gray-300'
-                }`}
-              >
-                {LOCALE_FLAGS[l]} {LOCALE_LABELS[l]}
-              </button>
-            ))}
           </div>
         </div>
       )}

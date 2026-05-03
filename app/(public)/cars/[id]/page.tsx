@@ -70,6 +70,8 @@ const getCar = cache(async function getCar(id: string): Promise<CarDisplay | nul
         ? car.host.superhostSince.toISOString()
         : null,
       priceIncludesVat: (car as { priceIncludesVat?: boolean }).priceIncludesVat ?? false,
+      gpsVerified: (car as { gpsVerified?: boolean }).gpsVerified ?? false,
+      gpsTrackerType: (car as { gpsTrackerType?: string | null }).gpsTrackerType ?? null,
     };
   } catch {
     return null;

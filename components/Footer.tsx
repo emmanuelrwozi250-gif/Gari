@@ -5,7 +5,7 @@ import { COMPANY } from '@/lib/config/company';
 
 export function Footer() {
   return (
-    <footer className="bg-dark-bg text-gray-400 pt-16 pb-8 hidden md:block">
+    <footer className="bg-dark-bg text-gray-400 pt-8 md:pt-16 pb-24 md:pb-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
           {/* Brand */}
@@ -49,6 +49,7 @@ export function Footer() {
             <h4 className="text-white font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2 text-sm">
               <li><Link href="/search" className="hover:text-primary transition-colors">Browse Cars</Link></li>
+              <li><Link href="/collections" className="hover:text-primary transition-colors">Collections</Link></li>
               <li><Link href="/safari" className="hover:text-primary transition-colors">🏕️ Safari</Link></li>
               <li><Link href="/airport-transfer" className="hover:text-primary transition-colors">✈️ Airport Transfer</Link></li>
               <li><Link href="/dashboard" className="hover:text-primary transition-colors">My Bookings</Link></li>

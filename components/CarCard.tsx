@@ -4,6 +4,7 @@ import { Star, MapPin, Users, Fuel, BadgeCheck, Zap, Award } from 'lucide-react'
 import { formatRWF, toUSD, getCarTypeLabel, getFuelLabel } from '@/lib/utils';
 import { RWANDA_DISTRICTS } from '@/lib/districts';
 import { FallbackImage } from './FallbackImage';
+import { WishlistButton } from './WishlistButton';
 
 interface CarCardProps {
   car: {
@@ -23,6 +24,7 @@ interface CarCardProps {
     district: string;
     isVerified: boolean;
     instantBooking?: boolean;
+    gpsVerified?: boolean;
     rating: number;
     totalTrips: number;
     hasAC?: boolean;
@@ -84,7 +86,15 @@ export function CarCard({ car, compact = false, pickupDate, returnDate }: CarCar
               🧑‍✈️ Driver
             </span>
           )}
+          {car.gpsVerified && (
+            <span className="badge bg-green-600/90 text-white text-xs backdrop-blur-sm">
+              📍 GPS
+            </span>
+          )}
         </div>
+
+        {/* Wishlist heart button — bottom-right, avoids badge overlap */}
+        <WishlistButton carId={car.id} className="absolute bottom-3 right-3 z-10" />
 
         {/* Badges top-right: listing type + superhost + international */}
         <div className="absolute top-3 right-3 flex flex-col items-end gap-1">

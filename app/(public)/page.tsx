@@ -15,6 +15,8 @@ import {
   Car, Users, Globe,
   Clock, HeartHandshake, Lock, RefreshCcw,
 } from 'lucide-react';
+import { CollectionCard } from '@/components/CollectionCard';
+import { COLLECTIONS } from '@/lib/collections';
 
 // ─── SEO Metadata ──────────────────────────────────────────────────────────────
 export const metadata: Metadata = {
@@ -292,6 +294,24 @@ export default async function HomePage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {featuredCars.map((car) => (
             <CarCard key={car.id} car={car} />
+          ))}
+        </div>
+      </section>
+
+      {/* ── Browse Collections ────────────────────────────────────────────── */}
+      <section className="py-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="section-title">Browse Collections</h2>
+            <p className="section-subtitle">Curated cars for every Rwanda journey</p>
+          </div>
+          <Link href="/collections" className="btn-ghost">
+            See all <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+          {COLLECTIONS.map((collection) => (
+            <CollectionCard key={collection.slug} collection={collection} compact />
           ))}
         </div>
       </section>
