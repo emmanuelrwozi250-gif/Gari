@@ -17,9 +17,11 @@ const CAR_TYPES = [
 interface FilterSidebarProps {
   searchParams: Record<string, string | undefined>;
   onChange: (key: string, value: string | null) => void;
+  priceMin?: number;
+  priceMax?: number;
 }
 
-export function FilterSidebar({ searchParams, onChange }: FilterSidebarProps) {
+export function FilterSidebar({ searchParams, onChange, priceMin, priceMax }: FilterSidebarProps) {
   const handleGPS = (loc: LocationFound) => {
     onChange('district', loc.district.id);
   };
@@ -115,17 +117,17 @@ export function FilterSidebar({ searchParams, onChange }: FilterSidebarProps) {
         <div className="flex gap-2 items-center">
           <input
             type="number"
-            placeholder="15,000"
+            placeholder={priceMin ? priceMin.toLocaleString() : '15,000'}
             value={searchParams.minPrice || ''}
             onChange={e => onChange('minPrice', e.target.value || null)}
             className="input text-sm"
-            min={0}
+            min={priceMin ?? 0}
             step={1000}
           />
           <span className="text-text-light text-sm">–</span>
           <input
             type="number"
-            placeholder="300,000"
+            placeholder={priceMax ? priceMax.toLocaleString() : '300,000'}
             value={searchParams.maxPrice || ''}
             onChange={e => onChange('maxPrice', e.target.value || null)}
             className="input text-sm"

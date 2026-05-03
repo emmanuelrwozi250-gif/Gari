@@ -19,6 +19,8 @@ interface SearchResultsProps {
   total: number;
   page: number;
   searchParams: Record<string, string | undefined>;
+  priceMin?: number;
+  priceMax?: number;
 }
 
 const SORT_OPTIONS = [
@@ -60,7 +62,7 @@ export function SearchSkeleton() {
   );
 }
 
-export function SearchResults({ cars, total, page, searchParams }: SearchResultsProps) {
+export function SearchResults({ cars, total, page, searchParams, priceMin, priceMax }: SearchResultsProps) {
   const router = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();
@@ -129,7 +131,7 @@ export function SearchResults({ cars, total, page, searchParams }: SearchResults
               <span>View cars on map</span>
               <span aria-hidden>→</span>
             </a>
-            <FilterSidebar searchParams={searchParams} onChange={updateParam} />
+            <FilterSidebar searchParams={searchParams} onChange={updateParam} priceMin={priceMin} priceMax={priceMax} />
           </aside>
 
           {/* Main content */}
@@ -301,7 +303,7 @@ export function SearchResults({ cars, total, page, searchParams }: SearchResults
             <FilterSidebar searchParams={searchParams} onChange={(key, val) => {
               updateParam(key, val);
               setFilterOpen(false);
-            }} />
+            }} priceMin={priceMin} priceMax={priceMax} />
           </div>
         </div>
       )}

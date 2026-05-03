@@ -164,13 +164,24 @@ async function getCars(params: SearchParamsShape) {
 
 async function SearchResultsFetcher({ searchParams }: { searchParams: Promise<SearchParamsShape> }) {
   const resolved = await searchParams;
-  const { cars, total, page } = await getCars(resolved);
+  const [{ cars, total, page }, priceRange] = await Promise.all([
+    getCars(resolved),
+    prisma.car.aggregate({
+      _min: { pricePerDay: true },
+      _max: { pricePerDay: true },
+      where: { isAvailable: true },
+    }).catch(() => ({ _min: { pricePerDay: 15000 }, _max: { pricePerDay: 300000 } })),
+  ]);
+  const priceMin = priceRange._min.pricePerDay ?? 15000;
+  const priceMax = priceRange._max.pricePerDay ?? 300000;
   return (
     <SearchResults
       cars={cars as unknown[]}
       total={total}
       page={page}
       searchParams={resolved}
+      priceMin={priceMin}
+      priceMax={priceMax}
     />
   );
 }

@@ -11,7 +11,7 @@ export function DemoBanner() {
   useEffect(() => {
     // No useSearchParams — avoids Suspense CSR bailout; use window directly (client-only)
     const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('demo') === 'true') {
+    if (urlParams.get('demo') === 'true' || process.env.NEXT_PUBLIC_DEMO_MODE === 'true') {
       sessionStorage.setItem('gari_demo_mode', 'true');
     }
     const inDemoMode = sessionStorage.getItem('gari_demo_mode') === 'true';
