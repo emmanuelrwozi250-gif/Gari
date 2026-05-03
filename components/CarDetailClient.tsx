@@ -18,9 +18,10 @@ import { RecentlyViewedCars } from './RecentlyViewedCars';
 import { COMPANY } from '@/lib/config/company';
 import { POLICY_TIERS } from '@/config/cancellation';
 import { calculateVAT, VAT_LABEL } from '@/config/vat';
+import { PLATFORM } from '@/config/platform';
 
 const FALLBACK = 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=800&q=80';
-const PLATFORM_FEE_RATE = 0.12;
+const PLATFORM_FEE_RATE = PLATFORM.FEE_RATE;
 
 interface DynamicPricingData {
   multiplier: number;
