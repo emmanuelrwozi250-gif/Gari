@@ -679,7 +679,7 @@ export function CarDetailClient({ car, completedBookingId, existingBookingId, si
             <div className="flex items-start gap-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-xl p-4">
               <Shield className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
               <p className="text-sm text-amber-800 dark:text-amber-200">
-                <span className="font-semibold">Safety tip:</span> Always meet in a safe, public location. Gari recommends completing vehicle handover at a bank or police post.
+                <span className="font-semibold">Pre-trip inspection:</span> Walk around the car with the host before driving away. Check tyres, lights, fuel level, and note any existing scratches. Take photos for your own record.
               </p>
             </div>
           </div>
