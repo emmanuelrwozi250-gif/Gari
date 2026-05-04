@@ -1,47 +1,68 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { X } from 'lucide-react';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 
-const STORAGE_KEY = 'gari_demo_dismissed';
-
-export function DemoBanner() {
+function DemoBannerInner() {
   const [visible, setVisible] = useState(false);
+  const params = useSearchParams();
 
   useEffect(() => {
-    // No useSearchParams — avoids Suspense CSR bailout; use window directly (client-only)
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('demo') === 'true' || process.env.NEXT_PUBLIC_DEMO_MODE === 'true') {
-      sessionStorage.setItem('gari_demo_mode', 'true');
-    }
-    const inDemoMode = sessionStorage.getItem('gari_demo_mode') === 'true';
-    const dismissed = sessionStorage.getItem(STORAGE_KEY) === 'true';
-    if (inDemoMode && !dismissed) setVisible(true);
-  }, []);
+    // ONLY activate demo mode if ?demo=true is in the URL right now
+    const demoInUrl = params.get('demo') === 'true';
 
-  // Always render for SSR discoverability; hidden class conceals it until demo mode activates
+    if (demoInUrl) {
+      // User arrived via the investor demo link — store it for this session
+      sessionStorage.setItem('gari-demo-mode', 'true');
+    }
+
+    // Show banner only if demo was activated this session AND has not been dismissed
+    const demoActive =
+      demoInUrl ||
+      sessionStorage.getItem('gari-demo-mode') === 'true';
+    const dismissed =
+      sessionStorage.getItem('gari-demo-dismissed') === 'true';
+
+    if (demoActive && !dismissed) {
+      setVisible(true);
+    }
+  }, [params]);
+
+  // Return null when not visible — keeps text out of DOM entirely
+  if (!visible) return null;
+
   return (
-    <div
-      className={`relative z-50 bg-amber-400 text-amber-900 text-xs font-medium px-4 py-1.5 flex items-center justify-between gap-4${visible ? '' : ' hidden'}`}
-      aria-hidden={!visible}
-    >
-      <div className="flex-1 text-center">
-        🚀 <strong>Investor Demo Mode</strong> — Payments are simulated. No real transactions.{' '}
-        Built for Rwanda ·{' '}
-        <a href="https://gari-nu.vercel.app" className="underline font-semibold" target="_blank" rel="noopener noreferrer">
+    <div className="w-full bg-amber-500 text-white text-xs sm:text-sm py-2.5 px-4 flex items-center justify-between gap-4 sticky top-0 z-[100]">
+      <span>
+        🚀 <strong>Investor Demo Mode</strong>
+        {' — '}Payments are simulated · No real transactions ·{' '}
+        <a
+          href="https://gari-nu.vercel.app"
+          className="underline opacity-90 hover:opacity-100"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           gari-nu.vercel.app
         </a>
-      </div>
+      </span>
       <button
         onClick={() => {
-          sessionStorage.setItem(STORAGE_KEY, 'true');
+          sessionStorage.setItem('gari-demo-dismissed', 'true');
           setVisible(false);
         }}
-        className="flex-shrink-0 p-0.5 rounded hover:bg-amber-500/50 transition-colors"
-        aria-label="Dismiss demo banner"
+        aria-label="Dismiss"
+        className="text-white font-bold text-xl w-7 h-7 flex items-center justify-center rounded-full hover:bg-white/20 transition flex-shrink-0"
       >
-        <X className="w-3.5 h-3.5" />
+        ×
       </button>
     </div>
+  );
+}
+
+export function DemoBanner() {
+  return (
+    <Suspense fallback={null}>
+      <DemoBannerInner />
+    </Suspense>
   );
 }
