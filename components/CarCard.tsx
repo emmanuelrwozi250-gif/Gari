@@ -155,9 +155,6 @@ export function CarCard({ car, compact = false, pickupDate, returnDate }: CarCar
             <span className="text-xs font-semibold text-text-primary dark:text-white">
               {car.rating > 0 ? car.rating.toFixed(1) : 'New'}
             </span>
-            {car.totalTrips > 0 && (
-              <span className="text-xs text-text-light">({car.totalTrips})</span>
-            )}
           </div>
         </div>
 

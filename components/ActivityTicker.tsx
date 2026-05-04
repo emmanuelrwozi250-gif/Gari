@@ -3,13 +3,13 @@
 import { useEffect, useState } from 'react';
 
 const FALLBACK_FEED = [
-  "Amina K. just booked a Toyota RAV4 in Gasabo · 4 min ago",
-  "David N. received a 5★ review for his Land Cruiser V8 · 1 hour ago",
-  "3 cars booked in Musanze this week 🦍 · 2 hours ago",
-  "Jean-Pierre earned RWF 225,000 this week · Today",
-  "Kalisa E. just booked a Mitsubishi Pajero for a safari · 8 min ago",
-  "Patrick M. completed a 5-day Akagera safari trip · 3 hours ago",
-  "18 bookings made in the last 24 hours 🚗 · Just now",
+  "✓ Every host is NIDA-verified before listing a car",
+  "📋 An EBM receipt (RRA) is issued for every booking",
+  "🔒 Security deposits held safely by Gari — released 48 h after return",
+  "⚡ Instant booking available on select vehicles — no waiting for approval",
+  "🌍 English-speaking drivers available for international guests",
+  "🛡️ Basic insurance included in every rental at no extra cost",
+  "💳 Pay with MTN MoMo, Airtel Money, or card — fully secure",
 ];
 
 export function ActivityTicker() {

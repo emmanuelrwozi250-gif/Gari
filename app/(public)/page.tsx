@@ -259,7 +259,7 @@ export default async function HomePage() {
           <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 mt-8 sm:mt-10">
             {([
               { label: 'Verified Cars', value: PLATFORM_STATS.verifiedCars },
-              { label: 'Trips Completed', value: PLATFORM_STATS.tripsCompleted },
+              { label: 'Phase', value: PLATFORM_STATS.tripsCompleted },
               { label: 'Districts Covered', value: PLATFORM_STATS.districtsActive },
               { label: 'Avg. Rating', value: `${PLATFORM_STATS.avgRating}★` },
             ] as const).map(({ label, value }, i) => {
@@ -430,7 +430,7 @@ export default async function HomePage() {
           <HeartHandshake className="w-12 h-12 text-primary mx-auto mb-4" />
           <h2 className="text-3xl font-extrabold mb-4">Your Next Drive Starts Here</h2>
           <p className="text-gray-400 mb-8">
-            Join {STATS.tripsCompleted} renters who trust Gari. ID-verified hosts, MTN MoMo &amp; card payments.
+            Rwanda&apos;s trusted car rental marketplace — join the pilot. ID-verified hosts, MTN MoMo &amp; card payments.
           </p>
           <Link href="/search" className="btn-primary text-base px-12 py-4 inline-flex items-center gap-2">
             Browse Cars <ArrowRight className="w-5 h-5" />
