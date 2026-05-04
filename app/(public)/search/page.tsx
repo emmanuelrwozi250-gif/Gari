@@ -103,7 +103,7 @@ function filterDemoCars(params: SearchParamsShape) {
   else if (params.sort === 'price_desc') cars.sort((a, b) => b.pricePerDay - a.pricePerDay);
   else if (params.sort === 'newest') cars.reverse();
   else if (params.sort === 'popular') cars.sort((a, b) => (b.totalTrips - a.totalTrips) || (b.rating - a.rating));
-  else cars.sort((a, b) => b.rating - a.rating);
+  else cars.sort((a, b) => (b.totalTrips - a.totalTrips) || (b.rating - a.rating) || (a.pricePerDay - b.pricePerDay));
 
   return cars;
 }
@@ -128,12 +128,13 @@ async function getCars(params: SearchParamsShape) {
       where.host = { internationalReady: true };
     }
 
-    const orderBy: Record<string, string> =
-      params.sort === 'price_asc' ? { pricePerDay: 'asc' } :
-      params.sort === 'price_desc' ? { pricePerDay: 'desc' } :
-      params.sort === 'rating' ? { rating: 'desc' } :
-      params.sort === 'newest' ? { createdAt: 'desc' } :
-      { rating: 'desc' };
+    const orderBy =
+      params.sort === 'price_asc' ? [{ pricePerDay: 'asc' as const }] :
+      params.sort === 'price_desc' ? [{ pricePerDay: 'desc' as const }] :
+      params.sort === 'rating' ? [{ rating: 'desc' as const }] :
+      params.sort === 'newest' ? [{ createdAt: 'desc' as const }] :
+      params.sort === 'popular' ? [{ totalTrips: 'desc' as const }, { rating: 'desc' as const }] :
+      [{ totalTrips: 'desc' as const }, { rating: 'desc' as const }, { pricePerDay: 'asc' as const }];
 
     const page = parseInt(params.page || '1');
     const take = 12;
