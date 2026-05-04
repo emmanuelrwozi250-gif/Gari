@@ -618,7 +618,7 @@ export function CarDetailClient({ car, completedBookingId, existingBookingId, si
               <h2 className="font-bold text-text-primary dark:text-white mb-4">Your Host</h2>
               <div className="flex items-center gap-4">
                 <div className="relative w-14 h-14 rounded-full overflow-hidden flex-shrink-0 bg-primary/20">
-                  {data.hostAvatar ? (
+                  {data.hostAvatar && !data.hostAvatar.includes('pravatar') && !data.hostAvatar.includes('placeholder') ? (
                     <Image src={data.hostAvatar} alt={data.hostName}
                       fill className="object-cover" sizes="56px" quality={80} />
                   ) : (
@@ -1018,6 +1018,10 @@ export function CarDetailClient({ car, completedBookingId, existingBookingId, si
                   </div>
                 );
               })()}
+
+              <p className="text-[10px] text-text-light text-center mt-1">
+                An EBM receipt (RRA) is issued upon booking confirmation.
+              </p>
 
               <a href={waLink} target="_blank" rel="noopener noreferrer"
                 className="mt-3 flex items-center justify-center gap-2 w-full border border-primary text-primary py-2.5 rounded-xl text-sm font-semibold hover:bg-primary hover:text-white transition-colors">

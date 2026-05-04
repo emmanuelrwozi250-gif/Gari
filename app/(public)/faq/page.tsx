@@ -26,6 +26,10 @@ const RENTER_FAQS = [
     q: 'What if the car looks different from the photos?',
     a: 'Contact Gari support immediately via WhatsApp (+250 788 123 000) before you start driving. We will investigate and, if the discrepancy is significant, arrange a full refund or a replacement vehicle.',
   },
+  {
+    q: 'Are prices inclusive of VAT?',
+    a: 'It depends on the host. Some hosts list VAT-inclusive prices — shown with a green "VAT incl." badge on the listing. Others list base prices to which 18% VAT is added at checkout — shown with an amber "+ 18% VAT" badge. The final total in the booking widget always shows the full VAT-inclusive amount. An EBM receipt (as required by Rwanda Revenue Authority) is issued for every confirmed booking.',
+  },
 ];
 
 const HOST_FAQS = [
@@ -48,6 +52,10 @@ const HOST_FAQS = [
   {
     q: 'What is the Gari platform fee?',
     a: 'Gari charges a 12% platform fee deducted from your rental earnings. This covers insurance, payment processing, customer support, and platform maintenance. Tips from renters are paid 100% to you — no deductions.',
+  },
+  {
+    q: 'What taxes apply to my rental income?',
+    a: 'All rental transactions on Gari are subject to 18% VAT (TVA) as required by Rwanda Revenue Authority (RRA). Gari collects this VAT from renters on your behalf and remits it directly to RRA. An EBM receipt is issued for every booking. Your earnings shown in your dashboard are already net of VAT remittance — you do not need to register for or manage VAT separately.',
   },
 ];
 

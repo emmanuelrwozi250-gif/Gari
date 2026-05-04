@@ -16,7 +16,7 @@ const SECTIONS = [
   },
   {
     title: '3. Booking & Payment',
-    body: `Renters can request or instantly book vehicles listed on the Platform. All prices are displayed in Rwandan Francs (RWF). Gari charges a 12% platform fee on each booking, deducted from the Host's earnings. Payment methods include MTN MoMo, Airtel Money, and card payments via Stripe. All transactions are processed securely. A booking is only confirmed once payment is received and (for non-instant listings) the Host accepts the request.`,
+    body: `Renters can request or instantly book vehicles listed on the Platform. All prices are displayed in Rwandan Francs (RWF). Gari charges a 12% platform fee on each booking, deducted from the Host's earnings. Payment methods include MTN MoMo, Airtel Money, and card payments via Stripe. All transactions are processed securely. A booking is only confirmed once payment is received and (for non-instant listings) the Host accepts the request.\n\nAll rental transactions are subject to 18% Value Added Tax (VAT/TVA) as required by Law No. 37/2012 on Value Added Tax in Rwanda. Gari acts as a VAT-registered collecting agent: Gari collects VAT from Renters on behalf of Hosts and remits it directly to Rwanda Revenue Authority (RRA). An Electronic Billing Machine (EBM) receipt is issued for each confirmed booking. Hosts are not required to manage or remit VAT independently for transactions processed through the Platform.`,
   },
   {
     title: '4. Cancellation Policy',
