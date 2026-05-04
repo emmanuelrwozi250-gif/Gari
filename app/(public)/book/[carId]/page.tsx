@@ -117,6 +117,7 @@ export default function BookingPage({ params }: { params: { carId: string } }) {
                   alt={car.make}
                   width={96}
                   height={72}
+                  sizes="96px"
                   className="object-cover w-full h-full"
                 />
               </div>
