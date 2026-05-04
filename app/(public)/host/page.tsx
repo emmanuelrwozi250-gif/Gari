@@ -142,13 +142,13 @@ export default function BeAHostPage() {
       <section className="py-16 px-4 max-w-4xl mx-auto">
         <div className="text-center mb-10">
           <h2 className="section-title">How Much Can You Earn?</h2>
-          <p className="section-subtitle">Based on real host data — after 12% platform fee</p>
+          <p className="section-subtitle">Projected earnings based on typical utilisation — after 12% platform fee</p>
         </div>
         <div className="grid md:grid-cols-3 gap-5">
           {[
-            { type: 'Economy Car', model: 'Toyota Vitz / Fielder', price: '30,000', days: 20, monthly: '552,000' },
-            { type: 'SUV / 4x4', model: 'RAV4 / Vitara / Prado', price: '90,000', days: 18, monthly: '1,490,400' },
-            { type: 'Minibus', model: 'Toyota Hiace', price: '130,000', days: 22, monthly: '2,641,600' },
+            { type: 'Economy Car', model: 'Toyota Vitz / Fielder', price: '30,000', days: 20, monthly: '528,000' },
+            { type: 'SUV / 4x4', model: 'RAV4 / Vitara / Prado', price: '90,000', days: 18, monthly: '1,425,600' },
+            { type: 'Minibus', model: 'Toyota Hiace', price: '130,000', days: 22, monthly: '2,513,600' },
           ].map(({ type, model, price, days, monthly }) => (
             <div key={type} className="card p-6 text-center">
               <div className="text-sm text-text-secondary mb-1">{type}</div>
