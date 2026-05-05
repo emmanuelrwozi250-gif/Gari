@@ -5,7 +5,7 @@ import { getServerSession } from 'next-auth';
 import { prisma } from '@/lib/prisma';
 import { authOptions } from '@/lib/auth';
 import { CarDetailClient, type CarDisplay, type ReviewDisplay, type SimilarCar } from '@/components/CarDetailClient';
-import { formatRWF } from '@/lib/utils';
+import { formatRWF, getCarTypeLabel, getTransmissionLabel, getFuelLabel } from '@/lib/utils';
 
 // cache() deduplicates calls within a single render — generateMetadata + page component
 // both call getCar but only one DB round-trip is made per request
@@ -42,11 +42,11 @@ const getCar = cache(async function getCar(id: string): Promise<CarDisplay | nul
       make: car.make,
       model: car.model,
       year: car.year,
-      type: car.type,
+      type: getCarTypeLabel(car.type),
       pricePerDay: car.pricePerDay,
       district: car.district,
       seats: car.seats,
-      transmission: car.transmission,
+      transmission: getTransmissionLabel(car.transmission),
       drivingOption: car.driverAvailable ? 'Both' : 'Self-Drive',
       images: car.photos,
       hostName: car.host?.name ?? '',
@@ -59,7 +59,7 @@ const getCar = cache(async function getCar(id: string): Promise<CarDisplay | nul
       reviewCount: car._count.reviews,
       features: car.features.length > 0 ? car.features : ['Air Conditioning', 'USB Charging'],
       description: car.description ?? '',
-      fuel: car.fuel,
+      fuel: getFuelLabel(car.fuel),
       available: car.isAvailable,
       depositAmount: car.depositAmount,
       instantBooking: car.instantBooking,

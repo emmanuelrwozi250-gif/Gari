@@ -12,7 +12,7 @@ import {
   TrendingUp,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { formatRWF, toUSD, getCarTypeLabel, getTransmissionLabel, getFuelLabel } from '@/lib/utils';
+import { formatRWF, toUSD } from '@/lib/utils';
 import { RWANDA_DISTRICTS } from '@/lib/districts';
 import { RecentlyViewedCars } from './RecentlyViewedCars';
 import { COMPANY } from '@/lib/config/company';
@@ -493,7 +493,7 @@ export function CarDetailClient({ car, completedBookingId, existingBookingId, si
             {/* Title & meta */}
             <div>
               <div className="flex flex-wrap gap-2 mb-3">
-                <span className="text-xs font-semibold px-3 py-1 rounded-full bg-primary/10 text-primary">{getCarTypeLabel(data.type)}</span>
+                <span className="text-xs font-semibold px-3 py-1 rounded-full bg-primary/10 text-primary">{data.type}</span>
                 <span className={`text-xs font-semibold px-3 py-1 rounded-full ${data.drivingOption === 'Self-Drive' ? 'bg-blue-100 text-blue-700' : data.drivingOption === 'With Driver' ? 'bg-purple-100 text-purple-700' : 'bg-green-100 text-green-700'}`}>
                   {data.drivingOption}
                 </span>
@@ -524,8 +524,8 @@ export function CarDetailClient({ car, completedBookingId, existingBookingId, si
               <div className="flex flex-wrap items-center gap-4 mt-2 text-sm text-text-secondary">
                 <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> {district?.name || data.district}</span>
                 <span className="flex items-center gap-1"><Users className="w-3.5 h-3.5" /> {data.seats} seats</span>
-                <span className="flex items-center gap-1"><Car className="w-3.5 h-3.5" /> {getTransmissionLabel(data.transmission)}</span>
-                <span className="flex items-center gap-1"><Zap className="w-3.5 h-3.5" /> {getFuelLabel(data.fuel)}</span>
+                <span className="flex items-center gap-1"><Car className="w-3.5 h-3.5" /> {data.transmission}</span>
+                <span className="flex items-center gap-1"><Zap className="w-3.5 h-3.5" /> {data.fuel}</span>
                 {data.rating > 0 && data.reviewCount > 0 && (
                   <span className="flex items-center gap-0.5 text-accent-yellow font-semibold">
                     <Star className="w-3.5 h-3.5 fill-accent-yellow" /> {data.rating.toFixed(1)}
@@ -713,7 +713,7 @@ export function CarDetailClient({ car, completedBookingId, existingBookingId, si
                   return null;
                 })()}
                 {(() => {
-                  const ADVANCE: Record<string, number> = { SUV_4X4: 5, LUXURY: 7, EXECUTIVE: 6, ECONOMY: 3, MINIBUS: 4 };
+                  const ADVANCE: Record<string, number> = { 'SUV / 4x4': 5, 'Luxury': 7, 'Executive': 6, 'Economy': 3, 'Minibus': 4 };
                   const days = ADVANCE[data.type] ?? 4;
                   return (
                     <span className="text-xs text-text-light flex items-center gap-1">
