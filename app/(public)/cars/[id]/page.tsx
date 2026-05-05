@@ -117,10 +117,17 @@ export default async function CarPage(
   if (!car) notFound();
 
   // 4. Fetch similar cars from DB (same type → any, max 3, never demo IDs)
+  // car.type is now a formatted label — reverse-map to raw Prisma enum for the where clause
+  const TYPE_LABEL_TO_RAW: Record<string, string> = {
+    'Economy': 'ECONOMY', 'Sedan': 'SEDAN', 'SUV / 4x4': 'SUV_4X4',
+    'Executive': 'EXECUTIVE', 'Minibus': 'MINIBUS', 'Pickup': 'PICKUP',
+    'Luxury': 'LUXURY', 'Van': 'VAN', 'Coaster': 'COASTER',
+  };
+  const rawCarType = TYPE_LABEL_TO_RAW[car.type];
   let similarCars: SimilarCar[] = [];
   try {
     const sameType = await prisma.car.findMany({
-      where: { id: { not: id }, type: car.type as any, isAvailable: true },
+      where: { id: { not: id }, ...(rawCarType ? { type: rawCarType as any } : {}), isAvailable: true },
       orderBy: { rating: 'desc' },
       take: 3,
       select: { id: true, make: true, model: true, year: true, pricePerDay: true, rating: true, photos: true, slug: true },
