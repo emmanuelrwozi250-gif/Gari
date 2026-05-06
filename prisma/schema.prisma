@@ -77,6 +77,10 @@ model User {
   // Platform roles (can hold multiple)
   isSeller          Boolean   @default(false)
   isInvestor        Boolean   @default(false)
+  // RURA operator fields
+  companyName        String?
+  operatorLicenseNo  String?
+  isVerifiedOperator Boolean  @default(false)
   // International renter / host
   renterType        String    @default("LOCAL")
   nationality       String?
@@ -188,6 +192,11 @@ model Car {
   // RURA compliance — B2B2C pivot
   vehicleType           VehicleType          @default(COMMERCIAL)
   complianceStatus      ComplianceStatus     @default(PENDING)
+  ruraVerified          Boolean              @default(false)
+  commercialLicenseNo   String?
+  commercialLicenseExpiry DateTime?
+  insuranceType         String?
+  insuranceExpiry       DateTime?
   // Analytics counters
   viewCount             Int                  @default(0)
   clickCount            Int                  @default(0)
@@ -207,6 +216,7 @@ model Car {
   extras                CarExtra[]
   coHosts               CoHostRelation[]
   boostSubscriptions    BoostSubscription[]
+  analytics             CarAnalytics[]
 
   @@index([hostId])
   @@index([isAvailable, district])
@@ -1062,4 +1072,33 @@ model BoostSubscription {
 
   @@index([carId])
   @@index([expiresAt])
+}
+
+// ─── FEATURE FLAGS ────────────────────────────────────────────────────────────
+
+model FeatureFlag {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  enabled     Boolean  @default(false)
+  description String?
+  updatedAt   DateTime @updatedAt
+  updatedBy   String?
+}
+
+// ─── CAR ANALYTICS (DAILY AGGREGATION) ───────────────────────────────────────
+
+model CarAnalytics {
+  id        String   @id @default(cuid())
+  carId     String
+  car       Car      @relation(fields: [carId], references: [id], onDelete: Cascade)
+  date      DateTime @db.Date
+  views     Int      @default(0)
+  clicks    Int      @default(0)
+  bookings  Int      @default(0)
+  revenue   Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([carId, date])
+  @@index([carId, date])
 }
