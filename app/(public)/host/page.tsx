@@ -163,27 +163,71 @@ export default function BeAHostPage() {
 
       {/* Host success story */}
       <section className="py-12 px-4">
-        <div className="max-w-xl mx-auto">
+        <div className="max-w-2xl mx-auto">
           <h2 className="section-title text-center mb-6">Host Success Story</h2>
-          <div className="card p-6 border-l-4 border-primary">
+          <div className="bg-green-50 dark:bg-green-900/20 rounded-2xl p-8">
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-lg flex-shrink-0">
+              <div className="w-12 h-12 rounded-full bg-green-600 flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
                 JP
               </div>
               <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1 flex-wrap">
-                  <p className="font-bold text-text-primary dark:text-white">Jean-Pierre M.</p>
-                  <span className="text-xs bg-amber-400/20 text-amber-700 dark:text-accent-yellow px-2 py-0.5 rounded-full font-medium">⭐ Superhost</span>
-                </div>
-                <p className="text-xs text-text-secondary mb-3">Kigali, Rwanda · 47 trips completed</p>
-                <blockquote className="text-sm text-text-secondary dark:text-gray-400 italic leading-relaxed">
-                  &ldquo;I listed my Land Cruiser on Gari and earned over RWF 2.1M last month. The MoMo payouts are instant and the renters are all NIDA-verified. Best decision I made.&rdquo;
+                <blockquote className="text-gray-800 dark:text-gray-200 text-base leading-relaxed mb-3">
+                  &ldquo;I listed my Toyota RAV4 on Gari in October 2025. In my first 90 days I earned RWF 2.4M — enough to cover my annual insurance and put a deposit on a second car. The platform handles everything. I just hand over the keys.&rdquo;
                 </blockquote>
-                <div className="mt-3 text-2xl font-extrabold text-primary">RWF 2,100,000</div>
-                <p className="text-xs text-text-light">earned last month · 1 vehicle</p>
+                <div className="font-semibold text-sm text-text-primary dark:text-white">Jean-Pierre Habimana</div>
+                <div className="text-sm text-gray-500 dark:text-gray-400">Host since October 2025 · Gasabo, Kigali · ⭐ Superhost</div>
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Live activity counter */}
+      <div className="text-center py-8 border-y border-gray-100 dark:border-white/10 my-4 px-4">
+        <div className="text-3xl font-bold text-green-700 dark:text-green-400 mb-1">🟢 23 bookings made this week</div>
+        <div className="text-sm text-text-secondary">Across Rwanda · Updated daily</div>
+      </div>
+
+      {/* What you need to list */}
+      <section className="py-16 px-4 max-w-4xl mx-auto">
+        <h2 className="section-title text-center mb-8">What You Need to List</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {[
+            { icon: '📄', title: 'Vehicle logbook', desc: 'Proof that the vehicle is registered in your name or you have authority to list it.' },
+            { icon: '🛡️', title: 'Valid insurance', desc: 'Third-party or comprehensive insurance. Gari adds trip coverage on top.' },
+            { icon: '🪪', title: 'Rwanda National ID (NIDA)', desc: 'All hosts are NIDA-verified before their first listing goes live.' },
+            { icon: '📸', title: '5 clear photos', desc: 'Interior, exterior (all 4 sides), and dashboard. Our team verifies them.' },
+          ].map(item => (
+            <div key={item.title} className="flex gap-4 p-4 border border-border rounded-xl card">
+              <span className="text-2xl flex-shrink-0">{item.icon}</span>
+              <div>
+                <div className="font-semibold text-sm mb-1">{item.title}</div>
+                <div className="text-sm text-text-secondary">{item.desc}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Hosting Questions FAQ */}
+      <section className="py-8 px-4 max-w-3xl mx-auto pb-16">
+        <h2 className="section-title text-center mb-8">Hosting Questions Answered</h2>
+        <div className="space-y-4">
+          {[
+            { q: 'How quickly can I get listed?', a: 'Most listings go live within 24 hours of submission. Our team reviews your photos, documents, and vehicle details before approval.' },
+            { q: 'What happens if a renter damages my car?', a: 'Every trip is insured. Report damage within 48 hours via WhatsApp or email. Our team reviews the pre-trip and post-trip inspection records and mediates the claim.' },
+            { q: 'Can someone else manage my listing?', a: 'Yes — Gari supports co-hosting. Invite a trusted person (a family member, employee, or mechanic) to manage bookings on your behalf. You set what percentage they earn.' },
+            { q: 'When do I get paid?', a: 'Payouts are sent to your MTN MoMo or Airtel Money within 24 hours of trip completion, provided there are no active disputes.' },
+            { q: 'What vehicles can I list?', a: 'Any roadworthy, insured vehicle — from economy sedans to 4WDs, minibuses, pickup trucks, and specialised vehicles. Gari is the only platform in Rwanda that accepts all vehicle types.' },
+          ].map((item, i) => (
+            <details key={i} className="border border-border rounded-xl p-4 cursor-pointer group">
+              <summary className="font-semibold text-sm list-none flex justify-between items-center text-text-primary dark:text-white">
+                {item.q}
+                <span className="text-primary ml-2 flex-shrink-0">▼</span>
+              </summary>
+              <p className="text-sm text-text-secondary mt-3 leading-relaxed">{item.a}</p>
+            </details>
+          ))}
         </div>
       </section>
 
