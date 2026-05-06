@@ -35,6 +35,10 @@
     {
       "path": "/api/cron/reveal-reviews",
       "schedule": "0 5 * * *"
+    },
+    {
+      "path": "/api/cron/expire-boosts",
+      "schedule": "0 4 * * *"
     }
   ]
 }
