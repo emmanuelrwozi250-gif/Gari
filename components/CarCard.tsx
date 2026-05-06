@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { Star, MapPin, Users, Fuel, BadgeCheck, Zap, Award } from 'lucide-react';
+import { Star, MapPin, Users, Fuel, Zap, Award } from 'lucide-react';
 import { formatRWF, toUSD, getCarTypeLabel, getFuelLabel } from '@/lib/utils';
 import { RWANDA_DISTRICTS } from '@/lib/districts';
 import { FallbackImage } from './FallbackImage';
@@ -23,6 +23,7 @@ interface CarCardProps {
     photos: string[];
     district: string;
     isVerified: boolean;
+    isFeatured?: boolean;
     instantBooking?: boolean;
     gpsVerified?: boolean;
     rating: number;
@@ -73,7 +74,7 @@ export function CarCard({ car, compact = false, pickupDate, returnDate }: CarCar
         <div className="absolute top-3 left-3 flex gap-1.5 flex-wrap">
           {car.isVerified && (
             <span className="badge-green text-xs backdrop-blur-sm">
-              <BadgeCheck className="w-3 h-3" /> Verified
+              🏛️ Licensed &amp; Verified
             </span>
           )}
           {car.instantBooking && (
@@ -96,8 +97,13 @@ export function CarCard({ car, compact = false, pickupDate, returnDate }: CarCar
         {/* Wishlist heart button — bottom-right, avoids badge overlap */}
         <WishlistButton carId={car.id} className="absolute bottom-3 right-3 z-10" />
 
-        {/* Badges top-right: listing type + superhost + international */}
+        {/* Badges top-right: featured + listing type + superhost + international */}
         <div className="absolute top-3 right-3 flex flex-col items-end gap-1">
+          {car.isFeatured && (
+            <span className="badge bg-amber-500/90 text-white text-xs backdrop-blur-sm font-semibold">
+              ⭐ Featured
+            </span>
+          )}
           {car.listingType === 'P2P' ? (
             <span className="badge bg-blue-500/90 text-white text-xs backdrop-blur-sm">P2P</span>
           ) : (
