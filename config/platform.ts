@@ -13,4 +13,10 @@ export const PLATFORM = {
 
   /** Optional Gari Protect insurance per day (RWF) */
   INSURANCE_PER_DAY: 5000,
+
+  /** Monthly boost subscription price in RWF (~$10 at 1 USD = 1,450 RWF) */
+  BOOST_PRICE_RWF: 14500,
+
+  /** Boost subscription duration in days */
+  BOOST_DURATION_DAYS: 30,
 } as const;
