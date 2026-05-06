@@ -6,6 +6,7 @@ import { prisma } from '@/lib/prisma';
 import Link from 'next/link';
 import { formatRWF, formatDate, getBookingStatusColor, getCarTypeLabel } from '@/lib/utils';
 import { Users, Car, CalendarDays, TrendingUp, BadgeCheck, AlertCircle, Shield, BarChart3, Tag, Building2, ShieldCheck, ExternalLink, Globe } from 'lucide-react';
+import { ComplianceButton } from '@/components/admin/ComplianceButton';
 
 export const metadata: Metadata = { title: 'Admin Panel — Gari' };
 
@@ -117,8 +118,8 @@ export default async function AdminPage() {
                       <div className="text-xs text-text-secondary">{getCarTypeLabel(car.type)} • {formatRWF(car.pricePerDay)}/day</div>
                     </div>
                     <div className="flex gap-2">
-                      <VerifyCarButton carId={car.id} verify />
-                      <VerifyCarButton carId={car.id} />
+                      <ComplianceButton carId={car.id} action="approve" />
+                      <ComplianceButton carId={car.id} action="reject" />
                     </div>
                   </div>
                 ))}
@@ -314,16 +315,3 @@ export default async function AdminPage() {
   );
 }
 
-function VerifyCarButton({ carId, verify = false }: { carId: string; verify?: boolean }) {
-  return (
-    <form action={`/api/cars/${carId}`} method="POST">
-      <input type="hidden" name="_method" value="PUT" />
-      <input type="hidden" name="isVerified" value={String(verify)} />
-      <button type="submit" className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
-        verify ? 'bg-primary text-white hover:bg-primary-dark' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-      }`}>
-        {verify ? 'Approve' : 'Reject'}
-      </button>
-    </form>
-  );
-}
