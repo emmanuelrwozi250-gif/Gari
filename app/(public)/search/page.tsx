@@ -112,6 +112,9 @@ function filterDemoCars(params: SearchParamsShape) {
 async function getCars(params: SearchParamsShape) {
   try {
     const where: Record<string, unknown> = { isAvailable: true };
+    // RURA compliance: only licensed commercial vehicles appear publicly
+    where.vehicleType = 'COMMERCIAL';
+    where.complianceStatus = 'APPROVED';
     if (params.district) where.district = params.district;
     if (params.driver === 'true') where.driverAvailable = true;
     if (params.type) where.type = resolveType(params.type);
@@ -133,13 +136,19 @@ async function getCars(params: SearchParamsShape) {
       where.type = { notIn: ['MINIBUS', 'COASTER'] };
     }
 
+    const baseOrderBy = [
+      { totalTrips: 'desc' as const },
+      { rating: 'desc' as const },
+      { pricePerDay: 'asc' as const },
+    ];
+
     const orderBy =
-      params.sort === 'price_asc' ? [{ pricePerDay: 'asc' as const }] :
+      params.sort === 'price_asc'  ? [{ pricePerDay: 'asc' as const }] :
       params.sort === 'price_desc' ? [{ pricePerDay: 'desc' as const }] :
-      params.sort === 'rating' ? [{ rating: 'desc' as const }] :
-      params.sort === 'newest' ? [{ createdAt: 'desc' as const }] :
-      params.sort === 'popular' ? [{ totalTrips: 'desc' as const }, { rating: 'desc' as const }] :
-      [{ totalTrips: 'desc' as const }, { rating: 'desc' as const }, { pricePerDay: 'asc' as const }];
+      params.sort === 'rating'     ? [{ rating: 'desc' as const }] :
+      params.sort === 'newest'     ? [{ createdAt: 'desc' as const }] :
+      params.sort === 'popular'    ? [{ totalTrips: 'desc' as const }, { rating: 'desc' as const }] :
+      [{ isFeatured: 'desc' as const }, ...baseOrderBy]; // boosted listings always first on default view
 
     const page = parseInt(params.page || '1');
     const take = 12;
