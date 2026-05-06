@@ -507,6 +507,62 @@ export default async function HostDashboardPage() {
               )}
             </div>
 
+            {/* Listing Analytics */}
+            {cars.length > 0 && (
+              <div className="card p-6 overflow-x-auto">
+                <h2 className="font-bold text-text-primary dark:text-white mb-4 flex items-center gap-2">
+                  <BarChart3 className="w-5 h-5 text-primary" /> Listing Analytics
+                </h2>
+                <table className="w-full text-sm min-w-[600px]">
+                  <thead>
+                    <tr className="text-xs text-text-secondary border-b border-border">
+                      <th className="text-left pb-2 font-semibold">Vehicle</th>
+                      <th className="text-right pb-2 font-semibold">Views</th>
+                      <th className="text-right pb-2 font-semibold">Clicks</th>
+                      <th className="text-right pb-2 font-semibold">Bookings</th>
+                      <th className="text-right pb-2 font-semibold">CVR</th>
+                      <th className="text-right pb-2 font-semibold">Boost</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border">
+                    {cars.map(car => {
+                      const bookingCount = car._count.bookings;
+                      const cvr = car.clickCount > 0
+                        ? Math.round((bookingCount / car.clickCount) * 100)
+                        : 0;
+                      const isBoosted = car.isFeatured && car.featuredUntil && new Date(car.featuredUntil) > now;
+                      return (
+                        <tr key={car.id} className="text-sm">
+                          <td className="py-2.5 pr-4 font-medium text-text-primary dark:text-white">
+                            {car.year} {car.make} {car.model}
+                          </td>
+                          <td className="py-2.5 text-right text-text-secondary">{car.viewCount.toLocaleString()}</td>
+                          <td className="py-2.5 text-right text-text-secondary">{car.clickCount.toLocaleString()}</td>
+                          <td className="py-2.5 text-right text-text-secondary">{bookingCount}</td>
+                          <td className="py-2.5 text-right">
+                            <span className={cvr >= 5 ? 'text-primary font-semibold' : 'text-text-secondary'}>
+                              {cvr}%
+                            </span>
+                          </td>
+                          <td className="py-2.5 text-right">
+                            {isBoosted ? (
+                              <span className="text-xs text-amber-600 dark:text-amber-400 font-medium">
+                                ⭐ Until {car.featuredUntil ? new Date(car.featuredUntil).toLocaleDateString('en-RW', { day: 'numeric', month: 'short' }) : '—'}
+                              </span>
+                            ) : (
+                              <a href={`/api/boost`} className="text-xs text-primary hover:underline">
+                                Boost — RWF 14,500/mo
+                              </a>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
             {/* B) Revenue by Car */}
             {carRevenueRows.length > 0 && (
               <div className="card p-6 overflow-x-auto">
