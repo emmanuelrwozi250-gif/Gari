@@ -98,6 +98,7 @@ function filterDemoCars(params: SearchParamsShape) {
   if (params.minPrice) cars = cars.filter(c => c.pricePerDay >= parseInt(params.minPrice!));
   if (params.maxPrice) cars = cars.filter(c => c.pricePerDay <= parseInt(params.maxPrice!));
   if (params.instantBooking === 'true') cars = cars.filter(c => c.instantBooking);
+  if (!params.type) cars = cars.filter(c => !['MINIBUS', 'COASTER'].includes(c.type));
 
   if (params.sort === 'price_asc') cars.sort((a, b) => a.pricePerDay - b.pricePerDay);
   else if (params.sort === 'price_desc') cars.sort((a, b) => b.pricePerDay - a.pricePerDay);
@@ -126,6 +127,10 @@ async function getCars(params: SearchParamsShape) {
     if (params.instantBooking === 'true') where.instantBooking = true;
     if ((params as any).intl === 'true') {
       where.host = { internationalReady: true };
+    }
+    // Exclude commercial buses from default browse — still reachable via ?type=minibus / ?type=coaster
+    if (!params.type) {
+      where.type = { notIn: ['MINIBUS', 'COASTER'] };
     }
 
     const orderBy =
