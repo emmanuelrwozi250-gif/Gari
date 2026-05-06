@@ -119,6 +119,7 @@ model User {
   corporateAdminOf      CorporateAccount[]     @relation("CorporateAdmin")
   ownedCoHosts          CoHostRelation[]       @relation("OwnedCoHosts")
   coHostedCars          CoHostRelation[]       @relation("CoHostedCars")
+  boostSubscriptions    BoostSubscription[]
 }
 
 enum Role {
@@ -184,24 +185,35 @@ model Car {
   advanceNotice         Int                  @default(0)
   priceIncludesVat      Boolean              @default(false)
   cancellationPolicy    CancellationPolicy   @default(MODERATE)
+  // RURA compliance — B2B2C pivot
+  vehicleType           VehicleType          @default(COMMERCIAL)
+  complianceStatus      ComplianceStatus     @default(PENDING)
+  // Analytics counters
+  viewCount             Int                  @default(0)
+  clickCount            Int                  @default(0)
+  // Boost / priority placement
+  boostActivatedAt      DateTime?
+  boostPaidUntil        DateTime?
   createdAt             DateTime             @default(now())
-  updatedAt         DateTime      @updatedAt
+  updatedAt             DateTime             @updatedAt
 
-  bookings           Booking[]
-  reviews            Review[]
-  availability       CarAvailability[]
-  pricingSuggestions PricingSuggestion[]
-  holds              BookingHold[]
-  images             CarImage[]
-  blockedDates       BlockedDate[]
-  extras             CarExtra[]
-  coHosts            CoHostRelation[]
+  bookings              Booking[]
+  reviews               Review[]
+  availability          CarAvailability[]
+  pricingSuggestions    PricingSuggestion[]
+  holds                 BookingHold[]
+  images                CarImage[]
+  blockedDates          BlockedDate[]
+  extras                CarExtra[]
+  coHosts               CoHostRelation[]
+  boostSubscriptions    BoostSubscription[]
 
   @@index([hostId])
   @@index([isAvailable, district])
   @@index([isAvailable, type])
   @@index([isAvailable, rating])
   @@index([isAvailable, pricePerDay])
+  @@index([complianceStatus, vehicleType])
 }
 
 enum CarType {
@@ -249,6 +261,17 @@ enum SalesStatus {
   AVAILABLE
   RESERVED
   SOLD
+}
+
+enum VehicleType {
+  COMMERCIAL
+  PRIVATE
+}
+
+enum ComplianceStatus {
+  APPROVED
+  PENDING
+  REJECTED
 }
 
 enum ListingTier {
@@ -1020,4 +1043,23 @@ model BookingExtra {
   createdAt    DateTime @default(now())
 
   @@index([bookingId])
+}
+
+// ─── BOOST / PRIORITY PLACEMENT ───────────────────────────────────────────────
+
+model BoostSubscription {
+  id           String   @id @default(cuid())
+  carId        String
+  car          Car      @relation(fields: [carId], references: [id], onDelete: Cascade)
+  operatorId   String
+  operator     User     @relation(fields: [operatorId], references: [id])
+  pricePaidRwf Int      @default(14500)
+  startsAt     DateTime @default(now())
+  expiresAt    DateTime
+  paymentRef   String?
+  status       String   @default("ACTIVE")
+  createdAt    DateTime @default(now())
+
+  @@index([carId])
+  @@index([expiresAt])
 }
