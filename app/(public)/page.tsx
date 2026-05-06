@@ -302,7 +302,7 @@ export default async function HomePage() {
       <section className="py-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h2 className="section-title">Browse Collections</h2>
+            <h2 className="section-title">Browse Packages</h2>
             <p className="section-subtitle">Curated cars for every Rwanda journey</p>
           </div>
           <Link href="/collections" className="btn-ghost">

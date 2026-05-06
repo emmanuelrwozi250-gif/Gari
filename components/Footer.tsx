@@ -49,7 +49,7 @@ export function Footer() {
             <h4 className="text-white font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2 text-sm">
               <li><Link href="/search" className="hover:text-primary transition-colors">Browse Cars</Link></li>
-              <li><Link href="/collections" className="hover:text-primary transition-colors">Collections</Link></li>
+              <li><Link href="/collections" className="hover:text-primary transition-colors">Packages</Link></li>
               <li><Link href="/safari" className="hover:text-primary transition-colors">🏕️ Safari</Link></li>
               <li><Link href="/airport-transfer" className="hover:text-primary transition-colors">✈️ Airport Transfer</Link></li>
               <li><Link href="/dashboard" className="hover:text-primary transition-colors">My Bookings</Link></li>

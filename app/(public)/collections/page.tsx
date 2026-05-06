@@ -3,10 +3,10 @@ import { CollectionCard } from '@/components/CollectionCard';
 import { COLLECTIONS } from '@/lib/collections';
 
 export const metadata: Metadata = {
-  title: 'Car Collections | Gari Rwanda',
-  description: 'Browse curated car collections for every Rwanda adventure — gorilla treks, lake escapes, business travel, safari, and more.',
+  title: 'Car Packages | Gari Rwanda',
+  description: 'Browse curated car packages for every Rwanda adventure — gorilla treks, lake escapes, business travel, safari, and more.',
   openGraph: {
-    title: 'Car Collections | Gari Rwanda',
+    title: 'Car Packages | Gari Rwanda',
     description: 'Curated cars for every Rwanda journey.',
     url: 'https://gari.rw/collections',
     siteName: 'Gari',
@@ -21,7 +21,7 @@ export default function CollectionsPage() {
       {/* Header */}
       <div className="mb-10 text-center">
         <h1 className="text-3xl sm:text-4xl font-extrabold text-text-primary dark:text-white mb-3">
-          Browse by Collection
+          Browse Packages
         </h1>
         <p className="text-text-secondary dark:text-gray-400 max-w-xl mx-auto">
           Whether you're tracking gorillas, heading to Lake Kivu, or attending a board meeting —
