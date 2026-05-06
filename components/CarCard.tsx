@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { Star, MapPin, Users, Fuel, Zap, Award } from 'lucide-react';
@@ -55,8 +57,16 @@ export function CarCard({ car, compact = false, pickupDate, returnDate }: CarCar
     : null;
   const tripTotal = tripDays ? car.pricePerDay * tripDays : null;
 
+  function trackClick() {
+    fetch(`/api/cars/${car.id}/analytics`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ event: 'click' }),
+    }).catch(() => {}); // fire and forget — never block navigation
+  }
+
   return (
-    <Link href={`/cars/${car.slug ?? car.id}`} className="card block group overflow-hidden hover:shadow-lg transition-shadow duration-300">
+    <Link href={`/cars/${car.slug ?? car.id}`} onClick={trackClick} className="card block group overflow-hidden hover:shadow-lg transition-shadow duration-300">
       {/* Photo */}
       <div className={`relative overflow-hidden ${compact ? 'h-40' : 'h-52'}`}>
         <FallbackImage
