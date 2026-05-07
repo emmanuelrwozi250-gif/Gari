@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   },
   description:
     'Rent a car anywhere in Rwanda. Find economy, SUV, 4x4, executive and minibus vehicles for self-drive or with a driver. The leading car rental marketplace in Africa.',
-  keywords: ['car rental Rwanda', 'gari', 'rent a car Kigali', 'African car rental', 'P2P car sharing'],
+  keywords: ['car rental Rwanda', 'gari', 'rent a car Kigali', 'RURA licensed car rental', 'commercial vehicle rental Rwanda'],
   openGraph: {
     title: 'Gari — Car Rental in Rwanda',
     description: 'Connecting Africa to the world — rent a car on your own terms.',

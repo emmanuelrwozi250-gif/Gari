@@ -48,29 +48,7 @@ export function FilterSidebar({ searchParams, onChange, priceMin, priceMax }: Fi
         <GPSButton onLocationFound={handleGPS} label="Search near me" className="w-full mt-2 justify-center" />
       </div>
 
-      {/* Listing Type */}
-      <div>
-        <label className="label">Who owns the car?</label>
-        <div className="space-y-2">
-          {[
-            { value: '', label: 'All' },
-            { value: 'P2P', label: 'Private owner' },
-            { value: 'FLEET', label: 'Rental company' },
-          ].map(opt => (
-            <label key={opt.value} className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="listingType"
-                value={opt.value}
-                checked={(searchParams.listingType || '') === opt.value}
-                onChange={() => onChange('listingType', opt.value || null)}
-                className="text-primary"
-              />
-              <span className="text-sm text-text-secondary dark:text-gray-400">{opt.label}</span>
-            </label>
-          ))}
-        </div>
-      </div>
+      {/* All vehicles on Gari are RURA-licensed commercial operators — listing type filter removed */}
 
       {/* Drive Option */}
       <div>

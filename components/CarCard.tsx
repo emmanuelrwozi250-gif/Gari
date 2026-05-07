@@ -114,11 +114,7 @@ export function CarCard({ car, compact = false, pickupDate, returnDate }: CarCar
               ⭐ Featured
             </span>
           )}
-          {car.listingType === 'P2P' ? (
-            <span className="badge bg-blue-500/90 text-white text-xs backdrop-blur-sm">P2P</span>
-          ) : (
-            <span className="badge bg-purple-500/90 text-white text-xs backdrop-blur-sm">Fleet</span>
-          )}
+          {/* All vehicles on Gari are RURA commercial — no P2P/Fleet distinction shown */}
           {isSuperhost && (
             <span className="badge bg-amber-400/90 text-amber-900 text-xs backdrop-blur-sm font-bold">
               ⭐ Superhost
