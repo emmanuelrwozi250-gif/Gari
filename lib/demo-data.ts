@@ -357,23 +357,23 @@ export const DEMO_RENTAL_CARS: DemoRentalCar[] = [
 export const DEMO_TESTIMONIALS: DemoTestimonial[] = [
   {
     name: 'Jean-Pierre Habimana',
-    role: 'Host — Gasabo, Kigali',
+    role: 'Licensed Operator — Gasabo, Kigali · 🏛️ RURA Verified',
     avatar: null,
-    text: 'I listed my Toyota RAV4 on Gari and earned over RWF 800,000 in my first month. The platform handles bookings, payments, and even insurance. I just hand over the keys.',
+    text: 'We registered our fleet of 3 vehicles on Gari in October 2025. Within 90 days we earned over RWF 2.4M. The platform handles bookings, payments, and compliance. We just hand over the keys.',
     rating: 5,
   },
   {
     name: 'Amina Kalisa',
     role: 'Renter — Musanze',
     avatar: null,
-    text: 'Found a beautiful Prado 4x4 for our Volcanoes National Park gorilla trekking trip in minutes. MTN MoMo payment was instant. Best car rental experience in Rwanda.',
+    text: 'Found a RURA-licensed Prado for our Volcanoes NP gorilla trekking trip in minutes. MTN MoMo payment was instant. Knowing the car was commercially insured gave us real peace of mind.',
     rating: 5,
   },
   {
     name: 'David Nkurunziza',
-    role: 'Fleet Owner — Rubavu',
+    role: 'Fleet Owner — Rubavu · 🏛️ RURA Verified',
     avatar: null,
-    text: 'As a fleet operator in Rubavu, Gari gave us a digital presence overnight. Our Hiace minibuses are now booked weeks in advance for Lake Kivu tours.',
+    text: 'As a licensed fleet operator in Rubavu, Gari gave us digital visibility overnight. Our RURA-certified Hiace minibuses are now booked weeks in advance for Lake Kivu tours.',
     rating: 5,
   },
   {
