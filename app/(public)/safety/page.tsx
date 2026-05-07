@@ -23,6 +23,23 @@ export default function SafetyPage() {
         </div>
 
         <div className="space-y-6">
+          {/* Commercial Vehicle Standards */}
+          <div className="card p-6 border-l-4 border-l-amber-500">
+            <div className="flex items-center gap-3 mb-4">
+              <Shield className="w-6 h-6 text-amber-600 flex-shrink-0" />
+              <h2 className="text-lg font-bold text-text-primary dark:text-white">🏛️ Commercial Vehicle Standards</h2>
+            </div>
+            <p className="text-sm text-text-secondary leading-relaxed mb-3">
+              Gari is Rwanda&apos;s only rental marketplace exclusively listing RURA-licensed commercial vehicles. Every car on the platform meets strict regulatory standards before going live:
+            </p>
+            <ul className="space-y-2 text-sm text-text-secondary">
+              <li className="flex items-start gap-2"><span className="text-amber-600 mt-0.5">✓</span> Valid RURA commercial vehicle permit (TM plates) — verified before listing goes live</li>
+              <li className="flex items-start gap-2"><span className="text-amber-600 mt-0.5">✓</span> Commercial third-party or comprehensive insurance on every listed vehicle</li>
+              <li className="flex items-start gap-2"><span className="text-amber-600 mt-0.5">✓</span> Current vehicle inspection certificate (contrôle technique) from an approved RTDA centre</li>
+              <li className="flex items-start gap-2"><span className="text-amber-600 mt-0.5">✓</span> Gari compliance team reviews all documents and suspends listings if any certificate lapses</li>
+            </ul>
+          </div>
+
           {/* Identity Verification */}
           <div className="card p-6">
             <div className="flex items-center gap-3 mb-4">
