@@ -68,6 +68,17 @@ export function Footer() {
             </ul>
           </div>
 
+          {/* For Operators */}
+          <div>
+            <h4 className="text-white font-semibold mb-4">For Operators</h4>
+            <ul className="space-y-2 text-sm">
+              <li><Link href="/become-operator" className="hover:text-primary transition-colors">List Your Fleet</Link></li>
+              <li><Link href="/dashboard/host" className="hover:text-primary transition-colors">Operator Dashboard</Link></li>
+              <li><Link href="/dashboard/operator/boost" className="hover:text-primary transition-colors">Boost Listings</Link></li>
+              <li><Link href="/dashboard/operator/analytics" className="hover:text-primary transition-colors">Analytics</Link></li>
+            </ul>
+          </div>
+
           {/* Support */}
           <div>
             <h4 className="text-white font-semibold mb-4">Support</h4>

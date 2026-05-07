@@ -102,7 +102,7 @@ function demoToCard(c: typeof DEMO_RENTAL_CARS[number]) {
   };
 }
 
-const STAT_ICONS = [Car, Users, Globe, Star];
+const STAT_ICONS = [Car, Users, Globe, Star, Shield];
 
 const HOW_IT_WORKS = [
   { icon: SearchIcon, step: '01', title: 'Find Your Car', desc: 'Search across 30 districts. Filter by type, budget, and whether you want a driver.' },
@@ -262,6 +262,7 @@ export default async function HomePage() {
               { label: 'Phase', value: PLATFORM_STATS.tripsCompleted },
               { label: 'Districts Covered', value: PLATFORM_STATS.districtsActive },
               { label: 'Avg. Rating', value: `${PLATFORM_STATS.avgRating}★` },
+              { label: 'RURA Compliant · Licensed vehicles only', value: '100%' },
             ] as const).map(({ label, value }, i) => {
               const Icon = STAT_ICONS[i];
               return (

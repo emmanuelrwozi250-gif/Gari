@@ -78,6 +78,21 @@ export default function BeAHostPage() {
       {/* Live activity ticker */}
       <ActivityTicker />
 
+      {/* RURA Compliance Callout */}
+      <div className="max-w-4xl mx-auto px-4 mt-6">
+        <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-2xl p-5 text-center">
+          <p className="font-bold text-amber-800 dark:text-amber-300 mb-1 flex items-center justify-center gap-2">
+            🏛️ RURA Compliant Platform
+          </p>
+          <p className="text-sm text-amber-700 dark:text-amber-400 max-w-2xl mx-auto">
+            Gari only lists commercially licensed vehicles. All operators must hold a valid RURA commercial vehicle permit.{' '}
+            <Link href="/become-operator" className="underline font-semibold hover:text-amber-900 dark:hover:text-amber-200">
+              Learn about requirements →
+            </Link>
+          </p>
+        </div>
+      </div>
+
       {/* 8 minutes to list */}
       <section className="py-5 px-4 bg-accent-yellow/10 dark:bg-accent-yellow/5">
         <div className="max-w-4xl mx-auto text-center">
