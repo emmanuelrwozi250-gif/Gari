@@ -59,6 +59,33 @@ const HOST_FAQS = [
   },
 ];
 
+const OPERATOR_FAQS = [
+  {
+    q: 'Do I need a RURA commercial license to list on Gari?',
+    a: 'Yes. Gari is a B2B2C platform exclusively for commercially licensed operators. Your vehicle must hold a valid RURA commercial vehicle permit (TM plates). Private vehicles are not permitted under Rwanda\'s rental transport regulations.',
+  },
+  {
+    q: 'What documents do I need to submit?',
+    a: 'You need: (1) RURA commercial vehicle license / TM registration certificate, (2) valid third-party or comprehensive insurance certificate, (3) current vehicle inspection certificate (contrôle technique from an approved RTDA centre), and (4) your Rwanda National ID (NIDA) or business registration number for company fleets.',
+  },
+  {
+    q: 'How long does the verification process take?',
+    a: 'Our compliance team reviews submitted documents within 24 hours on business days. Once approved, your listing goes live immediately. We may request additional documentation for commercial fleet operators with multiple vehicles.',
+  },
+  {
+    q: 'What is the boost feature and how does it work?',
+    a: 'Boost gives your listings priority placement in search results for RWF 14,500 per vehicle per month. Boosted vehicles appear above standard listings and receive a \'⭐ Featured\' badge. You can activate boost from your Operator Dashboard.',
+  },
+  {
+    q: 'When do I receive my payout?',
+    a: 'Payouts are sent to your MTN MoMo or Airtel Money within 24 hours of trip completion, provided there are no active disputes or damage claims. Payouts are net of the 12% platform fee and any applicable VAT remitted to RRA.',
+  },
+  {
+    q: 'What commission does Gari charge operators?',
+    a: 'Gari charges a 12% platform fee on each booking\'s rental value. This covers payment processing, customer support, insurance coordination, and the NIDA verification system. There are no listing fees — you only pay when you earn.',
+  },
+];
+
 function FAQItem({ q, a }: { q: string; a: string }) {
   return (
     <details className="group border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden">
@@ -93,10 +120,17 @@ export default function FAQPage() {
           </div>
         </section>
 
-        <section>
+        <section className="mb-10">
           <h2 className="text-xl font-bold text-text-primary dark:text-white mb-4">For Hosts</h2>
           <div className="space-y-3">
             {HOST_FAQS.map(item => <FAQItem key={item.q} {...item} />)}
+          </div>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-bold text-text-primary dark:text-white mb-4">🏛️ For Operators</h2>
+          <div className="space-y-3">
+            {OPERATOR_FAQS.map(item => <FAQItem key={item.q} {...item} />)}
           </div>
         </section>
 
