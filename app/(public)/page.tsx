@@ -105,7 +105,7 @@ function demoToCard(c: typeof DEMO_RENTAL_CARS[number]) {
 const STAT_ICONS = [Car, Users, Globe, Star, Shield];
 
 const HOW_IT_WORKS = [
-  { icon: SearchIcon, step: '01', title: 'Find Your Car', desc: 'Search across 30 districts. Filter by type, budget, and whether you want a driver.' },
+  { icon: SearchIcon, step: '01', title: 'Find Your Car', desc: 'Search across 30 districts. Filter by type, budget, and whether you want a driver. Every vehicle is RURA-licensed and commercially insured.' },
   { icon: BadgeCheck, step: '02', title: 'Book Instantly', desc: 'Confirm your dates, pay with MTN MoMo, Airtel Money, or Visa/Mastercard. No hidden fees.' },
   { icon: Car, step: '03', title: 'Pick Up & Go', desc: 'Meet the host, inspect the car together, and start your journey.' },
   { icon: Star, step: '04', title: 'Rate & Review', desc: 'Share your experience and help build trust in the community.' },
