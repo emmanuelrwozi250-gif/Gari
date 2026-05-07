@@ -8,7 +8,7 @@ import { ActivityTicker } from '@/components/ActivityTicker';
 import { HostMobileCTA } from '@/components/HostMobileCTA';
 
 export const metadata: Metadata = {
-  title: 'Become a Host — Earn with Your Car | Gari',
+  title: 'List Your Fleet — Earn as a Licensed Operator | Gari',
   description: 'List your car on Gari and earn money in Rwanda. MTN MoMo payouts, NIDA-verified renters, and insurance on every trip.',
   openGraph: {
     title: 'Earn with Your Car — Gari',

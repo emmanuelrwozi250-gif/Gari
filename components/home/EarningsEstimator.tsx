@@ -124,11 +124,11 @@ export function EarningsEstimator() {
           </p>
 
           <Link
-            href="/host/new"
+            href="/become-operator"
             className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl bg-primary hover:bg-primary/90 text-white font-bold text-sm transition-colors"
           >
             <Car className="w-4 h-4" />
-            List my car — it&apos;s free
+            List Your Fleet — Free
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
