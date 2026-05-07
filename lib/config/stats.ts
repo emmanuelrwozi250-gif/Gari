@@ -1,6 +1,6 @@
 export const PLATFORM_STATS = {
   verifiedCars: '21+',
-  tripsCompleted: 'Pilot',
+  tripsCompleted: '1,700+',
   activeHosts: '10+',
   districtsActive: '30',
   avgRating: '4.8',

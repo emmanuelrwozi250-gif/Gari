@@ -259,7 +259,7 @@ export default async function HomePage() {
           <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 mt-8 sm:mt-10">
             {([
               { label: 'Verified Cars', value: PLATFORM_STATS.verifiedCars },
-              { label: 'Phase', value: PLATFORM_STATS.tripsCompleted },
+              { label: 'Licensed Operators in Rwanda', value: PLATFORM_STATS.tripsCompleted },
               { label: 'Districts Covered', value: PLATFORM_STATS.districtsActive },
               { label: 'Avg. Rating', value: `${PLATFORM_STATS.avgRating}★` },
               { label: 'RURA Compliant · Licensed vehicles only', value: '100%' },
