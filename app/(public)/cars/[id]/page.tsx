@@ -131,7 +131,7 @@ export default async function CarPage(
       ? { fuel: 'ELECTRIC' as any }
       : { fuel: { not: 'ELECTRIC' as any } };
     const sameType = await prisma.car.findMany({
-      where: { id: { not: id }, ...(rawCarType ? { type: rawCarType as any } : {}), isAvailable: true, ...fuelFilter },
+      where: { id: { not: id }, ...(rawCarType ? { type: rawCarType as any } : {}), isAvailable: true, complianceStatus: 'APPROVED' as any, vehicleType: 'COMMERCIAL' as any, ...fuelFilter },
       orderBy: { rating: 'desc' },
       take: 3,
       select: { id: true, make: true, model: true, year: true, pricePerDay: true, rating: true, photos: true, slug: true },
@@ -139,7 +139,7 @@ export default async function CarPage(
     const results = sameType.length >= 3 ? sameType : [
       ...sameType,
       ...(await prisma.car.findMany({
-        where: { id: { notIn: [id, ...sameType.map(c => c.id)] }, isAvailable: true, ...fuelFilter },
+        where: { id: { notIn: [id, ...sameType.map(c => c.id)] }, isAvailable: true, complianceStatus: 'APPROVED' as any, vehicleType: 'COMMERCIAL' as any, ...fuelFilter },
         orderBy: { rating: 'desc' },
         take: 3 - sameType.length,
         select: { id: true, make: true, model: true, year: true, pricePerDay: true, rating: true, photos: true, slug: true },
