@@ -12,8 +12,19 @@ export const metadata: Metadata = {
     description: 'Join Rwanda\'s trusted B2B2C car rental marketplace. RURA-compliant vehicles only.',
     url: 'https://gari.rw/become-operator',
     siteName: 'Gari',
+    images: [{
+      url: 'https://gari.rw/og?title=List+Your+Fleet&sub=RURA+Verified+Operators+Only&type=operator',
+      width: 1200,
+      height: 630,
+      alt: 'List Your Licensed Fleet on Gari Rwanda',
+    }],
     locale: 'en_RW',
     type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'List Your Licensed Fleet on Gari Rwanda',
+    description: 'RURA-compliant B2B2C car rental marketplace. Commercial vehicles only.',
   },
 };
 
