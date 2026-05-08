@@ -8,6 +8,25 @@ import { prisma } from '@/lib/prisma';
 export const metadata: Metadata = {
   title: 'Safari & Adventure Cars in Rwanda · Gari',
   description: 'Rent 4WD SUVs and pickups for gorilla trekking, Akagera safaris, Nyungwe forest drives, and Lake Kivu tours. Verified vehicles with optional guides.',
+  openGraph: {
+    title: 'Safari & Adventure Cars in Rwanda · Gari',
+    description: 'Rent verified 4WD SUVs for gorilla trekking, Akagera safaris, and Nyungwe forest drives. RURA-licensed operators.',
+    url: 'https://gari.rw/safari',
+    siteName: 'Gari',
+    images: [{
+      url: 'https://gari.rw/og?title=Safari+Cars+Rwanda&sub=4WD+SUVs+for+National+Parks&type=safari',
+      width: 1200,
+      height: 630,
+      alt: 'Safari & Adventure Cars in Rwanda · Gari',
+    }],
+    locale: 'en_RW',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Safari & Adventure Cars in Rwanda · Gari',
+    description: 'Rent verified 4WD SUVs for gorilla trekking, Akagera safaris, and Nyungwe forest drives.',
+  },
 };
 
 const DESTINATIONS = [

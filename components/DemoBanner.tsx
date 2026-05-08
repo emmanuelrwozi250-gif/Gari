@@ -8,9 +8,9 @@ function DemoBannerInner() {
   const params = useSearchParams();
 
   useEffect(() => {
-    // ONLY show if ?demo=true is in the URL RIGHT NOW
-    // No sessionStorage — banner disappears when URL changes
-    setVisible(params.get('demo') === 'true');
+    // Show if ?demo=true in URL OR NEXT_PUBLIC_DEMO_MODE=true env var
+    const isDemoMode = params.get('demo') === 'true' || process.env.NEXT_PUBLIC_DEMO_MODE === 'true';
+    setVisible(isDemoMode);
   }, [params]);
 
   if (!visible) return null;
