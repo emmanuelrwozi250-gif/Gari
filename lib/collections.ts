@@ -15,8 +15,8 @@ export const COLLECTIONS: Collection[] = [
     emoji: '🦍',
     description: 'Reliable 4WD vehicles for the Volcanoes National Park gorilla permit roads. Leave Kigali at 5 AM and reach the trailhead in comfort.',
     heroImage: 'https://images.pexels.com/photos/2376090/pexels-photo-2376090.jpeg?auto=compress&cs=tinysrgb&w=1200',
-    searchParams: { type: 'suv-4x4', district: 'MUSANZE' },
-    highlights: ['4WD essential for mountain roads', 'Musanze-based hosts', 'From RWF 80k/day'],
+    searchParams: { type: 'suv-4x4' },
+    highlights: ['4WD essential for mountain roads', 'Verified SUV fleet', 'From RWF 80k/day'],
   },
   {
     slug: 'lake-kivu',
@@ -24,8 +24,8 @@ export const COLLECTIONS: Collection[] = [
     emoji: '🌊',
     description: 'Economy to luxury cars for Rubavu, Karongi, and the scenic Kivu shore road. Perfect for a weekend escape from Kigali.',
     heroImage: 'https://images.pexels.com/photos/1450353/pexels-photo-1450353.jpeg?auto=compress&cs=tinysrgb&w=1200',
-    searchParams: { district: 'RUBAVU' },
-    highlights: ['Rubavu beachfront delivery', 'Scenic Kivu shore drive', 'From RWF 35k/day'],
+    searchParams: {},
+    highlights: ['Any car fits the Kivu shore drive', 'Scenic 2.5 hr journey', 'From RWF 35k/day'],
   },
   {
     slug: 'kigali-business',
@@ -33,7 +33,7 @@ export const COLLECTIONS: Collection[] = [
     emoji: '💼',
     description: 'Executive and luxury cars with professional drivers for corporate travel, airport runs, and client meetings.',
     heroImage: 'https://images.pexels.com/photos/10224502/pexels-photo-10224502.jpeg?auto=compress&cs=tinysrgb&w=1200',
-    searchParams: { type: 'executive', driver: 'true' },
+    searchParams: { type: 'executive' },
     highlights: ['Professional chauffeurs', 'Airport-to-meeting service', 'From RWF 120k/day'],
   },
   {
@@ -51,7 +51,7 @@ export const COLLECTIONS: Collection[] = [
     emoji: '👨‍👩‍👧‍👦',
     description: 'Spacious minibuses and 7-seater SUVs for family adventures across Rwanda. Enough room for everyone — and the luggage.',
     heroImage: 'https://images.pexels.com/photos/2674052/pexels-photo-2674052.jpeg?auto=compress&cs=tinysrgb&w=1200',
-    searchParams: { seats: '7' },
+    searchParams: { seats: '5' },
     highlights: ['7+ seats available', 'Child seat add-ons', 'From RWF 50k/day'],
   },
   {
