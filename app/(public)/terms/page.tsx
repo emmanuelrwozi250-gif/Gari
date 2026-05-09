@@ -3,6 +3,19 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Terms of Service — Gari',
   description: 'Gari Terms of Service — booking terms, cancellation policy, host and renter obligations, and governing law.',
+  openGraph: {
+    title: 'Terms of Service | Gari Rwanda',
+    description: 'Gari Terms of Service — RURA-compliant B2B2C car rental. Booking terms, VAT/EBM policy, cancellation, governing law.',
+    url: 'https://gari.rw/terms',
+    siteName: 'Gari',
+    locale: 'en_RW',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Terms of Service | Gari Rwanda',
+    description: 'Gari Terms of Service — RURA-compliant car rental platform.',
+  },
 };
 
 const SECTIONS = [
