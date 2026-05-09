@@ -2,7 +2,20 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'FAQ — Gari',
-  description: 'Common questions about renting and hosting on Gari — Rwanda\'s trusted car rental platform.',
+  description: "Common questions about renting and hosting on Gari — Rwanda's trusted car rental platform.",
+  openGraph: {
+    title: 'FAQ | Gari Rwanda Car Rental',
+    description: "Common questions about renting and hosting on Gari — Rwanda's trusted B2B2C car rental platform.",
+    url: 'https://gari.rw/faq',
+    siteName: 'Gari',
+    locale: 'en_RW',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'FAQ | Gari Rwanda Car Rental',
+    description: "Common questions about renting on Gari — Rwanda's RURA-compliant car rental platform.",
+  },
 };
 
 const RENTER_FAQS = [
