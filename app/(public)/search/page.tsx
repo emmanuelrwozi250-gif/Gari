@@ -22,7 +22,23 @@ export async function generateMetadata(
     ? `Find and book ${parts.join(' ')} on Gari. NIDA-verified hosts, instant booking available.`
     : 'Find economy cars, SUVs, minibuses and executive vehicles in Rwanda. Filter by district, price and car type.';
 
-  return { title, description };
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: `https://gari.rw/search${p.district ? `?district=${p.district}` : ''}`,
+      siteName: 'Gari',
+      locale: 'en_RW',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary',
+      title,
+      description,
+    },
+  };
 }
 
 type SearchParamsShape = {

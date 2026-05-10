@@ -51,8 +51,8 @@ export function Navbar() {
                 <LayoutDashboard className="w-3.5 h-3.5" /> Host Dashboard
               </Link>
             ) : (
-              <Link href="/become-operator" className="px-3 py-2 rounded-xl text-sm font-medium text-accent-yellow hover:text-white hover:bg-white/10 transition-all flex items-center gap-1.5">
-                <Car className="w-3.5 h-3.5" /> List Your Fleet
+              <Link href="/host" className="px-3 py-2 rounded-xl text-sm font-medium text-accent-yellow hover:text-white hover:bg-white/10 transition-all flex items-center gap-1.5">
+                <Car className="w-3.5 h-3.5" /> Become a Host
               </Link>
             )}
           </div>
@@ -163,9 +163,9 @@ export function Navbar() {
           <hr className="border-white/10 my-2" />
           {/* "List Your Fleet" always visible in mobile menu for non-hosts */}
           {(!session || (session.user.role !== 'HOST' && session.user.role !== 'BOTH' && session.user.role !== 'ADMIN')) && (
-            <Link href="/become-operator" onClick={() => setMenuOpen(false)}
+            <Link href="/host" onClick={() => setMenuOpen(false)}
               className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium text-accent-yellow hover:text-white hover:bg-white/10">
-              <Car className="w-4 h-4" /> List Your Fleet
+              <Car className="w-4 h-4" /> Become a Host
             </Link>
           )}
           {session ? (
