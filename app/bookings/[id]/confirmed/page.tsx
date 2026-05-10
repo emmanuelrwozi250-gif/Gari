@@ -91,8 +91,15 @@ export default function BookingConfirmedPage() {
 
         {/* Success header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-100 dark:bg-green-900/30 mb-4">
-            <CheckCircle className="w-10 h-10 text-green-600 dark:text-green-400" />
+          <div className={`inline-flex items-center justify-center w-20 h-20 rounded-full mb-4 ${
+            isInstant
+              ? 'bg-green-100 dark:bg-green-900/30'
+              : 'bg-blue-100 dark:bg-blue-900/30'
+          }`}>
+            {isInstant
+              ? <CheckCircle className="w-10 h-10 text-green-600 dark:text-green-400" />
+              : <Clock className="w-10 h-10 text-blue-600 dark:text-blue-400" />
+            }
           </div>
           <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-2">
             {isInstant ? 'Booking Confirmed!' : 'Request Sent!'}

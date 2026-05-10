@@ -332,7 +332,7 @@ export function RenterBookingsList({ bookings }: Props) {
                     )}
 
                     {booking.status === 'COMPLETED' && !booking.review && (
-                      <Link href={`/review/${booking.id}`} className="text-xs text-primary font-semibold hover:underline inline-flex items-center gap-1">
+                      <Link href={`/reviews/new?booking=${booking.id}`} className="text-xs text-primary font-semibold hover:underline inline-flex items-center gap-1">
                         <Star className="w-3 h-3" /> Write Review
                       </Link>
                     )}
