@@ -9,11 +9,53 @@ import { DEMO_RENTAL_CARS } from '@/lib/demo-data';
 
 export const dynamic = 'force-dynamic';
 
-// Slug → enum mapping (same as search page)
-const TYPE_SLUG_MAP: Record<string, string> = {
-  'suv-4x4': 'SUV_4X4', 'pickup': 'PICKUP', 'executive': 'EXECUTIVE',
-  'economy': 'ECONOMY', 'sedan': 'SEDAN', 'minibus': 'MINIBUS',
-  'coaster': 'COASTER', 'luxury': 'LUXURY', 'van': 'VAN',
+// Per-collection Prisma where clauses — OR logic so real DB data always shows cars
+const COLLECTION_QUERIES: Record<string, () => Record<string, unknown>> = {
+  'gorilla-trek': () => ({
+    isAvailable: true,
+    isVerified: true,
+    OR: [
+      { isSafariCapable: true },
+      { type: { in: ['SUV_4X4', 'PICKUP'] } },
+    ],
+  }),
+  'lake-kivu': () => ({
+    isAvailable: true,
+    isVerified: true,
+    // Any car can make the drive to Lake Kivu — no type restriction
+  }),
+  'kigali-business': () => ({
+    isAvailable: true,
+    isVerified: true,
+    OR: [
+      { type: { in: ['EXECUTIVE', 'LUXURY'] } },
+      { pricePerDay: { gte: 100000 } },
+    ],
+  }),
+  'national-parks': () => ({
+    isAvailable: true,
+    isVerified: true,
+    OR: [
+      { isSafariCapable: true },
+      { type: { in: ['SUV_4X4', 'PICKUP'] } },
+    ],
+  }),
+  'family-road-trip': () => ({
+    isAvailable: true,
+    isVerified: true,
+    OR: [
+      { seats: { gte: 7 } },
+      { type: { in: ['MINIBUS', 'COASTER'] } },
+    ],
+  }),
+  'luxury': () => ({
+    isAvailable: true,
+    isVerified: true,
+    OR: [
+      { type: { in: ['EXECUTIVE', 'LUXURY'] } },
+      { pricePerDay: { gte: 120000 } },
+    ],
+  }),
 };
 
 interface Props {
@@ -39,16 +81,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-async function getCollectionCars(collection: ReturnType<typeof getCollection>) {
-  if (!collection) return [];
+async function getCollectionCars(slug: string) {
+  const queryBuilder = COLLECTION_QUERIES[slug];
+  if (!queryBuilder) return [];
   try {
-    const { type, district, driver, seats } = collection.searchParams;
-    const where: Record<string, unknown> = { isAvailable: true, isVerified: true };
-    if (type) where.type = TYPE_SLUG_MAP[type] ?? type;
-    if (district) where.district = district;
-    if (driver === 'true') where.driverAvailable = true;
-    if (seats) where.seats = { gte: parseInt(seats) };
-
+    const where = queryBuilder();
     const cars = await prisma.car.findMany({
       where,
       include: { host: { select: { name: true, avatar: true } } },
@@ -60,8 +97,15 @@ async function getCollectionCars(collection: ReturnType<typeof getCollection>) {
     // DB unavailable — fall through to demo
   }
 
-  // Demo fallback
+  // Demo fallback — filter by slug logic
+  const collection = getCollection(slug);
+  if (!collection) return [];
   const { type, district, driver, seats } = collection.searchParams;
+  const TYPE_SLUG_MAP: Record<string, string> = {
+    'suv-4x4': 'SUV_4X4', 'pickup': 'PICKUP', 'executive': 'EXECUTIVE',
+    'economy': 'ECONOMY', 'sedan': 'SEDAN', 'minibus': 'MINIBUS',
+    'coaster': 'COASTER', 'luxury': 'LUXURY', 'van': 'VAN',
+  };
   const typeEnum = type ? (TYPE_SLUG_MAP[type] ?? type) : null;
   return DEMO_RENTAL_CARS
     .filter(c => {
@@ -99,7 +143,7 @@ export default async function CollectionPage({ params }: Props) {
   const collection = getCollection(slug);
   if (!collection) notFound();
 
-  const cars = await getCollectionCars(collection);
+  const cars = await getCollectionCars(slug);
   const otherCollections = COLLECTIONS.filter(c => c.slug !== slug);
 
   // Build search link from collection params
