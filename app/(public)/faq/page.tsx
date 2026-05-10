@@ -20,6 +20,14 @@ export const metadata: Metadata = {
 
 const RENTER_FAQS = [
   {
+    q: 'Is VAT included in the price I see?',
+    a: 'Prices shown on listings exclude VAT. Your full breakdown — ' +
+       'including 18% VAT required by Rwanda Revenue Authority — appears ' +
+       'in the booking widget when you select dates. Gari is VAT-registered ' +
+       'and remits VAT directly to RRA. An official EBM receipt ' +
+       '(Irisiti ya EBM) is issued for every confirmed booking.',
+  },
+  {
     q: 'How do I book a car?',
     a: 'Browse cars on the search page, pick your dates, and choose a pickup location. Select your payment method (MTN MoMo, Airtel Money, or Card) and confirm. For non-instant booking cars, the host has 24 hours to accept.',
   },
@@ -38,10 +46,6 @@ const RENTER_FAQS = [
   {
     q: 'What if the car looks different from the photos?',
     a: 'Contact Gari support immediately via WhatsApp (+250 788 123 000) before you start driving. We will investigate and, if the discrepancy is significant, arrange a full refund or a replacement vehicle.',
-  },
-  {
-    q: 'Are prices inclusive of VAT?',
-    a: 'It depends on the host. Some hosts list VAT-inclusive prices — shown with a green "VAT incl." badge on the listing. Others list base prices to which 18% VAT is added at checkout — shown with an amber "+ 18% VAT" badge. The final total in the booking widget always shows the full VAT-inclusive amount. An EBM receipt (as required by Rwanda Revenue Authority) is issued for every confirmed booking.',
   },
 ];
 

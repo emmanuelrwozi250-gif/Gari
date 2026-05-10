@@ -161,7 +161,7 @@ export function Navbar() {
             📦 Packages
           </Link>
           <hr className="border-white/10 my-2" />
-          {/* "List Your Fleet" always visible in mobile menu for non-hosts */}
+          {/* "Become a Host" always visible in mobile menu for non-hosts */}
           {(!session || (session.user.role !== 'HOST' && session.user.role !== 'BOTH' && session.user.role !== 'ADMIN')) && (
             <Link href="/host" onClick={() => setMenuOpen(false)}
               className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium text-accent-yellow hover:text-white hover:bg-white/10">
