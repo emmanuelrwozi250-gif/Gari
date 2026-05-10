@@ -1,12 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
   Car, Calendar, MapPin, ChevronLeft, Shield, BadgeCheck,
-  Clock, ArrowRight, Globe,
+  Clock, ArrowRight, Globe, CheckCircle, AlertTriangle, Phone,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { formatRWF } from '@/lib/utils';
@@ -25,6 +25,8 @@ const CANCELLATION_POLICY = [
   '50% refund if cancelled within 24 hours of pickup',
   'No refund for no-shows or cancellations after trip starts',
 ];
+
+type CheckoutStep = 'idle' | 'creating' | 'initiating' | 'polling' | 'success' | 'failed' | 'timeout';
 
 interface CarSummary {
   id: string;
@@ -65,12 +67,24 @@ interface Props {
 export function NewBookingClient({ car, userName, renterType = 'LOCAL', params }: Props) {
   const router = useRouter();
   const [notes, setNotes] = useState('');
-  const [submitting, setSubmitting] = useState(false);
   const [idpAcknowledged, setIdpAcknowledged] = useState(false);
-  // IDP gate: required for foreign self-drive renters
+  const [phoneNumber, setPhoneNumber] = useState('');
+
+  // Payment flow state machine
+  const [checkoutStep, setCheckoutStep] = useState<CheckoutStep>('idle');
+  const [bookingId, setBookingId] = useState<string | null>(null);
+  const [paymentError, setPaymentError] = useState<string | null>(null);
+  const [pollProgress, setPollProgress] = useState(0);
+
+  const pollIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const pollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const progressIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
   const needsIdpGate = renterType === 'FOREIGN' && !params.withDriver;
+  const isMoMo = params.paymentMethod === 'MTN_MOMO' || params.paymentMethod === 'AIRTEL_MONEY';
   const district = RWANDA_DISTRICTS.find(d => d.id === car.district);
   const grandTotal = params.totalAmount + params.depositAmount;
+  const isSubmitting = checkoutStep === 'creating' || checkoutStep === 'initiating';
 
   function fmt(d: string) {
     return new Date(d + 'T00:00:00').toLocaleDateString('en-RW', {
@@ -78,10 +92,80 @@ export function NewBookingClient({ car, userName, renterType = 'LOCAL', params }
     });
   }
 
+  const clearPolling = useCallback(() => {
+    if (pollIntervalRef.current) { clearInterval(pollIntervalRef.current); pollIntervalRef.current = null; }
+    if (pollTimeoutRef.current) { clearTimeout(pollTimeoutRef.current); pollTimeoutRef.current = null; }
+    if (progressIntervalRef.current) { clearInterval(progressIntervalRef.current); progressIntervalRef.current = null; }
+  }, []);
+
+  // Polling effect — only active when step is 'polling'
+  useEffect(() => {
+    if (checkoutStep !== 'polling' || !bookingId) return;
+
+    let cancelled = false;
+
+    // Progress bar: 1% every 1.2s = 100% over 120s
+    progressIntervalRef.current = setInterval(() => {
+      if (!cancelled) setPollProgress(p => Math.min(p + 1, 99));
+    }, 1200);
+
+    // Poll status every 5s
+    pollIntervalRef.current = setInterval(async () => {
+      if (cancelled) return;
+      try {
+        const res = await fetch(`/api/payments/status?bookingId=${bookingId}`);
+        const data = await res.json();
+        if (data.status === 'SUCCESSFUL') {
+          clearPolling();
+          if (!cancelled) {
+            setPollProgress(100);
+            setCheckoutStep('success');
+            setTimeout(() => {
+              if (!cancelled) router.push(`/bookings/${bookingId}/confirmed`);
+            }, 1500);
+          }
+        } else if (data.status === 'FAILED') {
+          clearPolling();
+          if (!cancelled) {
+            setPaymentError(data.reason ?? 'Payment was declined or cancelled');
+            setCheckoutStep('failed');
+          }
+        }
+        // PENDING → keep polling
+      } catch {
+        // transient network error — keep polling
+      }
+    }, 5000);
+
+    // 2-minute hard timeout
+    pollTimeoutRef.current = setTimeout(() => {
+      if (!cancelled) {
+        clearPolling();
+        setCheckoutStep('timeout');
+      }
+    }, 120_000);
+
+    return () => {
+      cancelled = true;
+      clearPolling();
+    };
+  }, [checkoutStep, bookingId, router, clearPolling]);
+
   async function handleConfirm() {
-    setSubmitting(true);
+    if (isMoMo && !phoneNumber.trim()) {
+      toast.error('Please enter your MTN MoMo / Airtel Money phone number');
+      return;
+    }
+    if (needsIdpGate && !idpAcknowledged) {
+      toast.error('Please confirm you hold a valid IDP before continuing');
+      return;
+    }
+
+    setCheckoutStep('creating');
+
     try {
-      const res = await fetch('/api/bookings', {
+      // Step 1 — Create the booking record
+      const bookingRes = await fetch('/api/bookings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -100,15 +184,166 @@ export function NewBookingClient({ car, userName, renterType = 'LOCAL', params }
           notes: notes.trim() || undefined,
         }),
       });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.error ?? 'Failed to create booking');
-      router.push(`/bookings/${json.id}/pay?method=${params.paymentMethod}&amount=${grandTotal}`);
-    } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : 'Failed to create booking');
-      setSubmitting(false);
+      const bookingJson = await bookingRes.json();
+      if (!bookingRes.ok) throw new Error(bookingJson.error ?? 'Failed to create booking');
+
+      const newBookingId = bookingJson.id as string;
+      setBookingId(newBookingId);
+
+      if (isMoMo) {
+        // Step 2 — Trigger MoMo requesttopay
+        setCheckoutStep('initiating');
+        const payRes = await fetch('/api/payments/initiate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ bookingId: newBookingId, phoneNumber: phoneNumber.trim() }),
+        });
+        const payJson = await payRes.json();
+        if (!payRes.ok) throw new Error(payJson.error ?? 'Failed to initiate payment');
+
+        // Step 3 — Start polling (useEffect picks this up)
+        setPollProgress(0);
+        setCheckoutStep('polling');
+      } else {
+        // Card payment → redirect to legacy pay page
+        router.push(`/bookings/${newBookingId}/pay?method=${params.paymentMethod}&amount=${grandTotal}`);
+      }
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Something went wrong');
+      setCheckoutStep('idle');
     }
   }
 
+  function handleRetry() {
+    setCheckoutStep('idle');
+    setPaymentError(null);
+    setPollProgress(0);
+    // bookingId is kept — the initiate route is idempotent so we can re-use it
+  }
+
+  function handleCancelPolling() {
+    clearPolling();
+    setCheckoutStep('idle');
+    setPollProgress(0);
+  }
+
+  // ── Payment status screen ─────────────────────────────────────────────────
+  if (checkoutStep === 'polling' || checkoutStep === 'success' || checkoutStep === 'failed' || checkoutStep === 'timeout') {
+    return (
+      <div className="min-h-screen bg-gray-bg dark:bg-gray-950 flex items-center justify-center px-4 py-12">
+        <div className="max-w-sm w-full">
+          <div className="card p-8 text-center">
+
+            {/* ── Success ──────────────────────────────── */}
+            {checkoutStep === 'success' && (
+              <>
+                <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <CheckCircle className="w-9 h-9 text-green-600" />
+                </div>
+                <h2 className="text-xl font-bold text-text-primary dark:text-white mb-2">Payment Confirmed!</h2>
+                <p className="text-sm text-text-secondary mb-5">
+                  Your booking is confirmed. Taking you to your trip details…
+                </p>
+                <div className="w-full bg-green-100 dark:bg-green-900/20 rounded-full h-1.5">
+                  <div className="h-1.5 bg-green-500 rounded-full" style={{ width: '100%' }} />
+                </div>
+              </>
+            )}
+
+            {/* ── Polling ──────────────────────────────── */}
+            {checkoutStep === 'polling' && (
+              <>
+                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Phone className="w-8 h-8 text-primary animate-pulse" />
+                </div>
+                <h2 className="text-xl font-bold text-text-primary dark:text-white mb-2">
+                  Approve on your phone
+                </h2>
+                <p className="text-sm text-text-secondary mb-1">
+                  A payment request for{' '}
+                  <span className="font-semibold text-text-primary dark:text-white">{formatRWF(grandTotal)}</span>{' '}
+                  has been sent to
+                </p>
+                <p className="text-base font-bold text-primary mb-5">{phoneNumber}</p>
+
+                <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-xl p-3 mb-5 text-left">
+                  <p className="text-xs font-semibold text-blue-700 dark:text-blue-300 mb-1.5">How to approve:</p>
+                  <ol className="text-xs text-blue-600 dark:text-blue-400 space-y-1 list-decimal list-inside">
+                    <li>Open your MTN MoMo or Airtel Money app</li>
+                    <li>Find the pending request from <strong>Gari</strong></li>
+                    <li>Enter your PIN to approve</li>
+                  </ol>
+                </div>
+
+                {/* Progress bar */}
+                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-1.5">
+                  <div
+                    className="h-2 bg-primary rounded-full transition-all duration-1000"
+                    style={{ width: `${pollProgress}%` }}
+                  />
+                </div>
+                <p className="text-xs text-text-light mb-6">
+                  Waiting for approval… expires in 2 minutes
+                </p>
+
+                <button
+                  onClick={handleCancelPolling}
+                  className="text-sm text-text-secondary hover:text-primary transition-colors underline"
+                >
+                  Cancel payment
+                </button>
+              </>
+            )}
+
+            {/* ── Failed ───────────────────────────────── */}
+            {checkoutStep === 'failed' && (
+              <>
+                <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <AlertTriangle className="w-9 h-9 text-red-500" />
+                </div>
+                <h2 className="text-xl font-bold text-text-primary dark:text-white mb-2">Payment Failed</h2>
+                <p className="text-sm text-text-secondary mb-2">
+                  {paymentError ?? 'Your payment was declined or cancelled.'}
+                </p>
+                <p className="text-xs text-text-light mb-6">
+                  Your booking is reserved — you can try again without losing your spot.
+                </p>
+                <button onClick={handleRetry} className="btn-primary w-full justify-center">
+                  Try Again
+                </button>
+              </>
+            )}
+
+            {/* ── Timeout ──────────────────────────────── */}
+            {checkoutStep === 'timeout' && (
+              <>
+                <div className="w-16 h-16 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Clock className="w-9 h-9 text-amber-500" />
+                </div>
+                <h2 className="text-xl font-bold text-text-primary dark:text-white mb-2">Request Expired</h2>
+                <p className="text-sm text-text-secondary mb-6">
+                  The payment request timed out after 2 minutes. Please try again.
+                </p>
+                <button onClick={handleRetry} className="btn-primary w-full justify-center">
+                  Try Again
+                </button>
+              </>
+            )}
+          </div>
+
+          {/* Booking reference */}
+          {bookingId && (
+            <p className="text-center text-xs text-text-light mt-3">
+              Booking ref:{' '}
+              <span className="font-mono font-semibold">{bookingId.slice(-8).toUpperCase()}</span>
+            </p>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // ── Main booking form (idle / creating / initiating) ─────────────────────
   return (
     <div className="min-h-screen bg-gray-bg dark:bg-gray-950">
       <div className="max-w-2xl mx-auto px-4 py-8">
@@ -243,6 +478,30 @@ export function NewBookingClient({ car, userName, renterType = 'LOCAL', params }
           </div>
         </div>
 
+        {/* MoMo phone number input — only shown for mobile money payments */}
+        {isMoMo && (
+          <div className="card p-5 mb-5">
+            <h3 className="font-bold text-text-primary dark:text-white mb-1 flex items-center gap-2">
+              <Phone className="w-4 h-4 text-primary" />
+              {PAYMENT_LABELS[params.paymentMethod]} Number
+            </h3>
+            <p className="text-xs text-text-secondary mb-3">
+              Enter the phone number that will receive the payment request.
+            </p>
+            <input
+              type="tel"
+              value={phoneNumber}
+              onChange={e => setPhoneNumber(e.target.value)}
+              placeholder="e.g. 0788 000 000"
+              className="input w-full text-sm"
+              disabled={isSubmitting}
+            />
+            <p className="text-xs text-text-light mt-1.5">
+              You&apos;ll receive a push notification to approve RWF {grandTotal.toLocaleString()} on your phone.
+            </p>
+          </div>
+        )}
+
         {/* Message to host */}
         <div className="card p-5 mb-5">
           <h3 className="font-bold text-text-primary dark:text-white mb-1">
@@ -258,6 +517,7 @@ export function NewBookingClient({ car, userName, renterType = 'LOCAL', params }
             maxLength={500}
             placeholder="Hi, I'll be using the car for a family trip to Musanze…"
             className="input text-sm resize-none w-full"
+            disabled={isSubmitting}
           />
           <div className="text-right text-xs text-text-light mt-1">{notes.length}/500</div>
         </div>
@@ -287,7 +547,7 @@ export function NewBookingClient({ car, userName, renterType = 'LOCAL', params }
                   International Driving Permit (IDP) required
                 </p>
                 <p className="text-xs text-blue-700 dark:text-blue-300 mb-3">
-                  Rwanda law requires foreign nationals driving without a Rwandan driver renting without a driver to carry a valid IDP alongside their national/home driving licence.{' '}
+                  Rwanda law requires foreign nationals driving without a Rwandan driver to carry a valid IDP alongside their national driving licence.{' '}
                   <Link href="/international#driving" className="underline font-medium">Learn more →</Link>
                 </p>
                 <label className="flex items-start gap-2 cursor-pointer">
@@ -296,6 +556,7 @@ export function NewBookingClient({ car, userName, renterType = 'LOCAL', params }
                     checked={idpAcknowledged}
                     onChange={e => setIdpAcknowledged(e.target.checked)}
                     className="mt-0.5 w-4 h-4 rounded accent-blue-600 cursor-pointer flex-shrink-0"
+                    disabled={isSubmitting}
                   />
                   <span className="text-xs font-medium text-blue-800 dark:text-blue-200">
                     I confirm I hold a valid IDP (or will obtain one before pickup) and understand I may be turned away without it.
@@ -309,11 +570,13 @@ export function NewBookingClient({ car, userName, renterType = 'LOCAL', params }
         {/* Confirm button */}
         <button
           onClick={handleConfirm}
-          disabled={submitting || (needsIdpGate && !idpAcknowledged)}
+          disabled={isSubmitting || (needsIdpGate && !idpAcknowledged)}
           className="btn-primary w-full justify-center py-4 text-base font-bold disabled:opacity-60"
         >
-          {submitting ? (
-            <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2 inline-block" />Creating booking…</>
+          {checkoutStep === 'creating' ? (
+            <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2 inline-block" />Creating your booking…</>
+          ) : checkoutStep === 'initiating' ? (
+            <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2 inline-block" />Connecting to {PAYMENT_LABELS[params.paymentMethod]}…</>
           ) : (
             <>Confirm & Pay {formatRWF(grandTotal)} <ArrowRight className="w-4 h-4 ml-1" /></>
           )}

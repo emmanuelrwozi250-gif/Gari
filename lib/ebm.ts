@@ -4,8 +4,13 @@
  * Generates a structured receipt object at transaction completion.
  * Gari remits the VAT to Rwanda Revenue Authority (RRA) on behalf of hosts.
  *
- * TODO: integrate with RRA EBM API once credentials are issued.
- * API endpoint (placeholder): https://rra.gov.rw/ebm/api/submit
+ * issueEBMReceipt() — Option A: real RRA EBM API (env vars required).
+ *                   — Option B fallback: logs receipt for manual submission.
+ *
+ * Env vars (Option A):
+ *   RRA_EBM_API_URL    - RRA EBM API base URL
+ *   RRA_EBM_API_KEY    - RRA EBM API key
+ *   RRA_TAXPAYER_PIN   - Gari's RRA taxpayer PIN
  */
 
 import { format } from 'date-fns';
@@ -50,6 +55,73 @@ interface BookingForReceipt {
   car: { make: string; model: string; year: number; pricePerDay: number };
   renter: { name: string | null; phone: string | null };
   host: { name: string | null };
+}
+
+export interface IssueReceiptResult {
+  receiptNumber: string;
+  receiptUrl?: string;
+}
+
+/**
+ * Issue an EBM receipt for a completed booking.
+ *
+ * Option A — real RRA EBM API (when RRA_EBM_API_URL, RRA_EBM_API_KEY,
+ *   and RRA_TAXPAYER_PIN are all set). Returns { receiptNumber, receiptUrl }.
+ *
+ * Option B fallback — logs the receipt JSON for manual RRA submission.
+ *   Returns { receiptNumber } (no URL).
+ */
+export async function issueEBMReceipt(booking: BookingForReceipt): Promise<IssueReceiptResult> {
+  const receipt = generateEBMReceipt(booking);
+
+  const rraUrl = process.env.RRA_EBM_API_URL;
+  const rraKey = process.env.RRA_EBM_API_KEY;
+  const pin    = process.env.RRA_TAXPAYER_PIN;
+
+  // Option A — real RRA EBM API
+  if (rraUrl && rraKey && pin) {
+    try {
+      const res = await fetch(`${rraUrl}/submit`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': rraKey,
+          'x-taxpayer-pin': pin,
+        },
+        body: JSON.stringify({
+          receiptNo: receipt.receiptNo,
+          issuedAt: receipt.issuedAt.toISOString(),
+          supplier: receipt.supplier,
+          buyer: receipt.buyer,
+          items: receipt.items,
+          vatBase: receipt.vatBase,
+          vatAmount: receipt.vatAmount,
+          grandTotal: receipt.grandTotal,
+          currency: receipt.currency,
+          note: receipt.note,
+        }),
+      });
+
+      if (res.ok) {
+        const data = await res.json().catch(() => ({}));
+        const receiptNumber: string = (data as { receiptNumber?: string; receiptNo?: string }).receiptNumber
+          ?? (data as { receiptNumber?: string; receiptNo?: string }).receiptNo
+          ?? receipt.receiptNo;
+        const receiptUrl: string | undefined = (data as { receiptUrl?: string }).receiptUrl;
+        console.log(`[EBM] Receipt issued via RRA API: ${receiptNumber}`);
+        return { receiptNumber, receiptUrl };
+      }
+
+      const errText = await res.text().catch(() => res.statusText);
+      console.error(`[EBM] RRA API error (${res.status}): ${errText} — falling back to manual`);
+    } catch (err) {
+      console.error('[EBM] RRA API call failed — falling back to manual submission:', err);
+    }
+  }
+
+  // Option B — manual fallback: log for RRA submission queue
+  console.log('[EBM] Receipt queued for manual RRA submission:', JSON.stringify(receipt, null, 2));
+  return { receiptNumber: receipt.receiptNo };
 }
 
 export function generateEBMReceipt(booking: BookingForReceipt): EBMReceipt {

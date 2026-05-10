@@ -4,7 +4,8 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { DepositStatus } from '@prisma/client';
 import { recordLateReturn } from '@/lib/reputation';
-import { generateEBMReceipt } from '@/lib/ebm';
+import { issueEBMReceipt } from '@/lib/ebm';
+import { processHostPayout } from '@/lib/payments/payout';
 
 export const dynamic = 'force-dynamic';
 
@@ -24,7 +25,7 @@ export async function POST(
         car: {
           select: {
             hostId: true, make: true, model: true, year: true, pricePerDay: true,
-            host: { select: { name: true } },
+            host: { select: { name: true, phone: true, whatsappNumber: true } },
           },
         },
         renter: { select: { name: true, phone: true, whatsappNumber: true } },
@@ -39,8 +40,8 @@ export async function POST(
 
     const now = new Date();
 
-    // Generate EBM receipt number
-    const receipt = generateEBMReceipt({
+    // Issue EBM receipt (Option A: RRA API, Option B: manual log fallback)
+    const ebmResult = await issueEBMReceipt({
       id: booking.id,
       subtotal: booking.subtotal,
       driverFee: booking.driverFee,
@@ -61,6 +62,10 @@ export async function POST(
         phone: booking.renter.whatsappNumber ?? booking.renter.phone,
       },
       host: { name: booking.car.host?.name ?? null },
+    }).catch((err) => {
+      // Don't let EBM failure block the return-safe flow
+      console.error('[return-safe] issueEBMReceipt failed:', err);
+      return { receiptNumber: `EBM-${booking.id.slice(0, 8).toUpperCase()}-FALLBACK`, receiptUrl: undefined };
     });
 
     const updateData = {
@@ -68,7 +73,12 @@ export async function POST(
       carReturnedSafelyAt: now,
       carReturnedSafelyBy: userId,
       completedAt: now,
-      vatReceiptRef: receipt.receiptNo,
+      // EBM receipt fields
+      ebmReceiptNumber: ebmResult.receiptNumber,
+      ebmReceiptUrl: ebmResult.receiptUrl ?? null,
+      ebmIssuedAt: now,
+      vatReceiptRef: ebmResult.receiptNumber, // kept for backward compat
+      // Deposit release
       depositStatus: booking.depositAmount > 0 ? DepositStatus.REFUNDED : DepositStatus.NOT_APPLICABLE,
       depositRefundedAt: booking.depositAmount > 0 ? now : undefined,
       depositRefundAmount: booking.depositAmount > 0 ? booking.depositAmount : undefined,
@@ -91,12 +101,17 @@ export async function POST(
       await prisma.booking.update({ where: { id: params.id }, data: updateData });
     }
 
-    // Record late return against renter reputation (non-blocking)
+    // Non-blocking: record late return against renter reputation
     if ((booking as any).lateFeeAccrued > 0) {
       void recordLateReturn(booking.renterId).catch(e =>
         console.error('[return-safe] recordLateReturn failed:', e)
       );
     }
+
+    // Non-blocking: process host payout (failures are logged, admin can retry)
+    void processHostPayout(params.id).catch(err =>
+      console.error('[return-safe] processHostPayout failed:', err)
+    );
 
     // WhatsApp link to thank the renter
     const renterWA = (booking.renter.whatsappNumber || booking.renter.phone || '').replace(/\D/g, '');
@@ -105,11 +120,11 @@ export async function POST(
       (booking.depositAmount > 0
         ? `Your deposit of RWF ${booking.depositAmount.toLocaleString()} will be refunded within 48 hours. `
         : '') +
-      `Your EBM receipt: ${receipt.receiptNo}. Please leave a review on Gari 🌟`
+      `Your EBM receipt: ${ebmResult.receiptNumber}. Please leave a review on Gari 🌟`
     );
     const waLink = renterWA ? `https://wa.me/${renterWA}?text=${msg}` : null;
 
-    return NextResponse.json({ success: true, waLink, receiptNo: receipt.receiptNo });
+    return NextResponse.json({ success: true, waLink, receiptNo: ebmResult.receiptNumber });
   } catch (err) {
     console.error('[return-safe]', err);
     return NextResponse.json({ error: 'Failed to mark trip as returned' }, { status: 500 });
