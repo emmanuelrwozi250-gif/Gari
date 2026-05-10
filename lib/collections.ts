@@ -60,7 +60,7 @@ export const COLLECTIONS: Collection[] = [
     emoji: '✨',
     description: 'Mercedes, Land Cruisers, and top-tier SUVs for weddings, special occasions, and when only the best will do.',
     heroImage: 'https://images.pexels.com/photos/9927972/pexels-photo-9927972.jpeg?auto=compress&cs=tinysrgb&w=1200',
-    searchParams: { type: 'luxury' },
+    searchParams: { type: 'executive' },
     highlights: ['Premium brands only', 'Weddings & events', 'From RWF 150k/day'],
   },
 ];
