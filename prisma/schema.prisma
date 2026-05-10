@@ -381,6 +381,22 @@ model Booking {
   vatAmount              Int           @default(0)   // 18% VAT collected for RRA
   vatReceiptRef          String?                     // EBM receipt number once generated
   dynamicMultiplier      Float         @default(1.0) // pricing engine multiplier applied
+  // ── MoMo payment tracking ────────────────────────────────────────
+  paymentReference       String?       // general payment reference
+  paymentRequestId       String?       // MTN MoMo X-Reference-Id (uuid)
+  paymentInitiatedAt     DateTime?     // when requesttopay was sent
+  paymentCompletedAt     DateTime?     // when status → SUCCESSFUL
+  paymentFailedAt        DateTime?     // when status → FAILED
+  paymentFailReason      String?       // MoMo failure reason
+  // ── EBM receipt ──────────────────────────────────────────────────
+  ebmReceiptNumber       String?       // RRA EBM receipt number
+  ebmReceiptUrl          String?       // URL to receipt PDF/QR
+  ebmIssuedAt            DateTime?     // when EBM was issued to RRA
+  // ── Host payout ──────────────────────────────────────────────────
+  payoutStatus           String?       // PENDING | PROCESSED | FAILED
+  payoutReference        String?       // MoMo disbursement transactionId
+  payoutAt               DateTime?     // when payout was sent
+  hostEarnings           Int?          // totalAmount - vatAmount - platformFee
   createdAt              DateTime      @default(now())
   updatedAt              DateTime      @updatedAt
 
