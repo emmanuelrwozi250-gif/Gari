@@ -92,6 +92,7 @@ function filterDemoCars(params: SearchParamsShape) {
     seats: c.seats,
     transmission: c.transmission === 'Auto' ? 'AUTOMATIC' : 'MANUAL',
     driverAvailable: c.drivingOption !== 'Self-Drive',
+    driverMandatory: false,
     listingType: c.listingType,
     rating: c.rating,
     totalTrips: c.reviewCount,

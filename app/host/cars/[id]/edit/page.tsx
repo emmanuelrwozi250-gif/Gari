@@ -42,6 +42,7 @@ export default function EditCarPage() {
   const [pricePerDay, setPricePerDay] = useState(60000);
   const [depositAmount, setDepositAmount] = useState(0);
   const [driverAvailable, setDriverAvailable] = useState(false);
+  const [driverMandatory, setDriverMandatory] = useState(false);
   const [driverPricePerDay, setDriverPricePerDay] = useState(0);
   const [instantBooking, setInstantBooking] = useState(false);
   const [pricingMode, setPricingMode] = useState<'static' | 'dynamic'>('static');
@@ -90,6 +91,7 @@ export default function EditCarPage() {
         setPricePerDay(data.pricePerDay || 60000);
         setDepositAmount(data.depositAmount || 0);
         setDriverAvailable(data.driverAvailable || false);
+        setDriverMandatory(data.driverMandatory || false);
         setDriverPricePerDay(data.driverPricePerDay || 0);
         setInstantBooking(data.instantBooking || false);
         setPricingMode(data.pricingMode === 'dynamic' ? 'dynamic' : 'static');
@@ -410,6 +412,21 @@ export default function EditCarPage() {
               </div>
             )}
 
+            {driverAvailable && (
+              <label className="flex items-center justify-between p-4 bg-amber-50 dark:bg-amber-950 rounded-xl border border-amber-200 dark:border-amber-800 cursor-pointer">
+                <div>
+                  <p className="font-medium text-sm text-amber-900 dark:text-amber-100">Driver mandatory</p>
+                  <p className="text-xs text-amber-700 dark:text-amber-400 mt-0.5">
+                    Renter cannot self-drive. Driver fee always applies. Recommended for vehicles over RWF 150,000/day.
+                  </p>
+                </div>
+                <button type="button" onClick={() => setDriverMandatory(v => !v)}
+                  className={`relative flex-shrink-0 w-11 h-6 rounded-full transition-colors ml-4 ${driverMandatory ? 'bg-amber-600' : 'bg-gray-200'}`}>
+                  <span className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${driverMandatory ? 'translate-x-5' : 'translate-x-0.5'}`} />
+                </button>
+              </label>
+            )}
+
             <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-xl">
               <div>
                 <div className="font-medium text-sm">Instant Booking</div>
@@ -538,7 +555,7 @@ export default function EditCarPage() {
             )}
 
             <button
-              onClick={() => saveSection('pricing', { pricePerDay, depositAmount, driverAvailable, driverPricePerDay: driverAvailable ? driverPricePerDay : 0, instantBooking, cancellationPolicy, pricingMode, priceIncludesVat, gpsVerified, gpsTrackerType: gpsVerified ? gpsTrackerType : null })}
+              onClick={() => saveSection('pricing', { pricePerDay, depositAmount, driverAvailable, driverMandatory, driverPricePerDay: driverAvailable ? driverPricePerDay : 0, instantBooking, cancellationPolicy, pricingMode, priceIncludesVat, gpsVerified, gpsTrackerType: gpsVerified ? gpsTrackerType : null })}
               disabled={saving === 'pricing'}
               className="btn-primary w-full justify-center">
               {saving === 'pricing' ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}

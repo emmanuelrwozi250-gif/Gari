@@ -147,6 +147,7 @@ model Car {
   fuel              FuelType
   pricePerDay       Int
   driverAvailable   Boolean       @default(false)
+  driverMandatory   Boolean       @default(false)
   driverPricePerDay Int?
   depositAmount     Int           @default(0)
   description       String        @db.Text

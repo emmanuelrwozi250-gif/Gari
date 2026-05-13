@@ -91,6 +91,7 @@ export async function POST(req: NextRequest) {
         isAvailable: true,
         pricePerDay: true,
         driverPricePerDay: true,
+        driverMandatory: true,
         pricingMode: true,
         district: true,
         make: true,
@@ -102,6 +103,9 @@ export async function POST(req: NextRequest) {
     });
     if (!car?.isAvailable) {
       return NextResponse.json({ error: 'This car is not available' }, { status: 400 });
+    }
+    if ((car as { driverMandatory?: boolean }).driverMandatory && !data.withDriver) {
+      return NextResponse.json({ error: 'This vehicle requires a driver. Self-drive is not permitted.' }, { status: 400 });
     }
 
     // Date validation

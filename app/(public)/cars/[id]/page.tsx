@@ -64,6 +64,7 @@ const getCar = cache(async function getCar(id: string): Promise<CarDisplay | nul
       depositAmount: car.depositAmount,
       instantBooking: car.instantBooking,
       driverPricePerDay: car.driverPricePerDay ?? 0,
+      driverMandatory: (car as { driverMandatory?: boolean }).driverMandatory ?? false,
       reviews,
       cancellationPolicy: (car.cancellationPolicy ?? 'MODERATE') as 'FLEXIBLE' | 'MODERATE' | 'STRICT',
       hostSuperhostSince: car.host?.superhostSince

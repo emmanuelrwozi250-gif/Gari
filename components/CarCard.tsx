@@ -21,6 +21,7 @@ interface CarCardProps {
     fuel: string;
     pricePerDay: number;
     driverAvailable: boolean;
+    driverMandatory?: boolean;
     driverPricePerDay?: number | null;
     photos: string[];
     district: string;
@@ -92,7 +93,11 @@ export function CarCard({ car, compact = false, pickupDate, returnDate }: CarCar
               <Zap className="w-3 h-3" /> Instant
             </span>
           )}
-          {car.driverAvailable && (
+          {car.driverMandatory ? (
+            <span className="badge bg-amber-600/90 text-white text-xs backdrop-blur-sm">
+              🚘 Driver only
+            </span>
+          ) : car.driverAvailable && (
             <span className="badge bg-purple-600/90 text-white text-xs backdrop-blur-sm">
               🧑‍✈️ Driver
             </span>

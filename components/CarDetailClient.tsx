@@ -77,6 +77,7 @@ export type CarDisplay = {
   depositAmount: number;
   instantBooking: boolean;
   driverPricePerDay: number;
+  driverMandatory?: boolean;
   reviews: ReviewDisplay[];
   completedBookingId?: string | null;
   existingBookingId?: string | null;
@@ -358,7 +359,7 @@ export function CarDetailClient({ car, completedBookingId, existingBookingId, si
   const [activePhoto, setActivePhoto] = useState(0);
   const [pickup, setPickup] = useState('');
   const [returnDate, setReturnDate] = useState('');
-  const [withDriver, setWithDriver] = useState(false);
+  const [withDriver, setWithDriver] = useState(car.driverMandatory ?? false);
   const [booking, setBooking] = useState(false);
   const [pickupLocation, setPickupLocation] = useState('');
   const [customLocation, setCustomLocation] = useState('');
@@ -797,18 +798,31 @@ export function CarDetailClient({ car, completedBookingId, existingBookingId, si
                 {data.drivingOption !== 'Self-Drive' && (
                   <div>
                     <label className="text-xs font-semibold text-text-secondary uppercase tracking-wide block mb-2">Drive Option</label>
-                    <div className="grid grid-cols-2 gap-2">
-                      {data.drivingOption === 'Both' && (
-                        <button onClick={() => setWithDriver(false)}
-                          className={`py-2 rounded-xl text-sm font-semibold border-2 transition-colors ${!withDriver ? 'border-primary bg-primary/10 text-primary' : 'border-border text-text-secondary'}`}>
-                          Self-Drive
+                    {data.driverMandatory ? (
+                      <div className="flex items-start gap-3 p-3 bg-amber-50 dark:bg-amber-950 rounded-xl border border-amber-200 dark:border-amber-800">
+                        <span className="text-amber-500 mt-0.5 text-base">⚠️</span>
+                        <div>
+                          <p className="text-sm font-medium text-amber-800 dark:text-amber-200">Driver required for this vehicle</p>
+                          <p className="text-xs text-amber-600 dark:text-amber-400 mt-0.5">
+                            The host requires all renters to use their licensed driver.
+                            Driver fee ({data.driverPricePerDay ? `RWF ${data.driverPricePerDay.toLocaleString()}` : 'included'}/day) is added to your total.
+                          </p>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-2 gap-2">
+                        {data.drivingOption === 'Both' && (
+                          <button onClick={() => setWithDriver(false)}
+                            className={`py-2 rounded-xl text-sm font-semibold border-2 transition-colors ${!withDriver ? 'border-primary bg-primary/10 text-primary' : 'border-border text-text-secondary'}`}>
+                            Self-Drive
+                          </button>
+                        )}
+                        <button onClick={() => setWithDriver(true)}
+                          className={`py-2 rounded-xl text-sm font-semibold border-2 transition-colors ${data.drivingOption === 'Both' ? '' : 'col-span-2'} ${withDriver || data.drivingOption === 'With Driver' ? 'border-primary bg-primary/10 text-primary' : 'border-border text-text-secondary'}`}>
+                          With Driver
                         </button>
-                      )}
-                      <button onClick={() => setWithDriver(true)}
-                        className={`py-2 rounded-xl text-sm font-semibold border-2 transition-colors ${data.drivingOption === 'Both' ? '' : 'col-span-2'} ${withDriver || data.drivingOption === 'With Driver' ? 'border-primary bg-primary/10 text-primary' : 'border-border text-text-secondary'}`}>
-                        With Driver
-                      </button>
-                    </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
