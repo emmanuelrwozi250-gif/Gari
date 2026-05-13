@@ -1029,6 +1029,17 @@ export function CarDetailClient({ car, completedBookingId, existingBookingId, si
               </a>
             </div>
 
+            {/* Cancellation Policy */}
+            <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-4 text-sm">
+              <p className="font-semibold mb-2 text-text-primary dark:text-white">Cancellation policy</p>
+              <div className="space-y-1.5 text-xs text-gray-600 dark:text-gray-400">
+                <p>✓ Full refund if cancelled <strong>48+ hours</strong> before pickup</p>
+                <p>✓ 50% refund if cancelled <strong>24–48 hours</strong> before pickup</p>
+                <p>✗ No refund if cancelled <strong>under 24 hours</strong> before pickup</p>
+                <p>✓ Full refund if <strong>host declines</strong> your request</p>
+              </div>
+            </div>
+
             {/* Gari Guarantee */}
             <div className="card p-4 border-primary/20">
               <button
