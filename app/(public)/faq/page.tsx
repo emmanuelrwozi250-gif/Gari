@@ -101,6 +101,10 @@ const OPERATOR_FAQS = [
     q: 'What commission does Gari charge operators?',
     a: 'Gari charges a 12% platform fee on each booking\'s rental value. This covers payment processing, customer support, insurance coordination, and the NIDA verification system. There are no listing fees — you only pay when you earn.',
   },
+  {
+    q: 'Do my drivers need a professional driver permit?',
+    a: 'Yes. Any driver you assign through Gari — whether for a self-drive vehicle handover or as a supplied chauffeur — must hold a valid Rwanda professional driver\'s permit (permis de conduire professionnel) issued by RTDA in addition to their standard driving licence. This is a legal requirement under Rwanda\'s transport regulations for commercial vehicle operators. Gari may request proof of your drivers\' professional permits during the compliance review.',
+  },
 ];
 
 function FAQItem({ q, a }: { q: string; a: string }) {

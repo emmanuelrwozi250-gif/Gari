@@ -174,6 +174,9 @@ export default function BeAHostPage() {
           ))}
         </div>
         <p className="text-center text-xs text-text-light mt-4">* Estimates based on average host utilization. Results vary.</p>
+        <p className="text-center text-xs text-text-light mt-1">
+          Net of 12% platform fee and 18% VAT (remitted to RRA by Gari on your behalf).
+        </p>
       </section>
 
       {/* Host success story */}

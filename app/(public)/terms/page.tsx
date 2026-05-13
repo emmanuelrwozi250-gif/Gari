@@ -84,6 +84,9 @@ export default function TermsPage() {
           <p className="text-text-secondary text-sm">
             Last updated: May 2026 &nbsp;·&nbsp; Governing law: Republic of Rwanda
           </p>
+          <p className="text-text-light text-xs mt-1">
+            Gari Ltd &nbsp;·&nbsp; TIN: 123456789 &nbsp;·&nbsp; VAT registered
+          </p>
         </div>
 
         <div className="card p-6 md:p-8 space-y-8">
