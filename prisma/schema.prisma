@@ -124,6 +124,8 @@ model User {
   ownedCoHosts          CoHostRelation[]       @relation("OwnedCoHosts")
   coHostedCars          CoHostRelation[]       @relation("CoHostedCars")
   boostSubscriptions    BoostSubscription[]
+  events                UserEvent[]
+  preference            UserPreference?
 }
 
 enum Role {
@@ -1118,4 +1120,40 @@ model CarAnalytics {
 
   @@unique([carId, date])
   @@index([carId, date])
+}
+
+// ─── BEHAVIOUR TRACKING ───────────────────────────────────────────────────────
+
+model UserEvent {
+  id         String   @id @default(cuid())
+  userId     String?
+  sessionId  String
+  eventType  String
+  carId      String?
+  carType    String?
+  district   String?
+  priceRange String?
+  collection String?
+  metadata   Json?
+  createdAt  DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([sessionId])
+  @@index([eventType])
+  @@index([createdAt])
+}
+
+model UserPreference {
+  id                 String   @id @default(cuid())
+  userId             String   @unique
+  preferredTypes     String[]
+  preferredDistricts String[]
+  priceRangePref     String?
+  driverPreference   Boolean?
+  safariInterest     Boolean  @default(false)
+  lastUpdated        DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

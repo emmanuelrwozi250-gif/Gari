@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { trackEvent } from '@/lib/track';
 import dynamic from 'next/dynamic';
 import { CarCard, CarCardSkeleton } from '@/components/CarCard';
 import { SearchBar } from '@/components/SearchBar';
@@ -68,6 +69,22 @@ export function SearchResults({ cars, total, page, searchParams, priceMin, price
   const params = useSearchParams();
   const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
   const [filterOpen, setFilterOpen] = useState(false);
+
+  // Track search behaviour for recommendations (fire-and-forget, skip first mount)
+  const isFirstMount = useRef(true);
+  useEffect(() => {
+    if (isFirstMount.current) { isFirstMount.current = false; return; }
+    trackEvent({
+      eventType: 'search',
+      district: searchParams.district,
+      carType: searchParams.type,
+      priceRange: searchParams.minPrice && searchParams.maxPrice
+        ? `${searchParams.minPrice}-${searchParams.maxPrice}`
+        : undefined,
+    });
+  // searchParams reference changes on every render — stringify to stabilise
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams.district, searchParams.type, searchParams.minPrice, searchParams.maxPrice]);
 
   const district = searchParams.district;
   const districtInfo = RWANDA_DISTRICTS.find(d => d.id === district);

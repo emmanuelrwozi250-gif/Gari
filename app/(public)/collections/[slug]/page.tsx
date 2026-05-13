@@ -6,6 +6,7 @@ import { CarCard } from '@/components/CarCard';
 import { COLLECTIONS, getCollection } from '@/lib/collections';
 import { prisma } from '@/lib/prisma';
 import { DEMO_RENTAL_CARS } from '@/lib/demo-data';
+import { CollectionTracker } from '@/components/recommendations/CollectionTracker';
 
 export const dynamic = 'force-dynamic';
 
@@ -77,6 +78,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       siteName: 'Gari',
       locale: 'en_RW',
       type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${collection.emoji} ${collection.title} | Gari Rwanda`,
+      description: collection.description,
+      images: [collection.heroImage],
     },
   };
 }
@@ -153,6 +160,7 @@ export default async function CollectionPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-gray-bg dark:bg-gray-950">
+      <CollectionTracker slug={slug} />
       {/* Hero */}
       <div className="relative h-[45vh] min-h-[280px] overflow-hidden">
         {/* eslint-disable-next-line @next/next/no-img-element */}

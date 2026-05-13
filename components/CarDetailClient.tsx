@@ -19,6 +19,7 @@ import { COMPANY } from '@/lib/config/company';
 import { POLICY_TIERS } from '@/config/cancellation';
 import { calculateVAT, VAT_LABEL } from '@/config/vat';
 import { PLATFORM } from '@/config/platform';
+import { trackEvent } from '@/lib/track';
 
 const FALLBACK = 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=800&q=80';
 const PLATFORM_FEE_RATE = PLATFORM.FEE_RATE;
@@ -403,6 +404,17 @@ export function CarDetailClient({ car, completedBookingId, existingBookingId, si
       .then(r => r.json())
       .then(d => { if (d.extras) setExtras(d.extras.filter((e: { isAvailable: boolean }) => e.isAvailable)); })
       .catch(() => {});
+  }, [data.id]);
+
+  // Track car view for behaviour-based recommendations (fire-and-forget)
+  useEffect(() => {
+    trackEvent({
+      eventType: 'car_view',
+      carId: data.id,
+      carType: data.type,
+      district: data.district,
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data.id]);
 
   const photos = data.images.length > 0 ? data.images : [FALLBACK];

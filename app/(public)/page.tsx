@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { CollectionCard } from '@/components/CollectionCard';
 import { COLLECTIONS } from '@/lib/collections';
+import { RecommendedCars } from '@/components/recommendations/RecommendedCars';
 
 // ─── SEO Metadata ──────────────────────────────────────────────────────────────
 export const metadata: Metadata = {
@@ -424,6 +425,9 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ── Personalised Recommendations ────────────────────────────────── */}
+      <RecommendedCars title="Cars You Might Like" limit={4} />
 
       {/* ── CTA Banner ────────────────────────────────────────────────────── */}
       <section className="py-16 px-4 bg-dark-bg text-white text-center border-t border-white/5">
