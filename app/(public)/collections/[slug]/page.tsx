@@ -15,6 +15,7 @@ const COLLECTION_QUERIES: Record<string, () => Record<string, unknown>> = {
   'gorilla-trek': () => ({
     isAvailable: true,
     isVerified: true,
+    fuel: { not: 'ELECTRIC' },
     OR: [
       { isSafariCapable: true },
       { type: { in: ['SUV_4X4', 'PICKUP'] } },
@@ -36,6 +37,7 @@ const COLLECTION_QUERIES: Record<string, () => Record<string, unknown>> = {
   'national-parks': () => ({
     isAvailable: true,
     isVerified: true,
+    fuel: { not: 'ELECTRIC' },
     OR: [
       { isSafariCapable: true },
       { type: { in: ['SUV_4X4', 'PICKUP'] } },
