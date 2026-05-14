@@ -30,6 +30,30 @@ export function FilterSidebar({ searchParams, onChange, priceMin, priceMax }: Fi
     <div className="space-y-6 bg-white dark:bg-gray-900 rounded-card p-4 border border-border">
       <h2 className="font-bold text-text-primary dark:text-white">Filters</h2>
 
+      {/* Trip Dates */}
+      <div>
+        <label className="label">Pickup Date</label>
+        <input
+          type="date"
+          min={new Date().toISOString().split('T')[0]}
+          value={searchParams.pickup ?? ''}
+          onChange={e => onChange('pickup', e.target.value || null)}
+          className="input w-full text-sm"
+          aria-label="Pickup date"
+        />
+      </div>
+      <div>
+        <label className="label">Return Date</label>
+        <input
+          type="date"
+          min={searchParams.pickup ?? new Date().toISOString().split('T')[0]}
+          value={searchParams.return ?? ''}
+          onChange={e => onChange('return', e.target.value || null)}
+          className="input w-full text-sm"
+          aria-label="Return date"
+        />
+      </div>
+
       {/* Location */}
       <div>
         <label className="label">District</label>
@@ -241,7 +265,7 @@ export function FilterSidebar({ searchParams, onChange, priceMin, priceMax }: Fi
       <button
         type="button"
         onClick={() => {
-          ['district', 'driver', 'type', 'listingType', 'minPrice', 'maxPrice', 'seats', 'transmission', 'instantBooking', 'intl'].forEach(k => onChange(k, null));
+          ['pickup', 'return', 'district', 'driver', 'type', 'listingType', 'minPrice', 'maxPrice', 'seats', 'transmission', 'instantBooking', 'intl'].forEach(k => onChange(k, null));
         }}
         className="w-full py-2 text-sm text-text-secondary hover:text-red-500 transition-colors"
       >
