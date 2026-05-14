@@ -11,6 +11,7 @@ import {
 import toast from 'react-hot-toast';
 import { formatRWF } from '@/lib/utils';
 import { RWANDA_DISTRICTS } from '@/lib/districts';
+import { trackEvent } from '@/lib/track';
 
 const FALLBACK = 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=800&q=80';
 
@@ -189,6 +190,12 @@ export function NewBookingClient({ car, userName, renterType = 'LOCAL', params }
 
       const newBookingId = bookingJson.id as string;
       setBookingId(newBookingId);
+
+      trackEvent({
+        eventType: 'booking_start',
+        carId: car.id,
+        metadata: { bookingId: newBookingId },
+      });
 
       if (isMoMo) {
         // Step 2 — Trigger MoMo requesttopay

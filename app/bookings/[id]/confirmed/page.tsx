@@ -6,6 +6,8 @@ import Link from 'next/link';
 import { CheckCircle, Calendar, MapPin, Car, MessageSquare, ArrowRight, Loader2, Clock, Camera } from 'lucide-react';
 import { formatRWF } from '@/lib/utils';
 import { format } from 'date-fns';
+import { trackEvent } from '@/lib/track';
+import { RecommendedCars } from '@/components/recommendations/RecommendedCars';
 
 interface BookingConfirmation {
   id: string;
@@ -62,6 +64,17 @@ export default function BookingConfirmedPage() {
       })
       .catch(() => { router.push('/dashboard'); });
   }, [id, router]);
+
+  // Track booking_complete once when booking is confirmed
+  useEffect(() => {
+    if (booking?.status === 'CONFIRMED' && booking?.car?.id) {
+      trackEvent({
+        eventType: 'booking_complete',
+        carId: booking.car.id,
+      });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [booking?.id]);
 
   if (loading) {
     return (
@@ -213,6 +226,10 @@ export default function BookingConfirmedPage() {
           >
             Browse more cars
           </Link>
+        </div>
+
+        <div className="mt-8">
+          <RecommendedCars title="Plan Your Next Trip" limit={3} />
         </div>
 
       </div>

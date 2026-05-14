@@ -15,6 +15,7 @@ import toast from 'react-hot-toast';
 import { formatRWF, toUSD } from '@/lib/utils';
 import { RWANDA_DISTRICTS } from '@/lib/districts';
 import { RecentlyViewedCars } from './RecentlyViewedCars';
+import { RecommendedCars } from '@/components/recommendations/RecommendedCars';
 import { COMPANY } from '@/lib/config/company';
 import { POLICY_TIERS } from '@/config/cancellation';
 import { calculateVAT, VAT_LABEL } from '@/config/vat';
@@ -1125,6 +1126,9 @@ export function CarDetailClient({ car, completedBookingId, existingBookingId, si
             </div>
           </section>
         )}
+
+        {/* Recommended for You */}
+        <RecommendedCars title="You Might Also Like" limit={4} />
 
         {/* Recently Viewed */}
         <RecentlyViewedCars
