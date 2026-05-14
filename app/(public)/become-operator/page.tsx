@@ -105,6 +105,56 @@ export default function BecomeOperatorPage() {
         </p>
       </div>
 
+      {/* Commission comparison — PROMINENT, before How It Works */}
+      <section className="mb-14">
+        <div className="bg-gradient-to-br from-primary/5 to-primary/10 border-2 border-primary/20 rounded-2xl p-6 sm:p-8">
+          <div className="text-center mb-6">
+            <p className="text-xs font-bold uppercase tracking-widest text-primary mb-2">Why Gari?</p>
+            <h2 className="text-2xl font-extrabold text-text-primary dark:text-white mb-2">
+              Keep 88% of Every Booking
+            </h2>
+            <p className="text-sm text-text-secondary dark:text-gray-400 max-w-xl mx-auto">
+              Other platforms take a massive cut. Gari&apos;s 12% fee is the lowest in Rwanda — so you keep more of what you earn.
+            </p>
+          </div>
+          <div className="grid grid-cols-3 gap-3 sm:gap-4 mb-6">
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-3 sm:p-4 text-center border border-border">
+              <p className="font-extrabold text-2xl sm:text-3xl text-red-500">25–35%</p>
+              <p className="text-xs text-text-secondary mt-1 font-semibold">Traditional car hire co.</p>
+              <p className="text-[10px] text-text-light mt-0.5">e.g. Century, Dollar Rent</p>
+            </div>
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-3 sm:p-4 text-center border border-border">
+              <p className="font-extrabold text-2xl sm:text-3xl text-amber-500">20–30%</p>
+              <p className="text-xs text-text-secondary mt-1 font-semibold">Hotels / OTA platforms</p>
+              <p className="text-[10px] text-text-light mt-0.5">e.g. Booking.com, Marriott</p>
+            </div>
+            <div className="bg-primary rounded-xl p-3 sm:p-4 text-center ring-2 ring-primary ring-offset-2">
+              <p className="font-extrabold text-2xl sm:text-3xl text-white">12%</p>
+              <p className="text-xs text-white/90 mt-1 font-bold">Gari platform fee</p>
+              <p className="text-[10px] text-white/70 mt-0.5">You keep 88%</p>
+            </div>
+          </div>
+          {/* RWF example */}
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-border">
+            <p className="text-xs font-semibold text-text-secondary uppercase tracking-wide mb-3">Example: SUV at RWF 90,000/day · 18 days/month</p>
+            <div className="grid grid-cols-3 gap-2 text-center text-xs">
+              <div>
+                <p className="text-red-500 font-bold">RWF 1,053,000</p>
+                <p className="text-text-light">at 35% commission</p>
+              </div>
+              <div>
+                <p className="text-amber-600 font-bold">RWF 1,134,000</p>
+                <p className="text-text-light">at 30% commission</p>
+              </div>
+              <div>
+                <p className="text-primary font-extrabold text-sm">RWF 1,425,600</p>
+                <p className="text-text-secondary font-semibold">with Gari (12%)</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* 3-Step Process */}
       <section className="mb-14">
         <h2 className="text-xl font-bold text-text-primary dark:text-white text-center mb-8">
@@ -174,27 +224,6 @@ export default function BecomeOperatorPage() {
               ))}
             </tbody>
           </table>
-        </div>
-      </section>
-
-      {/* Commission comparison callout */}
-      <section className="mb-14">
-        <div className="bg-primary/5 border border-primary/20 rounded-2xl p-5">
-          <p className="font-semibold text-sm text-primary mb-3">💡 Compare platform fees</p>
-          <div className="grid grid-cols-3 gap-3 text-center text-sm">
-            <div className="bg-white dark:bg-gray-800 rounded-xl p-3">
-              <p className="font-bold text-xl text-text-primary dark:text-white">20–30%</p>
-              <p className="text-text-secondary text-xs mt-1">Hotels / Booking.com</p>
-            </div>
-            <div className="bg-white dark:bg-gray-800 rounded-xl p-3">
-              <p className="font-bold text-xl text-text-primary dark:text-white">25–35%</p>
-              <p className="text-text-secondary text-xs mt-1">Traditional car hire co.</p>
-            </div>
-            <div className="bg-primary text-white rounded-xl p-3">
-              <p className="font-bold text-xl">12%</p>
-              <p className="text-xs mt-1 text-white/80">Gari</p>
-            </div>
-          </div>
         </div>
       </section>
 
