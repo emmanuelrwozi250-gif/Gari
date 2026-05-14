@@ -47,6 +47,18 @@ const RENTER_FAQS = [
     q: 'What if the car looks different from the photos?',
     a: 'Contact Gari support immediately via WhatsApp (+250 788 123 000) before you start driving. We will investigate and, if the discrepancy is significant, arrange a full refund or a replacement vehicle.',
   },
+  {
+    q: 'What happens if I have an accident involving a third party?',
+    a: 'Stop the vehicle in a safe location and call the Rwanda National Police (113). Do not admit liability at the scene. Photograph the vehicles and any damage. Report to Gari via WhatsApp within 48 hours with photos and the police reference number. Basic Insurance covers third-party liability up to RWF 5,000,000. Gari Protect holders have extended coverage.',
+  },
+  {
+    q: 'What is the fuel policy?',
+    a: 'All Gari vehicles are provided with a full tank of fuel. Return the car with a full tank to avoid a refuelling charge (typically RWF 15,000 service fee plus the cost of fuel at current pump prices). Confirm with your host at pickup — some hosts offer flexible fuel arrangements.',
+  },
+  {
+    q: 'Are there mileage limits?',
+    a: 'Most Gari rentals have unlimited mileage within Rwanda. If a host sets a daily mileage cap it will be shown on the listing under "Rules". Cross-border travel to neighbouring countries (Uganda, DRC, Tanzania, Burundi) requires prior written approval from the host and may incur additional fees.',
+  },
 ];
 
 const HOST_FAQS = [
