@@ -18,8 +18,8 @@ function DemoBannerInner() {
   return (
     <div className="w-full bg-amber-500 text-white text-xs sm:text-sm py-2.5 px-4 flex items-center justify-between gap-4 sticky top-0 z-[100]">
       <span>
-        🚀 <strong>Investor Demo Mode</strong>
-        {' — '}Payments simulated · No real transactions ·{' '}
+        🚧 <strong>Pilot Mode</strong>
+        {' — '}Limited fleet available · Real bookings on select vehicles ·{' '}
         <a
           href="https://gari-nu.vercel.app"
           className="underline opacity-90 hover:opacity-100"
