@@ -177,6 +177,27 @@ export default function BecomeOperatorPage() {
         </div>
       </section>
 
+      {/* Commission comparison callout */}
+      <section className="mb-14">
+        <div className="bg-primary/5 border border-primary/20 rounded-2xl p-5">
+          <p className="font-semibold text-sm text-primary mb-3">💡 Compare platform fees</p>
+          <div className="grid grid-cols-3 gap-3 text-center text-sm">
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-3">
+              <p className="font-bold text-xl text-text-primary dark:text-white">20–30%</p>
+              <p className="text-text-secondary text-xs mt-1">Hotels / Booking.com</p>
+            </div>
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-3">
+              <p className="font-bold text-xl text-text-primary dark:text-white">25–35%</p>
+              <p className="text-text-secondary text-xs mt-1">Traditional car hire co.</p>
+            </div>
+            <div className="bg-primary text-white rounded-xl p-3">
+              <p className="font-bold text-xl">12%</p>
+              <p className="text-xs mt-1 text-white/80">Gari</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Benefits strip */}
       <section className="mb-14 grid grid-cols-2 sm:grid-cols-4 gap-4">
         {[
