@@ -5,6 +5,7 @@ import {
   Phone, FileText, AlertTriangle, Navigation,
 } from 'lucide-react';
 import { COMPANY, waLink } from '@/lib/config/company';
+import { INSURANCE } from '@/config/insurance';
 
 export const metadata: Metadata = {
   title: 'Car Rental for International Visitors — Gari Rwanda',
@@ -49,7 +50,7 @@ const FAQS = [
   },
   {
     q: 'What if I have an accident or breakdown?',
-    a: 'Contact Gari immediately via WhatsApp. All rentals include basic insurance. For Gari Protect subscribers, collision damage up to RWF 2,000,000 is covered. The host provides a roadside assistance contact at pickup.',
+    a: `Contact Gari immediately via WhatsApp. All rentals include basic insurance. For Gari Protect subscribers, collision damage up to RWF ${INSURANCE.PROTECT_VEHICLE_RWF.toLocaleString('en-RW')} is covered. The host provides a roadside assistance contact at pickup.`,
   },
   {
     q: 'Is there an airport pickup option?',

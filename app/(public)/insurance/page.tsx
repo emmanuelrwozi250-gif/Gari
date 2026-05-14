@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Shield, CheckCircle, XCircle, FileText, Phone, Globe } from 'lucide-react';
+import { INSURANCE } from '@/config/insurance';
 
 export const metadata: Metadata = {
   title: 'Insurance — Gari',
@@ -36,11 +37,11 @@ export default function InsurancePage() {
               </li>
               <li className="flex items-start gap-2">
                 <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" />
-                <span><strong className="text-text-primary dark:text-white">Third-party liability</strong> — Damage caused to other vehicles or property up to RWF 5,000,000</span>
+                <span><strong className="text-text-primary dark:text-white">Third-party liability</strong> — Damage caused to other vehicles or property up to RWF {INSURANCE.STANDARD_LIABILITY_RWF.toLocaleString('en-RW')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" />
-                <span><strong className="text-text-primary dark:text-white">Medical expenses</strong> — Emergency medical costs for renter up to RWF 500,000</span>
+                <span><strong className="text-text-primary dark:text-white">Medical expenses</strong> — Emergency medical costs for renter up to RWF {INSURANCE.STANDARD_MEDICAL_RWF.toLocaleString('en-RW')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" />
@@ -67,11 +68,11 @@ export default function InsurancePage() {
                   </tr>
                   <tr>
                     <td className="py-3 text-text-primary dark:text-white">Third-party liability</td>
-                    <td className="py-3 text-right font-semibold text-primary">RWF 5,000,000</td>
+                    <td className="py-3 text-right font-semibold text-primary">RWF {INSURANCE.STANDARD_LIABILITY_RWF.toLocaleString('en-RW')}</td>
                   </tr>
                   <tr>
                     <td className="py-3 text-text-primary dark:text-white">Medical expenses</td>
-                    <td className="py-3 text-right font-semibold text-primary">RWF 500,000</td>
+                    <td className="py-3 text-right font-semibold text-primary">RWF {INSURANCE.STANDARD_MEDICAL_RWF.toLocaleString('en-RW')}</td>
                   </tr>
                   <tr>
                     <td className="py-3 text-text-primary dark:text-white">Roadside towing (Kigali)</td>
@@ -141,11 +142,11 @@ export default function InsurancePage() {
                 <strong className="text-text-primary dark:text-white">Important:</strong> To be covered while driving, international renters must carry both their home country driving licence and a valid International Driving Permit (IDP). Driving without an IDP may void coverage and violate Rwandan traffic law.
               </p>
               <div className="rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 p-4 space-y-2">
-                <p className="font-semibold text-blue-800 dark:text-blue-200">Coverage limits (same for all renters)</p>
+                <p className="font-semibold text-blue-800 dark:text-blue-200">Extended coverage limits (international trips)</p>
                 <ul className="space-y-1 text-blue-700 dark:text-blue-300">
-                  <li className="flex items-center gap-2"><CheckCircle className="w-3.5 h-3.5 flex-shrink-0" /> Third-party liability: up to RWF 20,000,000</li>
-                  <li className="flex items-center gap-2"><CheckCircle className="w-3.5 h-3.5 flex-shrink-0" /> Vehicle damage (Gari Protect): up to RWF 2,000,000</li>
-                  <li className="flex items-center gap-2"><CheckCircle className="w-3.5 h-3.5 flex-shrink-0" /> Medical expenses: up to RWF 3,000,000 per person</li>
+                  <li className="flex items-center gap-2"><CheckCircle className="w-3.5 h-3.5 flex-shrink-0" /> Third-party liability: up to RWF {INSURANCE.INTERNATIONAL_LIABILITY_RWF.toLocaleString('en-RW')}</li>
+                  <li className="flex items-center gap-2"><CheckCircle className="w-3.5 h-3.5 flex-shrink-0" /> Vehicle damage (Gari Protect): up to RWF {INSURANCE.PROTECT_VEHICLE_RWF.toLocaleString('en-RW')}</li>
+                  <li className="flex items-center gap-2"><CheckCircle className="w-3.5 h-3.5 flex-shrink-0" /> Medical expenses: up to RWF {INSURANCE.INTERNATIONAL_MEDICAL_RWF.toLocaleString('en-RW')} per person</li>
                 </ul>
               </div>
               <p>
