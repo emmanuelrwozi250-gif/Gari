@@ -239,11 +239,11 @@ export default async function HomePage() {
             {/* Quick-select location chips */}
             <div className="flex flex-wrap items-center justify-center gap-2 mt-4">
               {[
-                { label: '📍 Kigali', district: 'GASABO' },
-                { label: '🦍 Volcanoes', district: 'MUSANZE' },
-                { label: '🐘 Akagera', district: 'KAYONZA' },
-                { label: '🌊 Lake Kivu', district: 'RUBAVU' },
-                { label: '🌿 Nyungwe', district: 'NYAMASHEKE' },
+                { label: '📍 Kigali',    district: 'gasabo'     },
+                { label: '🦍 Volcanoes', district: 'musanze'    },
+                { label: '🐘 Akagera',   district: 'kayonza'    },
+                { label: '🌊 Lake Kivu', district: 'rubavu'     },
+                { label: '🌿 Nyungwe',   district: 'nyamasheke' },
               ].map(({ label, district }) => (
                 <Link
                   key={district}

@@ -9,6 +9,7 @@ import { SearchBar } from '@/components/SearchBar';
 import { FilterSidebar } from '@/components/FilterSidebar';
 import { MapPin, List, Map, SlidersHorizontal, ChevronLeft, ChevronRight, X, CalendarCheck, Tent } from 'lucide-react';
 import { RWANDA_DISTRICTS } from '@/lib/districts';
+import { getCarTypeLabel } from '@/lib/utils';
 
 const MapView = dynamic(() => import('@/components/MapView').then(m => ({ default: m.MapView })), {
   ssr: false,
@@ -120,7 +121,7 @@ export function SearchResults({ cars, total, page, searchParams, priceMin, price
     if (d) activeFilters.push({ key: 'district', label: `📍 ${d.name}`, value: d.id });
   }
   if (searchParams.driver === 'true') activeFilters.push({ key: 'driver', label: 'With Driver', value: 'true' });
-  if (searchParams.type) activeFilters.push({ key: 'type', label: searchParams.type.replace('_', '/'), value: searchParams.type });
+  if (searchParams.type) activeFilters.push({ key: 'type', label: getCarTypeLabel(searchParams.type), value: searchParams.type });
   if (searchParams.listingType) activeFilters.push({ key: 'listingType', label: searchParams.listingType, value: searchParams.listingType });
 
   return (
