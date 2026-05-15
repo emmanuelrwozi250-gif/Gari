@@ -9,6 +9,8 @@ import { formatRWF } from '@/lib/utils';
 import { checkSuspension } from '@/lib/reputation';
 import { calculateVAT } from '@/config/vat';
 import { getDynamicMultiplier, applyMultiplier } from '@/lib/pricing';
+import { computePricing } from '@/lib/pricing/engine';
+import type { PricingRule as EnginePricingRule } from '@/lib/pricing/engine';
 
 export const dynamic = 'force-dynamic';
 
@@ -158,6 +160,7 @@ export async function POST(req: NextRequest) {
 
     // ── Dynamic pricing (server-authoritative) ──────────────────────────────
     let dynamicMultiplier = 1.0;
+    const serverBaseSubtotal = car.pricePerDay * data.totalDays;
     let adjustedSubtotal = data.subtotal;
 
     if (car.pricingMode === 'dynamic') {
@@ -169,9 +172,35 @@ export async function POST(req: NextRequest) {
       );
       dynamicMultiplier = pricing.multiplier;
       // Recompute subtotal from server-side base price to prevent tampering
-      const serverBaseSubtotal = car.pricePerDay * data.totalDays;
       adjustedSubtotal = applyMultiplier(serverBaseSubtotal, dynamicMultiplier);
     }
+
+    // ── DB-rule pricing snapshot (for audit / dispute prevention) ───────────
+    const dbRulesForSnapshot = await prisma.pricingRule.findMany({ where: { enabled: true } });
+    const engineSnapshot = computePricing({
+      pickupDate: pickupDt,
+      returnDate: returnDt,
+      totalDays: data.totalDays,
+      rules: dbRulesForSnapshot.map(r => ({
+        id: r.id,
+        name: r.name,
+        type: r.type,
+        enabled: r.enabled,
+        multiplier: r.multiplier,
+        priority: r.priority,
+        startDate: r.startDate ?? null,
+        endDate: r.endDate ?? null,
+        dayOfWeek: r.dayOfWeek,
+        minDays: r.minDays ?? null,
+      } as EnginePricingRule)),
+    });
+    const pricingSnapshot = {
+      appliedRules: engineSnapshot.appliedRules,
+      finalMultiplier: engineSnapshot.finalMultiplier,
+      adjustmentPercent: engineSnapshot.adjustmentPercent,
+      demandMultiplier: dynamicMultiplier,
+      computedAt: new Date().toISOString(),
+    };
 
     // ── VAT (18%) — server-authoritative ───────────────────────────────────
     // If host's listed price already includes VAT, no extra charge; otherwise add 18% on top
@@ -217,6 +246,14 @@ export async function POST(req: NextRequest) {
         vatAmount,
         dynamicMultiplier,
         totalAmount: serverTotalAmount,
+        // ── Pricing snapshot columns ───────────────────────────────────────
+        // Cast via JSON round-trip so Prisma's InputJsonValue type is satisfied
+        pricingSnapshot: JSON.parse(JSON.stringify(pricingSnapshot)),
+        totalRwf: serverTotalAmount,
+        vatRwf: vatAmount,
+        baseSubtotalRwf: serverBaseSubtotal,
+        dynamicAdjustmentRwf: adjustedSubtotal - serverBaseSubtotal,
+        averageMultiplier: engineSnapshot.finalMultiplier,
         paymentMethod: data.paymentMethod,
         referralCode: validReferralCode,
         referralCommission,

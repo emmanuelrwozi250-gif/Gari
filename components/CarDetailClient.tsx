@@ -21,6 +21,8 @@ import { POLICY_TIERS } from '@/config/cancellation';
 import { calculateVAT, VAT_LABEL } from '@/config/vat';
 import { PLATFORM } from '@/config/platform';
 import { trackEvent } from '@/lib/track';
+import { useDynamicPricing } from '@/hooks/useDynamicPricing';
+import { PriceBreakdown } from '@/components/pricing/PriceBreakdown';
 
 const FALLBACK = 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=800&q=80';
 const PLATFORM_FEE_RATE = PLATFORM.FEE_RATE;
@@ -399,6 +401,9 @@ export function CarDetailClient({ car, completedBookingId, existingBookingId, si
     const timer = setTimeout(() => fetchDynamicPricing(pickup, returnDate), 400);
     return () => clearTimeout(timer);
   }, [pickup, returnDate, fetchDynamicPricing]);
+
+  // ── DB-rule-based pricing (new engine) ────────────────────────────────────
+  const { result: ruleBasedPricing } = useDynamicPricing(pickup, returnDate);
 
   useEffect(() => {
     fetch(`/api/cars/${data.id}/extras`)
@@ -886,6 +891,19 @@ export function CarDetailClient({ car, completedBookingId, existingBookingId, si
                         </p>
                       )}
                     </div>
+                  )}
+
+                  {/* DB-rule-based price breakdown */}
+                  {ruleBasedPricing && (
+                    <PriceBreakdown
+                      basePrice={data.pricePerDay}
+                      totalDays={days}
+                      driverFee={driverFee}
+                      finalMultiplier={ruleBasedPricing.finalMultiplier}
+                      adjustmentPercent={ruleBasedPricing.adjustmentPercent}
+                      appliedRules={ruleBasedPricing.appliedRules}
+                      priceIncludesVat={data.priceIncludesVat}
+                    />
                   )}
 
                   <div className="bg-gray-bg dark:bg-gray-800 rounded-xl p-4 space-y-2 text-sm">

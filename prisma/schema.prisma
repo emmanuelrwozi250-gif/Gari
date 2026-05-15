@@ -384,6 +384,13 @@ model Booking {
   vatAmount              Int           @default(0)   // 18% VAT collected for RRA
   vatReceiptRef          String?                     // EBM receipt number once generated
   dynamicMultiplier      Float         @default(1.0) // pricing engine multiplier applied
+  // ── Pricing snapshot (DB-rule engine) ────────────────────────────────────
+  pricingSnapshot        Json?                       // full rule audit trail
+  totalRwf               Int?                        // totalAmount at booking time (RWF)
+  vatRwf                 Int?                        // VAT portion (RWF)
+  baseSubtotalRwf        Int?                        // base price × days (RWF)
+  dynamicAdjustmentRwf   Int?                        // adjustedSubtotal - baseSubtotal
+  averageMultiplier      Float?                      // final stacked multiplier (0.80–1.20)
   // ── MoMo payment tracking ────────────────────────────────────────
   paymentReference       String?       // general payment reference
   paymentRequestId       String?       // MTN MoMo X-Reference-Id (uuid)
@@ -1156,4 +1163,25 @@ model UserPreference {
   lastUpdated        DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ─── DYNAMIC PRICING ENGINE ───────────────────────────────────────────────────
+
+model PricingRule {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  type        String    // season | holiday | day_of_week | long_stay
+  enabled     Boolean   @default(true)
+  multiplier  Float
+  priority    Int       @default(0)
+  startDate   DateTime? @db.Date
+  endDate     DateTime? @db.Date
+  dayOfWeek   Int[]
+  minDays     Int?
+  description String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([type])
+  @@index([enabled])
 }
