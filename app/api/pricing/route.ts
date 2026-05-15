@@ -35,20 +35,21 @@ function toEngineRule(r: DbPricingRule): EnginePricingRule {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { pickupDate, returnDate } = body as {
-      pickupDate?: string;
-      returnDate?: string;
-    };
 
-    if (!pickupDate || !returnDate) {
+    // Accept startDate/endDate (audit format) or pickupDate/returnDate (hook format)
+    const rawPickup = (body.startDate ?? body.pickupDate) as string | undefined;
+    const rawReturn = (body.endDate ?? body.returnDate) as string | undefined;
+    const carId = body.carId as string | undefined;
+
+    if (!rawPickup || !rawReturn) {
       return NextResponse.json(
-        { error: 'pickupDate and returnDate are required' },
+        { error: 'startDate and endDate (or pickupDate/returnDate) are required' },
         { status: 400 }
       );
     }
 
-    const pickup = new Date(pickupDate);
-    const returnD = new Date(returnDate);
+    const pickup = new Date(rawPickup);
+    const returnD = new Date(rawReturn);
 
     if (isNaN(pickup.getTime()) || isNaN(returnD.getTime())) {
       return NextResponse.json({ error: 'Invalid date format' }, { status: 400 });
@@ -76,7 +77,37 @@ export async function POST(req: NextRequest) {
       rules: engineRules,
     });
 
+    // Optional: look up car price to compute total
+    let pricePerDay: number | null = null;
+    if (carId) {
+      try {
+        const car = await prisma.car.findUnique({
+          where: { id: carId },
+          select: { pricePerDay: true },
+        });
+        if (car) pricePerDay = car.pricePerDay;
+      } catch {
+        // Non-fatal — total will be omitted if car not found
+      }
+    }
+
+    const total = pricePerDay !== null
+      ? Math.round(pricePerDay * totalDays * result.finalMultiplier)
+      : null;
+
+    const uniqueRuleNames = result.appliedRules.map(r => r.name);
+
     return NextResponse.json({
+      success: true,
+      // Nested pricing object (audit format)
+      pricing: {
+        days: totalDays,
+        ...(total !== null ? { total } : {}),
+        averageMultiplier: result.finalMultiplier,
+        adjustmentPercent: result.adjustmentPercent,
+        uniqueRuleNames,
+      },
+      // Top-level fields (hook backward compatibility)
       finalMultiplier: result.finalMultiplier,
       adjustmentPercent: result.adjustmentPercent,
       appliedRules: result.appliedRules.map(r => ({

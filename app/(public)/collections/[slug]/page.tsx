@@ -115,6 +115,7 @@ async function getCollectionCars(slug: string) {
     'economy': 'ECONOMY', 'sedan': 'SEDAN', 'minibus': 'MINIBUS',
     'coaster': 'COASTER', 'luxury': 'LUXURY', 'van': 'VAN',
   };
+  const EV_EXCLUDED_COLLECTIONS = new Set(['gorilla-trek', 'national-parks', 'safari']);
   const typeEnum = type ? (TYPE_SLUG_MAP[type] ?? type) : null;
   return DEMO_RENTAL_CARS
     .filter(c => {
@@ -123,6 +124,7 @@ async function getCollectionCars(slug: string) {
       if (district && c.district !== district) return false;
       if (driver === 'true' && c.drivingOption === 'Self-Drive') return false;
       if (seats && c.seats < parseInt(seats)) return false;
+      if (EV_EXCLUDED_COLLECTIONS.has(slug) && c.fuel.toUpperCase() === 'ELECTRIC') return false;
       return true;
     })
     .map(c => ({
