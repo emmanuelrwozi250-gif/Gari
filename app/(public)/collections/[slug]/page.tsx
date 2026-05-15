@@ -13,12 +13,14 @@ export const dynamic = 'force-dynamic';
 // Per-collection Prisma where clauses — OR logic so real DB data always shows cars
 const COLLECTION_QUERIES: Record<string, () => Record<string, unknown>> = {
   'gorilla-trek': () => ({
-    isAvailable: true,
-    isVerified: true,
-    fuel: { not: 'ELECTRIC' },
-    OR: [
-      { isSafariCapable: true },
-      { type: { in: ['SUV_4X4', 'PICKUP'] } },
+    AND: [
+      { isAvailable: true },
+      { isVerified: true },
+      { fuel: { notIn: ['ELECTRIC'] } },
+      { OR: [
+        { isSafariCapable: true },
+        { type: { in: ['SUV_4X4', 'PICKUP'] } },
+      ]},
     ],
   }),
   'lake-kivu': () => ({
@@ -35,12 +37,14 @@ const COLLECTION_QUERIES: Record<string, () => Record<string, unknown>> = {
     ],
   }),
   'national-parks': () => ({
-    isAvailable: true,
-    isVerified: true,
-    fuel: { not: 'ELECTRIC' },
-    OR: [
-      { isSafariCapable: true },
-      { type: { in: ['SUV_4X4', 'PICKUP'] } },
+    AND: [
+      { isAvailable: true },
+      { isVerified: true },
+      { fuel: { notIn: ['ELECTRIC'] } },
+      { OR: [
+        { isSafariCapable: true },
+        { type: { in: ['SUV_4X4', 'PICKUP'] } },
+      ]},
     ],
   }),
   'family-road-trip': () => ({
