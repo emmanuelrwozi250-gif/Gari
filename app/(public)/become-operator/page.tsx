@@ -26,6 +26,10 @@ export const metadata: Metadata = {
     title: 'List Your Licensed Fleet on Gari Rwanda',
     description: 'RURA-compliant B2B2C car rental marketplace. Commercial vehicles only.',
   },
+  alternates: {
+    canonical: 'https://gari.rw/become-operator',
+    languages: { 'en': 'https://gari.rw/become-operator', 'fr': 'https://gari.rw/become-operator', 'x-default': 'https://gari.rw/become-operator' },
+  },
 };
 
 const REQUIREMENTS = [

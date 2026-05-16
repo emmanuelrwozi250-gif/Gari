@@ -439,12 +439,223 @@ const rw = {
   }),
 };
 
+// ─── FRENCH TEMPLATES ────────────────────────────────────────────────────────
+
+const fr = {
+  'booking.created': (d: BookingTemplateData): Template => ({
+    subject: `Nouvelle demande de réservation — ${d.carMake} ${d.carModel}`,
+    whatsapp: [
+      `🚗 *Nouvelle Demande de Réservation !*`,
+      ``,
+      `*Véhicule :* ${d.carYear} ${d.carMake} ${d.carModel}`,
+      `*Locataire :* ${d.renterName}`,
+      `*Prise en charge :* ${formatDate(d.pickupDate!)}`,
+      `*Retour :* ${formatDate(d.returnDate!)} (${d.totalDays} jour${d.totalDays !== 1 ? 's' : ''})`,
+      `*Lieu :* ${d.pickupLocation}`,
+      `*Total :* ${formatRWF(d.totalAmount!)}`,
+      `*Réf :* ${shortRef(d.bookingId)}`,
+      ``,
+      `Répondez avec :`,
+      `*1* — ✅ Accepter`,
+      `*2* — ❌ Refuser`,
+      `*3* — 🔗 Voir les détails`,
+    ].join('\n'),
+    email: `<p>Vous avez une nouvelle demande de réservation pour votre <b>${d.carYear} ${d.carMake} ${d.carModel}</b>.</p>
+<p><b>Locataire :</b> ${d.renterName}<br/>
+<b>Dates :</b> ${formatDate(d.pickupDate!)} — ${formatDate(d.returnDate!)}<br/>
+<b>Total :</b> ${formatRWF(d.totalAmount!)}</p>
+<p><a href="${bookingUrl(d.bookingId, d.appUrl!)}">Consulter et répondre →</a></p>`,
+    inApp: {
+      title: 'Nouvelle demande de réservation',
+      message: `${d.renterName} souhaite louer votre ${d.carMake} ${d.carModel} à partir du ${formatDate(d.pickupDate!)}`,
+    },
+  }),
+
+  'booking.confirmed': (d: BookingTemplateData): Template => ({
+    subject: `Réservation confirmée — ${d.carMake} ${d.carModel}`,
+    whatsapp: [
+      `✅ *Réservation Confirmée !*`,
+      ``,
+      `Votre *${d.carYear} ${d.carMake} ${d.carModel}* est réservé.`,
+      ``,
+      `📅 *Prise en charge :* ${formatDate(d.pickupDate!)}`,
+      `📅 *Retour :* ${formatDate(d.returnDate!)}`,
+      `📍 *Lieu :* ${d.pickupLocation}`,
+      `💰 *Total payé :* ${formatRWF(d.totalAmount!)}`,
+      `🔖 *Réf :* ${shortRef(d.bookingId)}`,
+      ``,
+      `Votre hôte *${d.hostName}* vous contactera 1 heure avant la prise en charge.`,
+      ``,
+      `Voir la réservation : ${bookingUrl(d.bookingId, d.appUrl!)}`,
+    ].join('\n'),
+    email: `<p>Bonne nouvelle ! Votre réservation a été confirmée.</p>
+<p><b>Véhicule :</b> ${d.carYear} ${d.carMake} ${d.carModel}<br/>
+<b>Hôte :</b> ${d.hostName}<br/>
+<b>Prise en charge :</b> ${formatDate(d.pickupDate!)}<br/>
+<b>Retour :</b> ${formatDate(d.returnDate!)}<br/>
+<b>Lieu :</b> ${d.pickupLocation}<br/>
+<b>Total :</b> ${formatRWF(d.totalAmount!)}</p>
+<p><a href="${bookingUrl(d.bookingId, d.appUrl!)}">Voir votre réservation →</a></p>`,
+    inApp: {
+      title: 'Réservation confirmée ! 🎉',
+      message: `Votre ${d.carMake} ${d.carModel} est confirmé pour le ${formatDate(d.pickupDate!)}`,
+    },
+  }),
+
+  'booking.declined': (d: BookingTemplateData): Template => ({
+    subject: `Réservation refusée — ${d.carMake} ${d.carModel}`,
+    whatsapp: [
+      `❌ *Réservation Refusée*`,
+      ``,
+      `Malheureusement, *${d.hostName}* n'a pas pu accepter votre demande pour le *${d.carMake} ${d.carModel}*.`,
+      ``,
+      `Vous n'avez pas été débité. Rechercher d'autres voitures :`,
+      `${d.appUrl}/search`,
+    ].join('\n'),
+    email: `<p>Votre demande de réservation pour le ${d.carMake} ${d.carModel} a été refusée par l'hôte.</p>
+<p>Vous n'avez pas été débité. <a href="${d.appUrl}/search">Parcourir d'autres véhicules →</a></p>`,
+    inApp: {
+      title: 'Réservation refusée',
+      message: `Votre demande pour le ${d.carMake} ${d.carModel} a été refusée. Vous n'avez pas été débité.`,
+    },
+  }),
+
+  'booking.paid': (d: BookingTemplateData): Template => ({
+    subject: `Paiement reçu — ${d.carMake} ${d.carModel}`,
+    whatsapp: [
+      `💰 *Paiement Reçu !*`,
+      ``,
+      `*${d.renterName}* a payé pour votre *${d.carYear} ${d.carMake} ${d.carModel}*.`,
+      ``,
+      `💵 *Montant :* ${formatRWF(d.totalAmount!)}`,
+      `📅 *Prise en charge :* ${formatDate(d.pickupDate!)}`,
+      `📍 *Lieu :* ${d.pickupLocation}`,
+      `🔖 *Réf :* ${shortRef(d.bookingId)}`,
+      ``,
+      `Les gains seront libérés après la fin du trajet.`,
+    ].join('\n'),
+    email: `<p>Paiement reçu pour votre <b>${d.carMake} ${d.carModel}</b>.</p>
+<p><b>Locataire :</b> ${d.renterName}<br/>
+<b>Montant :</b> ${formatRWF(d.totalAmount!)}<br/>
+<b>Date de prise en charge :</b> ${formatDate(d.pickupDate!)}</p>`,
+    inApp: {
+      title: 'Paiement reçu',
+      message: `${d.renterName} a payé ${formatRWF(d.totalAmount!)} pour votre ${d.carMake} ${d.carModel}`,
+    },
+  }),
+
+  'trip.starting': (d: BookingTemplateData): Template => ({
+    subject: `Trajet dans 1 heure — ${d.carMake} ${d.carModel}`,
+    whatsapp: [
+      `⏰ *Rappel de Prise en Charge — Dans 1 Heure !*`,
+      ``,
+      `La prise en charge de votre *${d.carYear} ${d.carMake} ${d.carModel}* est dans *1 heure*.`,
+      ``,
+      `📍 *Lieu :* ${d.pickupLocation}`,
+      `📞 *Hôte :* ${d.hostName}${d.hostPhone ? ` (${d.hostPhone})` : ''}`,
+      ``,
+      `Bon voyage ! 🙏`,
+    ].join('\n'),
+    email: `<p>La prise en charge de votre voiture est dans 1 heure.</p>
+<p><b>Véhicule :</b> ${d.carMake} ${d.carModel}<br/>
+<b>Lieu :</b> ${d.pickupLocation}<br/>
+<b>Contact hôte :</b> ${d.hostName}${d.hostPhone ? ` — ${d.hostPhone}` : ''}</p>`,
+    inApp: {
+      title: 'Prise en charge dans 1 heure ⏰',
+      message: `Votre ${d.carMake} ${d.carModel} vous attend à ${d.pickupLocation}`,
+    },
+  }),
+
+  'trip.ending': (d: BookingTemplateData): Template => ({
+    subject: `Rappel de retour — ${d.carMake} ${d.carModel} à rendre aujourd'hui`,
+    whatsapp: [
+      `🔔 *Rappel de Retour*`,
+      ``,
+      `Votre *${d.carYear} ${d.carMake} ${d.carModel}* doit être rendu *aujourd'hui* (${formatDate(d.returnDate!)}).`,
+      ``,
+      `Veuillez restituer le véhicule à temps et avec un plein pour éviter des frais supplémentaires.`,
+      ``,
+      `📞 Besoin de prolonger ? Contactez votre hôte : ${d.hostName}${d.hostPhone ? ` (${d.hostPhone})` : ''}`,
+    ].join('\n'),
+    email: `<p>Rappel : votre location se termine aujourd'hui (${formatDate(d.returnDate!)}).</p>
+<p>Veuillez rendre le <b>${d.carMake} ${d.carModel}</b> à temps et avec un plein.</p>`,
+    inApp: {
+      title: 'Retour prévu aujourd\'hui',
+      message: `Votre ${d.carMake} ${d.carModel} doit être rendu aujourd'hui. Merci de respecter l'heure.`,
+    },
+  }),
+
+  'dispute.opened': (d: BookingTemplateData): Template => ({
+    subject: `Litige ouvert — Réservation ${shortRef(d.bookingId)}`,
+    whatsapp: [
+      `⚠️ *Litige Ouvert*`,
+      ``,
+      `Un litige a été ouvert pour la réservation *${shortRef(d.bookingId)}*.`,
+      d.disputeReason ? `\nMotif : ${d.disputeReason}` : '',
+      ``,
+      `Notre équipe d'assistance vous contactera dans les 24 heures.`,
+      `📞 Ou contactez-nous sur WhatsApp : +250788123000`,
+    ].filter(Boolean).join('\n'),
+    email: `<p>Un litige a été ouvert pour la réservation <b>${shortRef(d.bookingId)}</b>.</p>
+<p>Notre équipe d'assistance vous contactera dans les 24 heures.</p>`,
+    inApp: {
+      title: 'Litige ouvert',
+      message: `Un litige a été ouvert pour la réservation ${shortRef(d.bookingId)}. Notre équipe vous contactera.`,
+    },
+  }),
+
+  'booking.review_reminder': (d: BookingTemplateData): Template => ({
+    subject: `Comment s'est passé votre trajet ? Laissez un avis pour ${d.carMake} ${d.carModel}`,
+    whatsapp: [
+      `⭐ *Comment s'est passé votre trajet Gari ?*`,
+      ``,
+      `Vous avez récemment loué un *${d.carYear} ${d.carMake} ${d.carModel}*.`,
+      ``,
+      `Laisser un avis prend 30 secondes et aide d'autres Rwandais à faire le bon choix.`,
+      ``,
+      `👉 Laissez votre avis : ${bookingUrl(d.bookingId, d.appUrl!)}`,
+      ``,
+      `Merci, ${d.renterName?.split(' ')[0]} ! 🙏`,
+    ].join('\n'),
+    email: `<p>Bonjour ${d.renterName?.split(' ')[0]},</p>
+<p>Nous espérons que vous avez apprécié votre location de <b>${d.carYear} ${d.carMake} ${d.carModel}</b>.</p>
+<p>Pourriez-vous prendre 30 secondes pour laisser un avis ? Cela aide les autres locataires et récompense les meilleurs hôtes.</p>
+<p><a href="${bookingUrl(d.bookingId, d.appUrl!)}">Laisser un avis →</a></p>
+<p>Merci ! 🙏<br/>L'équipe Gari</p>`,
+    inApp: {
+      title: 'Comment s\'était votre trajet ? ⭐',
+      message: `Vous venez de terminer votre location de ${d.carMake} ${d.carModel}. Appuyez pour laisser un avis.`,
+    },
+  }),
+
+  'damage.reported': (d: BookingTemplateData): Template => ({
+    subject: `Rapport de dommages soumis — Réservation ${shortRef(d.bookingId)}`,
+    whatsapp: [
+      `⚠️ *Rapport de Dommages Soumis*`,
+      ``,
+      `Votre hôte a soumis un rapport de dommages pour la réservation *${shortRef(d.bookingId)}*.`,
+      d.damageDescription ? `\n_"${d.damageDescription}"_` : '',
+      ``,
+      `Votre dépôt de garantie est en cours d'examen. Notre équipe vous contactera dans les 24 heures.`,
+      ``,
+      `Des questions ? Répondez ici ou visitez : ${bookingUrl(d.bookingId, d.appUrl!)}`,
+    ].filter(Boolean).join('\n'),
+    email: `<p>Un rapport de dommages a été soumis pour votre location (réservation <b>${shortRef(d.bookingId)}</b>).</p>
+${d.damageDescription ? `<p><b>Description :</b> ${d.damageDescription}</p>` : ''}
+<p>Votre dépôt de garantie est en cours d'examen. Notre équipe vous contactera dans les 24 heures.</p>`,
+    inApp: {
+      title: 'Rapport de dommages soumis',
+      message: `Un rapport de dommages a été soumis pour la réservation ${shortRef(d.bookingId)}. Dépôt en cours d'examen.`,
+    },
+  }),
+};
+
 // ─── Template resolver ───────────────────────────────────────────────────────
 
 const TEMPLATES: Record<Lang, Record<NotificationEvent, (d: BookingTemplateData) => Template>> = {
   en,
   rw,
-  fr: en, // French falls back to English for now; add `fr` object when translated
+  fr,
 };
 
 export function getTemplate(

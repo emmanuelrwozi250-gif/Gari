@@ -38,6 +38,14 @@ export async function generateMetadata(
       title,
       description,
     },
+    alternates: {
+      canonical: `https://gari.rw/search${p.district ? `?district=${p.district}` : ''}`,
+      languages: {
+        'en': 'https://gari.rw/search',
+        'fr': 'https://gari.rw/search',
+        'x-default': 'https://gari.rw/search',
+      },
+    },
   };
 }
 

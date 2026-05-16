@@ -1,9 +1,14 @@
+'use client';
+
 import Link from 'next/link';
 import { Car, MapPin, Phone, Mail, Twitter, Instagram } from 'lucide-react';
 import { DISTRICTS_BY_PROVINCE } from '@/lib/districts';
 import { COMPANY } from '@/lib/config/company';
+import { useLanguage } from '@/lib/language';
 
 export function Footer() {
+  const { t } = useLanguage();
+
   return (
     <footer className="bg-dark-bg text-gray-400 pt-8 md:pt-16 pb-24 md:pb-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -18,7 +23,7 @@ export function Footer() {
               </span>
             </Link>
             <p className="text-sm leading-relaxed mb-6 max-w-xs">
-              Rwanda&apos;s car rental marketplace. Verified hosts, mobile money payments, available across all 30 districts.
+              {t('footer', 'tagline')}
             </p>
             <div className="space-y-2 text-sm">
               <div className="flex items-center gap-2">
@@ -46,58 +51,57 @@ export function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-white font-semibold mb-4">Quick Links</h4>
+            <h4 className="text-white font-semibold mb-4">{t('footer', 'quickLinks')}</h4>
             <ul className="space-y-2 text-sm">
-              <li><Link href="/search" className="hover:text-primary transition-colors">Browse Cars</Link></li>
-              <li><Link href="/collections" className="hover:text-primary transition-colors">Packages</Link></li>
-              <li><Link href="/safari" className="hover:text-primary transition-colors">🏕️ Safari</Link></li>
-              <li><Link href="/airport-transfer" className="hover:text-primary transition-colors">✈️ Airport Transfer</Link></li>
-              <li><Link href="/dashboard" className="hover:text-primary transition-colors">My Bookings</Link></li>
-              <li><Link href="/dashboard/host" className="hover:text-primary transition-colors">Host Dashboard</Link></li>
+              <li><Link href="/search" className="hover:text-primary transition-colors">{t('footer', 'browseCars')}</Link></li>
+              <li><Link href="/collections" className="hover:text-primary transition-colors">{t('footer', 'packages')}</Link></li>
+              <li><Link href="/safari" className="hover:text-primary transition-colors">🏕️ {t('nav', 'safari')}</Link></li>
+              <li><Link href="/airport-transfer" className="hover:text-primary transition-colors">✈️ {t('nav', 'airportTransfer')}</Link></li>
+              <li><Link href="/dashboard" className="hover:text-primary transition-colors">{t('footer', 'myBookings')}</Link></li>
+              <li><Link href="/dashboard/host" className="hover:text-primary transition-colors">{t('footer', 'hostDashboard')}</Link></li>
             </ul>
           </div>
 
           {/* For Visitors */}
           <div>
-            <h4 className="text-white font-semibold mb-4">For Visitors</h4>
+            <h4 className="text-white font-semibold mb-4">{t('footer', 'forVisitors')}</h4>
             <ul className="space-y-2 text-sm">
-              <li><Link href="/international" className="hover:text-primary transition-colors">🌍 International Guide</Link></li>
-              <li><Link href="/international#driving" className="hover:text-primary transition-colors">Driving Permit (IDP)</Link></li>
-              <li><Link href="/airport-transfer" className="hover:text-primary transition-colors">Airport Transfers</Link></li>
-              <li><Link href="/register?intent=foreign" className="hover:text-primary transition-colors">Register as Visitor</Link></li>
+              <li><Link href="/international" className="hover:text-primary transition-colors">🌍 {t('footer', 'internationalGuide')}</Link></li>
+              <li><Link href="/international#driving" className="hover:text-primary transition-colors">{t('footer', 'drivingPermit')}</Link></li>
+              <li><Link href="/airport-transfer" className="hover:text-primary transition-colors">{t('footer', 'airportTransfers')}</Link></li>
+              <li><Link href="/register?intent=foreign" className="hover:text-primary transition-colors">{t('footer', 'registerAsVisitor')}</Link></li>
             </ul>
           </div>
 
           {/* For Operators */}
           <div>
-            <h4 className="text-white font-semibold mb-4">For Operators</h4>
+            <h4 className="text-white font-semibold mb-4">{t('footer', 'forOperators')}</h4>
             <ul className="space-y-2 text-sm">
-              <li><Link href="/become-operator" className="hover:text-primary transition-colors">List Your Fleet</Link></li>
-              <li><Link href="/dashboard/host" className="hover:text-primary transition-colors">Operator Dashboard</Link></li>
-              <li><Link href="/dashboard/operator/boost" className="hover:text-primary transition-colors">Boost Listings</Link></li>
-              <li><Link href="/dashboard/operator/analytics" className="hover:text-primary transition-colors">Analytics</Link></li>
+              <li><Link href="/become-operator" className="hover:text-primary transition-colors">{t('footer', 'listYourFleet')}</Link></li>
+              <li><Link href="/dashboard/host" className="hover:text-primary transition-colors">{t('footer', 'operatorDashboard')}</Link></li>
+              <li><Link href="/dashboard/operator/boost" className="hover:text-primary transition-colors">{t('footer', 'boostListings')}</Link></li>
+              <li><Link href="/dashboard/operator/analytics" className="hover:text-primary transition-colors">{t('footer', 'analytics')}</Link></li>
             </ul>
           </div>
 
           {/* Support */}
           <div>
-            <h4 className="text-white font-semibold mb-4">Support</h4>
+            <h4 className="text-white font-semibold mb-4">{t('footer', 'support')}</h4>
             <ul className="space-y-2 text-sm">
-              <li><Link href="/faq" className="hover:text-primary transition-colors">Help Center</Link></li>
-              <li><Link href="/safety" className="hover:text-primary transition-colors">Safety</Link></li>
-              <li><Link href="/insurance" className="hover:text-primary transition-colors">Insurance</Link></li>
-              <li><Link href="/contact" className="hover:text-primary transition-colors">Contact Us</Link></li>
-              <li><Link href="/terms" className="hover:text-primary transition-colors">Terms of Service</Link></li>
-              <li><Link href="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
-              <li><Link href="/press" className="hover:text-primary transition-colors">Press</Link></li>
+              <li><Link href="/faq" className="hover:text-primary transition-colors">{t('footer', 'helpCenter')}</Link></li>
+              <li><Link href="/safety" className="hover:text-primary transition-colors">{t('footer', 'safety')}</Link></li>
+              <li><Link href="/insurance" className="hover:text-primary transition-colors">{t('footer', 'insurance')}</Link></li>
+              <li><Link href="/contact" className="hover:text-primary transition-colors">{t('footer', 'contactUs')}</Link></li>
+              <li><Link href="/terms" className="hover:text-primary transition-colors">{t('footer', 'terms')}</Link></li>
+              <li><Link href="/privacy" className="hover:text-primary transition-colors">{t('footer', 'privacy')}</Link></li>
+              <li><Link href="/press" className="hover:text-primary transition-colors">{t('footer', 'press')}</Link></li>
             </ul>
           </div>
 
           {/* Districts */}
           <div>
-            <h4 className="text-white font-semibold mb-4">Locations</h4>
+            <h4 className="text-white font-semibold mb-4">{t('footer', 'locations')}</h4>
             <ul className="space-y-1 text-sm">
-              {/* Kigali districts */}
               {Object.entries(DISTRICTS_BY_PROVINCE).slice(0, 1).flatMap(([, districts]) =>
                 districts.map(d => (
                   <li key={d.id}>
@@ -107,7 +111,6 @@ export function Footer() {
                   </li>
                 ))
               )}
-              {/* High-intent upcountry destinations */}
               <li>
                 <Link href="/search?district=MUSANZE" className="hover:text-primary transition-colors">
                   Musanze — Volcanoes
@@ -118,8 +121,7 @@ export function Footer() {
                   Rubavu — Lake Kivu
                 </Link>
               </li>
-              {/* Province browse links */}
-              {Object.entries(DISTRICTS_BY_PROVINCE).slice(1).map(([province, districts]) => (
+              {Object.entries(DISTRICTS_BY_PROVINCE).slice(1).map(([province]) => (
                 <li key={province}>
                   <Link href={`/search?province=${province.replace(' ', '+')}`} className="hover:text-primary transition-colors">
                     {province.replace(' Province', '')} →
@@ -132,11 +134,9 @@ export function Footer() {
 
         {/* Bottom bar */}
         <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
-          <p>© {new Date().getFullYear()} Gari Technologies Ltd. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Gari Technologies Ltd. {t('footer', 'rights')}</p>
           <div className="flex items-center gap-4">
-            <span className="flex items-center gap-1">
-              <span>MTN MoMo</span>
-            </span>
+            <span>MTN MoMo</span>
             <span>•</span>
             <span>Airtel Money</span>
             <span>•</span>

@@ -50,7 +50,15 @@ export const metadata: Metadata = {
     description: 'Verified hosts, mobile money payments, available across all 30 districts.',
     images: ['https://gari.rw/og?title=Rent+a+Car+Anywhere+in+Rwanda&sub=Verified+hosts+%C2%B7+MTN+MoMo+%C2%B7+30+districts'],
   },
-  alternates: { canonical: 'https://gari.rw' },
+  alternates: {
+    canonical: 'https://gari.rw',
+    languages: {
+      'en': 'https://gari.rw',
+      'fr': 'https://gari.rw',
+      'rw': 'https://gari.rw',
+      'x-default': 'https://gari.rw',
+    },
+  },
 };
 
 // ─── Data fetching ─────────────────────────────────────────────────────────────

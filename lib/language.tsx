@@ -32,6 +32,8 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const setLocale = (l: Locale) => {
     setLocaleState(l);
     localStorage.setItem('gari-locale', l);
+    // Set cookie so server components can read locale for <html lang>
+    document.cookie = `GARI_LOCALE=${l};path=/;max-age=31536000;SameSite=Lax`;
   };
 
   const t = useCallback((namespace: string, key: string, vars?: Record<string, string | number>): string => {

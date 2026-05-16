@@ -27,6 +27,10 @@ export const metadata: Metadata = {
     title: 'Safari & Adventure Cars in Rwanda · Gari',
     description: 'Rent verified 4WD SUVs for gorilla trekking, Akagera safaris, and Nyungwe forest drives.',
   },
+  alternates: {
+    canonical: 'https://gari.rw/safari',
+    languages: { 'en': 'https://gari.rw/safari', 'fr': 'https://gari.rw/safari', 'x-default': 'https://gari.rw/safari' },
+  },
 };
 
 const DESTINATIONS = [

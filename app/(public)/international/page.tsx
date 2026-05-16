@@ -16,6 +16,10 @@ export const metadata: Metadata = {
     url: 'https://gari.rw/international',
     images: [{ url: 'https://gari.rw/og?title=Car+Rental+for+Visitors&sub=Rwanda\'s+most+trusted+platform&type=intl', width: 1200, height: 630 }],
   },
+  alternates: {
+    canonical: 'https://gari.rw/international',
+    languages: { 'en': 'https://gari.rw/international', 'fr': 'https://gari.rw/international', 'x-default': 'https://gari.rw/international' },
+  },
 };
 
 const ROUTES = [

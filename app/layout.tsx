@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import Script from 'next/script';
+import { cookies } from 'next/headers';
 import './globals.css';
 import { Providers } from '@/components/Providers';
 
@@ -55,9 +56,13 @@ export const viewport: Viewport = {
   themeColor: '#1a7a4a',
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const cookieStore = await cookies();
+  const locale = cookieStore.get('GARI_LOCALE')?.value ?? 'en';
+  const validLocale = ['en', 'fr', 'rw'].includes(locale) ? locale : 'en';
+
   return (
-    <html lang="en" suppressHydrationWarning className={inter.variable}>
+    <html lang={validLocale} suppressHydrationWarning className={inter.variable}>
       <body className={`antialiased ${inter.className}`}>
         <Providers>
           <DemoBanner />

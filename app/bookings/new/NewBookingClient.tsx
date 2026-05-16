@@ -12,6 +12,7 @@ import toast from 'react-hot-toast';
 import { formatRWF } from '@/lib/utils';
 import { RWANDA_DISTRICTS } from '@/lib/districts';
 import { trackEvent } from '@/lib/track';
+import { useLanguage } from '@/lib/language';
 
 const FALLBACK = 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=800&q=80';
 
@@ -67,6 +68,7 @@ interface Props {
 
 export function NewBookingClient({ car, userName, renterType = 'LOCAL', params }: Props) {
   const router = useRouter();
+  const { t } = useLanguage();
   const [notes, setNotes] = useState('');
   const [idpAcknowledged, setIdpAcknowledged] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -274,11 +276,11 @@ export function NewBookingClient({ car, userName, renterType = 'LOCAL', params }
                 <p className="text-base font-bold text-primary mb-5">{phoneNumber}</p>
 
                 <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-xl p-3 mb-5 text-left">
-                  <p className="text-xs font-semibold text-blue-700 dark:text-blue-300 mb-1.5">How to approve:</p>
+                  <p className="text-xs font-semibold text-blue-700 dark:text-blue-300 mb-1.5">{t('booking', 'approveHow')}</p>
                   <ol className="text-xs text-blue-600 dark:text-blue-400 space-y-1 list-decimal list-inside">
-                    <li>Open your MTN MoMo or Airtel Money app</li>
-                    <li>Find the pending request from <strong>Gari</strong></li>
-                    <li>Enter your PIN to approve</li>
+                    <li>{t('booking', 'approveStep1')}</li>
+                    <li>{t('booking', 'approveStep2')}</li>
+                    <li>{t('booking', 'approveStep3')}</li>
                   </ol>
                 </div>
 
@@ -357,11 +359,11 @@ export function NewBookingClient({ car, userName, renterType = 'LOCAL', params }
         {/* Back */}
         <Link href={`/cars/${car.id}`}
           className="flex items-center gap-1.5 text-sm text-text-secondary hover:text-primary mb-6 transition-colors">
-          <ChevronLeft className="w-4 h-4" /> Back to listing
+          <ChevronLeft className="w-4 h-4" /> {t('booking', 'backToListing')}
         </Link>
 
         <h1 className="text-2xl font-extrabold text-text-primary dark:text-white mb-6">
-          Confirm Your Booking
+          {t('booking', 'confirmBooking')}
         </h1>
 
         {/* Car summary card */}
@@ -386,12 +388,12 @@ export function NewBookingClient({ car, userName, renterType = 'LOCAL', params }
             {car.host && (
               <div className="flex items-center gap-1 text-xs text-text-secondary mt-1">
                 <BadgeCheck className="w-3 h-3 text-primary" />
-                Hosted by {car.host.name ?? 'Verified Host'}
+                {t('booking', 'hostedBy')} {car.host.name ?? t('booking', 'verifiedHost')}
               </div>
             )}
             {car.instantBooking && (
               <span className="inline-flex items-center gap-1 mt-1 text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">
-                ⚡ Instant booking
+                ⚡ {t('booking', 'instantBookingLabel')}
               </span>
             )}
           </div>
@@ -400,15 +402,15 @@ export function NewBookingClient({ car, userName, renterType = 'LOCAL', params }
         {/* Trip dates */}
         <div className="card p-5 mb-5">
           <h3 className="font-bold text-text-primary dark:text-white mb-4 flex items-center gap-2">
-            <Calendar className="w-4 h-4 text-primary" /> Trip Dates
+            <Calendar className="w-4 h-4 text-primary" /> {t('booking', 'tripDates')}
           </h3>
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-gray-bg dark:bg-gray-800 rounded-xl p-3">
-              <div className="text-xs text-text-light uppercase tracking-wide font-semibold mb-1">Pick-up</div>
+              <div className="text-xs text-text-light uppercase tracking-wide font-semibold mb-1">{t('booking', 'pickupDate')}</div>
               <div className="text-sm font-semibold text-text-primary dark:text-white">{fmt(params.pickupDate)}</div>
             </div>
             <div className="bg-gray-bg dark:bg-gray-800 rounded-xl p-3">
-              <div className="text-xs text-text-light uppercase tracking-wide font-semibold mb-1">Return</div>
+              <div className="text-xs text-text-light uppercase tracking-wide font-semibold mb-1">{t('booking', 'returnDate')}</div>
               <div className="text-sm font-semibold text-text-primary dark:text-white">{fmt(params.returnDate)}</div>
             </div>
           </div>
@@ -424,7 +426,7 @@ export function NewBookingClient({ car, userName, renterType = 'LOCAL', params }
             {params.withDriver && (
               <span className="flex items-center gap-1">
                 <Car className="w-3.5 h-3.5 text-primary" />
-                With professional driver
+                {t('booking', 'withProfDriver')}
               </span>
             )}
           </div>
@@ -432,7 +434,7 @@ export function NewBookingClient({ car, userName, renterType = 'LOCAL', params }
 
         {/* Price breakdown */}
         <div className="card p-5 mb-5">
-          <h3 className="font-bold text-text-primary dark:text-white mb-4">Price Breakdown</h3>
+          <h3 className="font-bold text-text-primary dark:text-white mb-4">{t('booking', 'priceBreakdown')}</h3>
           <div className="space-y-2.5 text-sm">
             <div className="flex justify-between text-text-secondary">
               <span>{formatRWF(car.pricePerDay)} × {params.totalDays} day{params.totalDays !== 1 ? 's' : ''}</span>
@@ -440,32 +442,32 @@ export function NewBookingClient({ car, userName, renterType = 'LOCAL', params }
             </div>
             {params.driverFee > 0 && (
               <div className="flex justify-between text-text-secondary">
-                <span>Driver fee ({params.totalDays} day{params.totalDays !== 1 ? 's' : ''})</span>
+                <span>{t('booking', 'driverFee')} ({params.totalDays} day{params.totalDays !== 1 ? 's' : ''})</span>
                 <span>{formatRWF(params.driverFee)}</span>
               </div>
             )}
             <div className="flex justify-between text-text-secondary">
-              <span>Service fee (12%)</span>
+              <span>{t('booking', 'serviceFee')}</span>
               <span>{formatRWF(params.platformFee)}</span>
             </div>
             <div className="flex justify-between font-bold text-text-primary dark:text-white border-t border-border pt-2.5 mt-1">
-              <span>{params.depositAmount > 0 ? 'Rental total' : 'Total'}</span>
+              <span>{params.depositAmount > 0 ? t('booking', 'rentalTotal') : t('booking', 'total')}</span>
               <span className="text-primary">{formatRWF(params.totalAmount)}</span>
             </div>
             {params.depositAmount > 0 && (
               <>
                 <div className="flex justify-between text-text-secondary text-xs">
-                  <span>Security deposit <span className="text-green-600 font-medium">(refundable within 48h)</span></span>
+                  <span>{t('booking', 'depositLine')}</span>
                   <span>{formatRWF(params.depositAmount)}</span>
                 </div>
                 <div className="flex justify-between font-bold text-text-primary dark:text-white border-t border-border pt-2 mt-1">
-                  <span>Total due today</span>
+                  <span>{t('booking', 'totalDue')}</span>
                   <span className="text-primary">{formatRWF(grandTotal)}</span>
                 </div>
               </>
             )}
             <div className="flex justify-between text-xs text-text-light pt-1">
-              <span>Payment method</span>
+              <span>{t('booking', 'paymentMethod')}</span>
               <span className="font-medium">{PAYMENT_LABELS[params.paymentMethod] ?? params.paymentMethod}</span>
             </div>
           </div>
@@ -473,14 +475,14 @@ export function NewBookingClient({ car, userName, renterType = 'LOCAL', params }
 
         {/* Renter info */}
         <div className="card p-5 mb-5">
-          <h3 className="font-bold text-text-primary dark:text-white mb-3">Booking for</h3>
+          <h3 className="font-bold text-text-primary dark:text-white mb-3">{t('booking', 'bookingFor')}</h3>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-sm flex-shrink-0">
               {(userName || 'U').split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
             </div>
             <div>
               <div className="font-semibold text-text-primary dark:text-white text-sm">{userName || 'You'}</div>
-              <div className="text-xs text-text-secondary">NIDA-verified renter</div>
+              <div className="text-xs text-text-secondary">{t('booking', 'nidaVerifiedRenter')}</div>
             </div>
           </div>
         </div>
@@ -493,7 +495,7 @@ export function NewBookingClient({ car, userName, renterType = 'LOCAL', params }
               {PAYMENT_LABELS[params.paymentMethod]} Number
             </h3>
             <p className="text-xs text-text-secondary mb-3">
-              Enter the phone number that will receive the payment request.
+              {t('booking', 'momoInputDesc')}
             </p>
             <input
               type="tel"
@@ -533,7 +535,7 @@ export function NewBookingClient({ car, userName, renterType = 'LOCAL', params }
         <div className="rounded-xl border border-amber-200 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/20 p-4 mb-6">
           <div className="flex items-center gap-2 mb-2">
             <Shield className="w-4 h-4 text-amber-600" />
-            <span className="font-semibold text-sm text-amber-800 dark:text-amber-200">Cancellation policy</span>
+            <span className="font-semibold text-sm text-amber-800 dark:text-amber-200">{t('booking', 'cancellationPolicy')}</span>
           </div>
           <ul className="space-y-1">
             {CANCELLATION_POLICY.map(p => (
@@ -551,7 +553,7 @@ export function NewBookingClient({ car, userName, renterType = 'LOCAL', params }
               <Globe className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
               <div className="flex-1">
                 <p className="text-sm font-bold text-blue-800 dark:text-blue-200 mb-1">
-                  International Driving Permit (IDP) required
+                  {t('booking', 'idpRequired')}
                 </p>
                 <p className="text-xs text-blue-700 dark:text-blue-300 mb-3">
                   Rwanda law requires foreign nationals driving without a Rwandan driver to carry a valid IDP alongside their national driving licence.{' '}
@@ -585,7 +587,7 @@ export function NewBookingClient({ car, userName, renterType = 'LOCAL', params }
           ) : checkoutStep === 'initiating' ? (
             <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2 inline-block" />Connecting to {PAYMENT_LABELS[params.paymentMethod]}…</>
           ) : (
-            <>Confirm & Pay {formatRWF(grandTotal)} <ArrowRight className="w-4 h-4 ml-1" /></>
+            <>{t('booking', 'confirmAndPay')} {formatRWF(grandTotal)} <ArrowRight className="w-4 h-4 ml-1" /></>
           )}
         </button>
 

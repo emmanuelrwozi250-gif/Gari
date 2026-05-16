@@ -13,22 +13,81 @@
     "buyCar": "Acheter une voiture",
     "sellCar": "Vendre votre voiture",
     "earnCar": "Gagner avec votre voiture",
-    "map": "Carte"
+    "map": "Carte",
+    "safari": "Safari",
+    "airport": "Aéroport",
+    "airportTransfer": "Transfert aéroport",
+    "packages": "Forfaits",
+    "becomeHost": "Devenir hôte",
+    "hostDashboard": "Tableau de bord hôte",
+    "darkMode": "Mode sombre",
+    "language": "Langue"
   },
   "home": {
     "hero": {
-      "title": "Louez une voiture, à votre façon",
-      "subtitle": "La principale plateforme de location de voitures au Rwanda. Conduite autonome ou avec chauffeur.",
-      "search": "Rechercher les voitures disponibles"
+      "badge": "Maintenant disponible dans les 30 districts du Rwanda",
+      "title": "Louez une voiture partout au Rwanda",
+      "subtitle": "La façon la plus simple de louer une voiture vérifiée au Rwanda — avec ou sans chauffeur. Payez par MoMo ou carte.",
+      "search": "Rechercher les voitures disponibles",
+      "searchPlaceholder": "Tous les districts du Rwanda"
     },
     "stats": {
       "cars": "Voitures listées",
       "districts": "Districts couverts",
-      "trips": "Voyages effectués"
-    }
+      "trips": "Voyages effectués",
+      "verifiedCars": "Voitures vérifiées",
+      "ruraOperators": "Opérateurs licenciés RURA au Rwanda",
+      "rating": "Note moyenne",
+      "compliance": "100% conforme RURA · Véhicules licenciés uniquement"
+    },
+    "trust": {
+      "nidaVerified": "Chaque hôte est vérifié par NIDA avant de publier une annonce"
+    },
+    "howItWorks": {
+      "title": "Comment fonctionne Gari",
+      "subtitle": "Louez une voiture en 4 étapes simples",
+      "step1Title": "Trouvez votre voiture",
+      "step1Desc": "Recherchez dans 30 districts. Filtrez par type, budget et si vous souhaitez un chauffeur. Chaque véhicule est licencié RURA et assuré commercialement.",
+      "step2Title": "Réservez instantanément",
+      "step2Desc": "Confirmez vos dates, payez par MTN MoMo, Airtel Money ou Visa/Mastercard. Sans frais cachés.",
+      "step3Title": "Prenez le volant",
+      "step3Desc": "Rencontrez l'hôte, inspectez la voiture ensemble et commencez votre voyage.",
+      "step4Title": "Notez et évaluez",
+      "step4Desc": "Partagez votre expérience et contribuez à renforcer la confiance dans la communauté."
+    },
+    "guarantee": {
+      "title": "Réservez en toute confiance",
+      "subtitle": "Chaque réservation sur Gari est garantie par notre promesse en faveur des locataires.",
+      "paymentSafeTitle": "Paiement sécurisé",
+      "paymentSafeDesc": "Votre paiement est conservé en séquestre et n'est libéré à l'hôte qu'après le début de votre voyage.",
+      "refundTitle": "Remboursement complet si l'hôte annule",
+      "refundDesc": "Si un hôte annule votre réservation confirmée, vous recevez un remboursement de 100% — sans question.",
+      "depositTitle": "Dépôt protégé",
+      "depositDesc": "Les dépôts de garantie sont restitués dans les 48 heures suivant un retour sans incident.",
+      "supportTitle": "Assistance WhatsApp 24h/7j",
+      "supportDesc": "Bloqué sur la route à 2h du matin ? Notre équipe est à un message WhatsApp, tous les jours de l'année."
+    },
+    "earnings": {
+      "title": "Combien pourriez-vous gagner ?",
+      "subtitle": "Publiez votre voiture sur Gari gratuitement. Vous fixez le prix et les disponibilités.",
+      "withDriver": "Proposer avec chauffeur",
+      "driverPremium": "Ajoutez une prime de +20 000 RWF/jour",
+      "daysPerMonth": "Jours loués par mois",
+      "monthlyEarnings": "Revenus mensuels",
+      "annualEarnings": "Revenus annuels",
+      "disclaimer": "Estimation après 12% de frais de plateforme. Vous conservez 88%. Les revenus réels varient.",
+      "cta": "Publiez votre flotte — Gratuit"
+    },
+    "testimonials": {
+      "title": "Ce que dit notre communauté",
+      "subtitle": "Témoignages réels d'hôtes et de locataires à travers le Rwanda"
+    },
+    "featuredCars": "Voitures en vedette",
+    "viewAll": "Voir toutes les voitures"
   },
   "search": {
     "title": "Trouvez votre voiture idéale",
+    "filterTitle": "Trouvez votre voiture",
     "location": "Lieu",
     "allLocations": "Tous les lieux",
     "pickupDate": "Date de prise en charge",
@@ -42,7 +101,19 @@
     "topRated": "Mieux notés",
     "noResults": "Aucune voiture trouvée",
     "noResultsDesc": "Essayez de modifier vos dates ou votre lieu",
-    "availableIn": "{count} voitures disponibles à {location}"
+    "noResultsSub": "Essayez d'ajuster vos filtres ou de sélectionner un autre district.",
+    "availableIn": "{count} voitures disponibles à {location}",
+    "perDay": "/jour",
+    "district": "District",
+    "carType": "Type de véhicule",
+    "driveOption": "Option de conduite",
+    "selfDrive": "Auto-conduite",
+    "withDriver": "Avec chauffeur",
+    "priceRange": "Fourchette de prix",
+    "minSeats": "Nombre minimum de places",
+    "transmission": "Transmission",
+    "instantBook": "Réservation instantanée uniquement",
+    "internationalFriendly": "Adapté aux visiteurs internationaux"
   },
   "car": {
     "bookNow": "Réserver maintenant",
@@ -56,7 +127,7 @@
     "total": "Total",
     "days": "{count} jour",
     "days_plural": "{count} jours",
-    "platformFee": "Frais de plateforme (10%)",
+    "platformFee": "Frais de plateforme (12%)",
     "freeCancel": "Annulation gratuite jusqu'à 24h avant la prise en charge",
     "specifications": "Spécifications",
     "features": "Équipements",
@@ -67,7 +138,15 @@
     "reviews": "Avis",
     "verified": "Vérifié",
     "superhost": "Superhôte",
-    "new": "Nouveau"
+    "new": "Nouveau",
+    "instantBooking": "Instantané",
+    "driverOnly": "Chauffeur uniquement",
+    "withDriverLabel": "Chauffeur",
+    "seats": "places",
+    "petrol": "Essence",
+    "diesel": "Diesel",
+    "electric": "Électrique",
+    "hybrid": "Hybride"
   },
   "booking": {
     "review": "Vérification",
@@ -79,7 +158,40 @@
     "priceBreakdown": "Détail du prix",
     "proceed": "Passer au paiement",
     "viewBookings": "Voir mes réservations",
-    "messageHost": "Envoyer un message à l'hôte"
+    "messageHost": "Envoyer un message à l'hôte",
+    "confirmBooking": "Confirmer votre réservation",
+    "tripDates": "Dates du voyage",
+    "pickupDate": "Prise en charge",
+    "returnDate": "Retour",
+    "driveOption": "Option de conduite",
+    "selfDrive": "Auto-conduite",
+    "withDriver": "Avec chauffeur",
+    "withProfDriver": "Avec chauffeur professionnel",
+    "gariProtect": "Gari Protect",
+    "gariProtectDesc": "Couverture complète jusqu'à 2 000 000 RWF",
+    "paymentMethod": "Mode de paiement",
+    "selectDates": "Sélectionnez des dates pour voir le prix total",
+    "calculating": "Calcul du prix en cours…",
+    "serviceFee": "Frais de service (12%)",
+    "rentalTotal": "Total location",
+    "totalDue": "Total dû aujourd'hui",
+    "depositLine": "Dépôt de garantie (remboursé sous 48h)",
+    "ebmPromise": "Un reçu EBM (Irisiti ya EBM) est émis à la confirmation de la réservation",
+    "cancellationPolicy": "Annulation gratuite sous 48h · Remboursement 50% sous 24h · Aucun remboursement après le début du voyage",
+    "backToListing": "Retour à l'annonce",
+    "bookingFor": "Réservation pour",
+    "nidaVerifiedRenter": "Locataire vérifié NIDA",
+    "instantBookingLabel": "Réservation instantanée",
+    "hostedBy": "Proposé par",
+    "verifiedHost": "Hôte vérifié",
+    "momoInputDesc": "Entrez le numéro de téléphone qui recevra la demande de paiement.",
+    "idpRequired": "Permis de conduire international (PCI) obligatoire",
+    "confirmAndPay": "Confirmer et payer",
+    "driverFee": "Frais de chauffeur",
+    "approveHow": "Comment approuver :",
+    "approveStep1": "Ouvrez votre application MTN MoMo ou Airtel Money",
+    "approveStep2": "Trouvez la demande en attente de Gari",
+    "approveStep3": "Entrez votre code PIN pour approuver"
   },
   "payment": {
     "mtn": "MTN MoMo",
@@ -108,6 +220,34 @@
     "browseCars": "Parcourir les voitures",
     "listCar": "Mettre ma voiture en location"
   },
+  "footer": {
+    "tagline": "La marketplace de location de voitures au Rwanda. Hôtes vérifiés, paiements par mobile money, disponible dans les 30 districts.",
+    "quickLinks": "Liens rapides",
+    "forVisitors": "Pour les visiteurs",
+    "forOperators": "Pour les opérateurs",
+    "support": "Assistance",
+    "locations": "Lieux",
+    "rights": "Tous droits réservés.",
+    "browseCars": "Voir les voitures",
+    "packages": "Forfaits",
+    "myBookings": "Mes réservations",
+    "hostDashboard": "Tableau de bord hôte",
+    "internationalGuide": "Guide international",
+    "drivingPermit": "Permis de conduire (PCI)",
+    "airportTransfers": "Transferts aéroport",
+    "registerAsVisitor": "S'inscrire en tant que visiteur",
+    "listYourFleet": "Publier votre flotte",
+    "operatorDashboard": "Tableau de bord opérateur",
+    "boostListings": "Booster les annonces",
+    "analytics": "Analyses",
+    "helpCenter": "Centre d'aide",
+    "safety": "Sécurité",
+    "insurance": "Assurance",
+    "contactUs": "Nous contacter",
+    "terms": "Conditions d'utilisation",
+    "privacy": "Politique de confidentialité",
+    "press": "Presse"
+  },
   "common": {
     "loading": "Chargement...",
     "error": "Une erreur s'est produite",
@@ -116,6 +256,70 @@
     "save": "Enregistrer",
     "submit": "Soumettre",
     "required": "Obligatoire",
-    "optional": "Facultatif"
+    "optional": "Facultatif",
+    "viewAll": "Voir tout",
+    "findCars": "Trouver des voitures",
+    "bookNow": "Réserver maintenant",
+    "learnMore": "En savoir plus",
+    "perDay": "/jour",
+    "approx": "≈",
+    "instantBook": "Instantané",
+    "driverOnly": "Chauffeur uniquement",
+    "withDriver": "Chauffeur",
+    "verified": "Licencié et vérifié",
+    "seats": "places",
+    "petrol": "Essence",
+    "diesel": "Diesel",
+    "electric": "Électrique",
+    "hybrid": "Hybride"
+  },
+  "international": {
+    "title": "Explorez le Rwanda à votre façon",
+    "subtitle": "Hôtes vérifiés · Paiement par carte · Chauffeurs anglophones · Transfert aéroport · Tous les véhicules assurés",
+    "idpTitle": "Permis de conduire international (PCI) — obligatoire pour l'auto-conduite",
+    "idpBody": "La loi rwandaise sur la circulation routière exige que tous les ressortissants étrangers conduisant (sans chauffeur) portent un PCI valide en plus de leur permis de conduire national. Sans PCI, vous ne pouvez pas conduire légalement — et votre couverture d'assurance peut être invalide.",
+    "idpObtain": "Obtenez votre PCI auprès de l'autorité nationale de l'automobile avant votre départ.",
+    "idpAuthorities": "Les PCI valides sont délivrés par l'AAA (États-Unis), l'AA (Royaume-Uni/Irlande), l'ADAC (Allemagne), le RAC, la CAA, etc.",
+    "idpAlternative": "Si vous préférez ne pas obtenir de PCI, réservez avec un chauffeur — nos hôtes licenciés s'occupent de la conduite."
+  },
+  "insurance": {
+    "title": "Chaque voyage est couvert",
+    "subtitle": "L'assurance de base Gari est automatiquement incluse dans chaque réservation — sans options supplémentaires, sans surprises.",
+    "covered": "Ce qui est couvert",
+    "notCovered": "Ce qui n'est pas couvert",
+    "howToClaim": "Comment déposer une réclamation",
+    "vehicleDamage": "Collision, dommages accidentels et vol du véhicule de location",
+    "thirdParty": "Dommages causés à d'autres véhicules ou biens jusqu'à 5 000 000 RWF",
+    "medical": "Frais médicaux d'urgence pour le locataire jusqu'à 500 000 RWF",
+    "roadside": "Remorquage d'urgence dans les limites de la ville de Kigali"
+  },
+  "faq": {
+    "title": "Questions fréquemment posées",
+    "subtitle": "Tout ce que vous devez savoir sur la location et l'hébergement sur Gari.",
+    "forRenters": "Pour les locataires",
+    "forHosts": "Pour les hôtes",
+    "forOperators": "Pour les opérateurs"
+  },
+  "becomeOperator": {
+    "title": "Publiez votre flotte licenciée sur Gari",
+    "subtitle": "La seule marketplace au Rwanda dédiée aux véhicules de location commerciaux licenciés RURA.",
+    "cta": "Demander à publier votre flotte",
+    "howItWorks": "Comment ça marche",
+    "requirements": "Ce dont vous avez besoin pour publier",
+    "earnings": "Revenus mensuels projetés"
+  },
+  "safari": {
+    "title": "Partez à l'aventure au Rwanda",
+    "subtitle": "SUV 4x4 et pick-ups pour le trekking des gorilles, les safaris d'Akagera et les aventures en haute altitude. Tous vérifiés. Chauffeur optionnel.",
+    "roadsNote": "La plupart des routes de parc nécessitent un 4x4 ou un véhicule à garde au sol élevée, surtout pendant la saison des pluies.",
+    "fuelNote": "Faites le plein avant de quitter Kigali ou la ville la plus proche — les stations-service sont rares près des parcs nationaux.",
+    "driverNote": "De nombreux hôtes proposent des chauffeurs safari certifiés qui connaissent les points d'entrée du parc, les contacts des rangers et les meilleurs spots pour observer la faune.",
+    "permitNote": "Les permis de trekking des gorilles (1 500 USD) doivent être réservés à l'avance auprès du Rwanda Development Board.",
+    "browseVehicles": "Voir les véhicules safari",
+    "withDriver": "Avec chauffeur",
+    "popularDestinations": "Destinations populaires",
+    "popularRoutes": "Routes safari populaires depuis Kigali",
+    "featuredVehicles": "Véhicules safari",
+    "vehiclesSubtitle": "Tous les véhicules 4x4 vérifiés, disponibles avec ou sans chauffeur safari certifié."
   }
 }
