@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { formatRWF, formatDate, getPaymentMethodLabel } from '@/lib/utils';
@@ -18,7 +18,7 @@ type BookingStep = 'review' | 'payment' | 'confirmed';
 
 const FALLBACK_IMG = 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=400&q=80';
 
-export default function BookingPage({ params }: { params: { carId: string } }) {
+function BookingPageInner({ params }: { params: { carId: string } }) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const bookingId = searchParams.get('bookingId');
@@ -313,5 +313,17 @@ export default function BookingPage({ params }: { params: { carId: string } }) {
         )}
       </div>
     </div>
+  );
+}
+
+export default function BookingPage({ params }: { params: { carId: string } }) {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    }>
+      <BookingPageInner params={params} />
+    </Suspense>
   );
 }

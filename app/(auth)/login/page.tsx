@@ -4,13 +4,22 @@ import { Suspense, useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { Car, Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Car, Mail, Lock, Eye, EyeOff, Loader2, ClipboardList } from 'lucide-react';
 import toast from 'react-hot-toast';
+
+const REASON_MESSAGES: Record<string, { icon: React.ReactNode; text: string }> = {
+  trips: {
+    icon: <ClipboardList className="w-4 h-4 text-primary flex-shrink-0" />,
+    text: 'Sign in to view your trips and booking history.',
+  },
+};
 
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
+  const reason = searchParams.get('reason') ?? '';
+  const contextMsg = REASON_MESSAGES[reason];
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -39,6 +48,14 @@ function LoginForm() {
 
   return (
     <div className="card p-8">
+      {/* Contextual message when redirected from a protected route */}
+      {contextMsg && (
+        <div className="flex items-center gap-2 bg-primary/5 border border-primary/20 rounded-xl px-4 py-3 mb-5 text-sm text-primary">
+          {contextMsg.icon}
+          <span>{contextMsg.text}</span>
+        </div>
+      )}
+
       {/* Google OAuth */}
       <button
         onClick={handleGoogle}
@@ -106,12 +123,11 @@ function LoginForm() {
       </form>
 
       <p className="text-center text-sm text-text-secondary mt-6">
-        Don't have an account?{' '}
+        Don&apos;t have an account?{' '}
         <Link href="/register" className="text-primary font-semibold hover:text-primary-dark">
           Create one
         </Link>
       </p>
-
     </div>
   );
 }
@@ -120,7 +136,6 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-gray-bg dark:bg-gray-950 flex items-center justify-center px-4 py-16">
       <div className="w-full max-w-md">
-        {/* Logo */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2 mb-4">
             <Car className="w-8 h-8 text-primary" />

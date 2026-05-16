@@ -509,7 +509,7 @@ export function CarDetailClient({ car, completedBookingId, existingBookingId, si
                   {photos.slice(0, 4).map((p, i) => (
                     <button key={i} onClick={() => setActivePhoto(i)}
                       className={`relative w-20 h-14 flex-shrink-0 rounded-xl overflow-hidden border-2 transition-colors ${activePhoto === i ? 'border-primary' : 'border-transparent'}`}>
-                      <Image src={p} alt="" fill className="object-cover" sizes="80px"
+                      <Image src={p} alt={`${data.make} ${data.model} photo ${i + 1}`} fill className="object-cover" sizes="80px"
                         onError={(e) => { e.currentTarget.src = '/images/car-placeholder.svg'; }} />
                     </button>
                   ))}

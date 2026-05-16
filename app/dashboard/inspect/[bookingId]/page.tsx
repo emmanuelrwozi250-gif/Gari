@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, Suspense } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -51,7 +51,7 @@ const PHOTO_TIPS = [
   'Interior dashboard & seats',
 ];
 
-export default function InspectPage() {
+function InspectPageInner() {
   const { bookingId } = useParams<{ bookingId: string }>();
   const searchParams = useSearchParams();
   const defaultStage = (searchParams.get('stage') as Stage) || 'pickup';
@@ -360,5 +360,17 @@ export default function InspectPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function InspectPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    }>
+      <InspectPageInner />
+    </Suspense>
   );
 }

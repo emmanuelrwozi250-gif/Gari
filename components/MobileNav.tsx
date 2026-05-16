@@ -25,7 +25,7 @@ export function MobileNav() {
              !(href === '/dashboard' && pathname.startsWith('/dashboard/host')));
           const isProfile = href === '/profile';
           const loginHref = loginReason
-            ? `/login?next=${encodeURIComponent(href)}&reason=${loginReason}`
+            ? `/login?callbackUrl=${encodeURIComponent(href)}&reason=${loginReason}`
             : '/login';
           return (
             <Link

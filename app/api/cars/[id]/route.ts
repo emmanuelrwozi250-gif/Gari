@@ -37,8 +37,18 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    const body = await req.json();
-    const updated = await prisma.car.update({ where: { id: params.id }, data: body });
+    const raw = await req.json();
+    // Whitelist editable fields — prevent hosts from setting isVerified, isFeatured, rating, hostId, etc.
+    const allowed = [
+      'make','model','year','type','listingType','seats','fuel','transmission','mileage',
+      'hasAC','features','description','rules','photos','district','pickupLocation',
+      'pricePerDay','driverAvailable','driverMandatory','driverPricePerDay',
+      'pricingMode','instantBooking','isAvailable','internationalFriendly','airportPickup','slug',
+    ] as const;
+    const safeData = Object.fromEntries(
+      allowed.filter(k => k in raw && raw[k] !== undefined).map(k => [k, raw[k]])
+    );
+    const updated = await prisma.car.update({ where: { id: params.id }, data: safeData });
     return NextResponse.json(updated);
   } catch {
     return NextResponse.json({ error: 'Failed to update car' }, { status: 500 });
