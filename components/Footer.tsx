@@ -4,10 +4,11 @@ import Link from 'next/link';
 import { Car, MapPin, Phone, Mail, Twitter, Instagram } from 'lucide-react';
 import { DISTRICTS_BY_PROVINCE } from '@/lib/districts';
 import { COMPANY } from '@/lib/config/company';
-import { useLanguage } from '@/lib/language';
+import { useTranslations } from 'next-intl';
 
 export function Footer() {
-  const { t } = useLanguage();
+  const tf = useTranslations('footer');
+  const tn = useTranslations('nav');
 
   return (
     <footer className="bg-dark-bg text-gray-400 pt-8 md:pt-16 pb-24 md:pb-8">
@@ -23,7 +24,7 @@ export function Footer() {
               </span>
             </Link>
             <p className="text-sm leading-relaxed mb-6 max-w-xs">
-              {t('footer', 'tagline')}
+              {tf('tagline')}
             </p>
             <div className="space-y-2 text-sm">
               <div className="flex items-center gap-2">
@@ -51,56 +52,56 @@ export function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-white font-semibold mb-4">{t('footer', 'quickLinks')}</h4>
+            <h4 className="text-white font-semibold mb-4">{tf('quickLinks')}</h4>
             <ul className="space-y-2 text-sm">
-              <li><Link href="/search" className="hover:text-primary transition-colors">{t('footer', 'browseCars')}</Link></li>
-              <li><Link href="/collections" className="hover:text-primary transition-colors">{t('footer', 'packages')}</Link></li>
-              <li><Link href="/safari" className="hover:text-primary transition-colors">🏕️ {t('nav', 'safari')}</Link></li>
-              <li><Link href="/airport-transfer" className="hover:text-primary transition-colors">✈️ {t('nav', 'airportTransfer')}</Link></li>
-              <li><Link href="/dashboard" className="hover:text-primary transition-colors">{t('footer', 'myBookings')}</Link></li>
-              <li><Link href="/dashboard/host" className="hover:text-primary transition-colors">{t('footer', 'hostDashboard')}</Link></li>
+              <li><Link href="/search" className="hover:text-primary transition-colors">{tf('browseCars')}</Link></li>
+              <li><Link href="/collections" className="hover:text-primary transition-colors">{tf('packages')}</Link></li>
+              <li><Link href="/safari" className="hover:text-primary transition-colors">🏕️ {tn('safari')}</Link></li>
+              <li><Link href="/airport-transfer" className="hover:text-primary transition-colors">✈️ {tn('airportTransfer')}</Link></li>
+              <li><Link href="/dashboard" className="hover:text-primary transition-colors">{tf('myBookings')}</Link></li>
+              <li><Link href="/dashboard/host" className="hover:text-primary transition-colors">{tf('hostDashboard')}</Link></li>
             </ul>
           </div>
 
           {/* For Visitors */}
           <div>
-            <h4 className="text-white font-semibold mb-4">{t('footer', 'forVisitors')}</h4>
+            <h4 className="text-white font-semibold mb-4">{tf('forVisitors')}</h4>
             <ul className="space-y-2 text-sm">
-              <li><Link href="/international" className="hover:text-primary transition-colors">🌍 {t('footer', 'internationalGuide')}</Link></li>
-              <li><Link href="/international#driving" className="hover:text-primary transition-colors">{t('footer', 'drivingPermit')}</Link></li>
-              <li><Link href="/airport-transfer" className="hover:text-primary transition-colors">{t('footer', 'airportTransfers')}</Link></li>
-              <li><Link href="/register?intent=foreign" className="hover:text-primary transition-colors">{t('footer', 'registerAsVisitor')}</Link></li>
+              <li><Link href="/international" className="hover:text-primary transition-colors">🌍 {tf('internationalGuide')}</Link></li>
+              <li><Link href="/international#driving" className="hover:text-primary transition-colors">{tf('drivingPermit')}</Link></li>
+              <li><Link href="/airport-transfer" className="hover:text-primary transition-colors">{tf('airportTransfers')}</Link></li>
+              <li><Link href="/register?intent=foreign" className="hover:text-primary transition-colors">{tf('registerAsVisitor')}</Link></li>
             </ul>
           </div>
 
           {/* For Operators */}
           <div>
-            <h4 className="text-white font-semibold mb-4">{t('footer', 'forOperators')}</h4>
+            <h4 className="text-white font-semibold mb-4">{tf('forOperators')}</h4>
             <ul className="space-y-2 text-sm">
-              <li><Link href="/become-operator" className="hover:text-primary transition-colors">{t('footer', 'listYourFleet')}</Link></li>
-              <li><Link href="/dashboard/host" className="hover:text-primary transition-colors">{t('footer', 'operatorDashboard')}</Link></li>
-              <li><Link href="/dashboard/operator/boost" className="hover:text-primary transition-colors">{t('footer', 'boostListings')}</Link></li>
-              <li><Link href="/dashboard/operator/analytics" className="hover:text-primary transition-colors">{t('footer', 'analytics')}</Link></li>
+              <li><Link href="/become-operator" className="hover:text-primary transition-colors">{tf('listYourFleet')}</Link></li>
+              <li><Link href="/dashboard/host" className="hover:text-primary transition-colors">{tf('operatorDashboard')}</Link></li>
+              <li><Link href="/dashboard/operator/boost" className="hover:text-primary transition-colors">{tf('boostListings')}</Link></li>
+              <li><Link href="/dashboard/operator/analytics" className="hover:text-primary transition-colors">{tf('analytics')}</Link></li>
             </ul>
           </div>
 
           {/* Support */}
           <div>
-            <h4 className="text-white font-semibold mb-4">{t('footer', 'support')}</h4>
+            <h4 className="text-white font-semibold mb-4">{tf('support')}</h4>
             <ul className="space-y-2 text-sm">
-              <li><Link href="/faq" className="hover:text-primary transition-colors">{t('footer', 'helpCenter')}</Link></li>
-              <li><Link href="/safety" className="hover:text-primary transition-colors">{t('footer', 'safety')}</Link></li>
-              <li><Link href="/insurance" className="hover:text-primary transition-colors">{t('footer', 'insurance')}</Link></li>
-              <li><Link href="/contact" className="hover:text-primary transition-colors">{t('footer', 'contactUs')}</Link></li>
-              <li><Link href="/terms" className="hover:text-primary transition-colors">{t('footer', 'terms')}</Link></li>
-              <li><Link href="/privacy" className="hover:text-primary transition-colors">{t('footer', 'privacy')}</Link></li>
-              <li><Link href="/press" className="hover:text-primary transition-colors">{t('footer', 'press')}</Link></li>
+              <li><Link href="/faq" className="hover:text-primary transition-colors">{tf('helpCenter')}</Link></li>
+              <li><Link href="/safety" className="hover:text-primary transition-colors">{tf('safety')}</Link></li>
+              <li><Link href="/insurance" className="hover:text-primary transition-colors">{tf('insurance')}</Link></li>
+              <li><Link href="/contact" className="hover:text-primary transition-colors">{tf('contactUs')}</Link></li>
+              <li><Link href="/terms" className="hover:text-primary transition-colors">{tf('terms')}</Link></li>
+              <li><Link href="/privacy" className="hover:text-primary transition-colors">{tf('privacy')}</Link></li>
+              <li><Link href="/press" className="hover:text-primary transition-colors">{tf('press')}</Link></li>
             </ul>
           </div>
 
           {/* Districts */}
           <div>
-            <h4 className="text-white font-semibold mb-4">{t('footer', 'locations')}</h4>
+            <h4 className="text-white font-semibold mb-4">{tf('locations')}</h4>
             <ul className="space-y-1 text-sm">
               {Object.entries(DISTRICTS_BY_PROVINCE).slice(0, 1).flatMap(([, districts]) =>
                 districts.map(d => (
@@ -134,7 +135,7 @@ export function Footer() {
 
         {/* Bottom bar */}
         <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
-          <p>© {new Date().getFullYear()} Gari Technologies Ltd. {t('footer', 'rights')}</p>
+          <p>© {new Date().getFullYear()} Gari Technologies Ltd. {tf('rights')}</p>
           <div className="flex items-center gap-4">
             <span>MTN MoMo</span>
             <span>•</span>

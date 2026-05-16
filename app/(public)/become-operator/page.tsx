@@ -202,8 +202,11 @@ export default function BecomeOperatorPage() {
         <h2 className="text-xl font-bold text-text-primary dark:text-white text-center mb-2">
           Projected Monthly Earnings
         </h2>
-        <p className="text-center text-xs text-text-light mb-8">
+        <p className="text-center text-xs text-text-light mb-4">
           Projected earnings based on typical utilisation — after 12% platform fee
+        </p>
+        <p className="text-center text-sm font-semibold text-emerald-700 dark:text-emerald-400 mb-8 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-700 rounded-xl py-2.5 px-4 inline-block mx-auto w-full">
+          💳 Earnings paid to your MoMo within 24 hours of each completed trip.
         </p>
         <div className="overflow-x-auto rounded-2xl border border-border">
           <table className="w-full text-sm">

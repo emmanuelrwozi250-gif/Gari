@@ -1,26 +1,30 @@
 'use client';
 
-import { useLanguage, type Locale } from '@/lib/language';
-
-const LOCALES: { code: Locale; label: string; flag: string }[] = [
+const LOCALES = [
   { code: 'en', label: 'English', flag: '🇬🇧' },
   { code: 'fr', label: 'Français', flag: '🇫🇷' },
-  { code: 'rw', label: 'Kinyarwanda', flag: '🇷🇼' },
-];
+] as const;
+
+type Locale = typeof LOCALES[number]['code'];
+
+function getCurrentLocale(): Locale {
+  if (typeof document === 'undefined') return 'en';
+  const match = document.cookie.match(/GARI_LOCALE=([^;]+)/);
+  const val = match?.[1];
+  return (val === 'en' || val === 'fr') ? val : 'en';
+}
 
 export function LanguageToggle() {
-  const { locale, setLocale } = useLanguage();
+  const currentLocale = getCurrentLocale();
 
   const handleChange = (code: Locale) => {
-    setLocale(code);
-    // Persist to DB for logged-in users (fire-and-forget, non-blocking)
+    document.cookie = `GARI_LOCALE=${code}; path=/; max-age=${60 * 60 * 24 * 365}; SameSite=Lax`;
     fetch('/api/user/locale', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ locale: code }),
-    }).catch(() => {
-      // Non-fatal — locale already saved to localStorage + cookie
-    });
+    }).catch(() => {});
+    window.location.reload();
   };
 
   return (
@@ -31,7 +35,7 @@ export function LanguageToggle() {
           onClick={() => handleChange(code)}
           title={label}
           className={`text-xs px-2 py-1 rounded-md transition-colors ${
-            locale === code
+            currentLocale === code
               ? 'bg-gari-green text-white font-semibold'
               : 'text-text-secondary hover:text-text-primary hover:bg-gray-100 dark:hover:bg-gray-800'
           }`}

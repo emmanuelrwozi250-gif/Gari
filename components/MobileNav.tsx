@@ -6,10 +6,10 @@ import { useSession } from 'next-auth/react';
 import { Car, ClipboardList, User, Tent } from 'lucide-react';
 
 const navItems = [
-  { href: '/search', icon: Car, label: 'Rent' },
-  { href: '/safari', icon: Tent, label: 'Safari' },
-  { href: '/dashboard', icon: ClipboardList, label: 'Trips' },
-  { href: '/profile', icon: User, label: 'Me' },
+  { href: '/search', icon: Car, label: 'Rent', requiresAuth: false },
+  { href: '/safari', icon: Tent, label: 'Safari', requiresAuth: false },
+  { href: '/dashboard', icon: ClipboardList, label: 'Trips', requiresAuth: true, loginReason: 'trips' },
+  { href: '/profile', icon: User, label: 'Me', requiresAuth: true },
 ];
 
 export function MobileNav() {
@@ -19,16 +19,18 @@ export function MobileNav() {
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-t border-border shadow-lg">
       <div className="flex items-center justify-around h-16">
-        {navItems.map(({ href, icon: Icon, label }) => {
+        {navItems.map(({ href, icon: Icon, label, requiresAuth, loginReason }) => {
           const active = pathname === href ||
             (href !== '/' && pathname.startsWith(href) &&
              !(href === '/dashboard' && pathname.startsWith('/dashboard/host')));
           const isProfile = href === '/profile';
-          const requiresAuth = href === '/profile' || href === '/dashboard';
+          const loginHref = loginReason
+            ? `/login?next=${encodeURIComponent(href)}&reason=${loginReason}`
+            : '/login';
           return (
             <Link
               key={href}
-              href={requiresAuth && !session ? '/login' : href}
+              href={requiresAuth && !session ? loginHref : href}
               className={`flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-colors min-w-[44px] ${
                 active ? 'text-primary' : 'text-text-light'
               }`}

@@ -2,15 +2,12 @@ import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import Script from 'next/script';
 import { cookies } from 'next/headers';
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages, getLocale } from 'next-intl/server';
+import { Toaster } from 'react-hot-toast';
+import { Suspense } from 'react';
 import './globals.css';
 import { Providers } from '@/components/Providers';
-
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-inter',
-  display: 'swap',
-  weight: ['300', '400', '500', '600', '700', '800'],
-});
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { MobileNav } from '@/components/MobileNav';
@@ -19,8 +16,13 @@ import { AIChatWidget } from '@/components/AIChatWidget';
 import { PushNotificationInit } from '@/components/PushNotificationInit';
 import PWABanner from '@/components/PWABanner';
 import { DemoBanner } from '@/components/DemoBanner';
-import { Toaster } from 'react-hot-toast';
-import { Suspense } from 'react';
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+  weight: ['300', '400', '500', '600', '700', '800'],
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXTAUTH_URL || 'https://gari.rw'),
@@ -58,12 +60,15 @@ export const viewport: Viewport = {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies();
-  const locale = cookieStore.get('GARI_LOCALE')?.value ?? 'en';
-  const validLocale = ['en', 'fr', 'rw'].includes(locale) ? locale : 'en';
+  const cookieLocale = cookieStore.get('GARI_LOCALE')?.value ?? 'en';
+  const validLocale = ['en', 'fr'].includes(cookieLocale) ? cookieLocale : 'en';
+  const locale = await getLocale();
+  const messages = await getMessages();
 
   return (
     <html lang={validLocale} suppressHydrationWarning className={inter.variable}>
       <body className={`antialiased ${inter.className}`}>
+        <NextIntlClientProvider locale={locale} messages={messages}>
         <Providers>
           <DemoBanner />
           <Navbar />
@@ -94,6 +99,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             }}
           />
         </Providers>
+        </NextIntlClientProvider>
         <Script
           defer
           data-domain="gari.rw"

@@ -27,6 +27,14 @@ import { PriceBreakdown } from '@/components/pricing/PriceBreakdown';
 const FALLBACK = 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=800&q=80';
 const PLATFORM_FEE_RATE = PLATFORM.FEE_RATE;
 
+const REMOTE_DISTRICTS = new Set([
+  'BUGESERA','BURERA','GAKENKE','GASABO','GATSIBO','GICUMBI','GISAGARA',
+  'HUYE','KAMONYI','KARONGI','KAYONZA','KIREHE','MUHANGA','MUSANZE',
+  'NGOMA','NGORORERO','NYABIHU','NYAGATARE','NYAMAGABE','NYAMASHEKE',
+  'NYANZA','NYARUGENGE','NYARUGURU','RUBAVU','RUHANGO','RULINDO',
+  'RUSIZI','RUTSIRO','RWAMAGANA',
+]);
+
 interface DynamicPricingData {
   multiplier: number;
   adjustedPricePerDay: number;
@@ -863,6 +871,22 @@ export function CarDetailClient({ car, completedBookingId, existingBookingId, si
                   <span className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${withInsurance ? 'translate-x-5' : 'translate-x-0.5'}`} />
                 </button>
               </div>
+
+              {/* Fix 8: Roadside towing warning for remote districts */}
+              {REMOTE_DISTRICTS.has(data.district) && (
+                <div className="flex items-start gap-2 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-xl px-3 py-2.5 text-xs text-amber-700 dark:text-amber-300">
+                  <span className="mt-0.5 flex-shrink-0">⚠️</span>
+                  <span>Roadside towing covers Kigali only. For remote destinations, confirm breakdown procedures with your host before departure.</span>
+                </div>
+              )}
+
+              {/* Fix 9: Fuel advisory for remote districts */}
+              {REMOTE_DISTRICTS.has(data.district) && (
+                <div className="flex items-start gap-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-xl px-3 py-2.5 text-xs text-blue-700 dark:text-blue-300">
+                  <span className="mt-0.5 flex-shrink-0">⛽</span>
+                  <span>Fill up in town before heading to the national park. Petrol stations are scarce near your destination.</span>
+                </div>
+              )}
 
               {/* Price breakdown */}
               {pickup && returnDate ? (

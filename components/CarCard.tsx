@@ -144,14 +144,14 @@ export function CarCard({ car, compact = false, pickupDate, returnDate }: CarCar
               <span className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm text-primary font-bold text-sm px-2.5 py-1 rounded-lg shadow">
                 {formatRWF(tripTotal)}<span className="text-text-light font-normal text-xs"> total</span>
               </span>
-              <span className="block text-[10px] text-white/80 mt-0.5 pl-0.5">{formatRWF(car.pricePerDay)}/day · {tripDays}d</span>
+              <span className="block text-[10px] text-white/80 mt-0.5 pl-0.5">{formatRWF(car.pricePerDay)}/day · {tripDays}d · +18% VAT</span>
             </>
           ) : (
             <>
               <span className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm text-primary font-bold text-sm px-2.5 py-1 rounded-lg shadow">
                 {formatRWF(car.pricePerDay)}<span className="text-text-light font-normal text-xs">/day</span>
               </span>
-              <span className="block text-[10px] text-white/80 mt-0.5 pl-0.5">{toUSD(car.pricePerDay)}</span>
+              <span className="block text-[10px] text-white/80 mt-0.5 pl-0.5">{toUSD(car.pricePerDay)} · +18% VAT</span>
             </>
           )}
         </div>

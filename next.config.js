@@ -1,3 +1,7 @@
+const createNextIntlPlugin = require('next-intl/plugin');
+
+const withNextIntl = createNextIntlPlugin('./i18n/request.ts');
+
 /** @type {import('next').NextConfig} */
 const securityHeaders = [
   { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
@@ -11,6 +15,9 @@ const nextConfig = {
     return [{ source: '/(.*)', headers: securityHeaders }];
   },
   images: {
+    deviceSizes: [640, 750, 828, 1080, 1200, 1600],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256],
+    formats: ['image/webp'],
     remotePatterns: [
       { protocol: 'https', hostname: 'images.unsplash.com' },
       { protocol: 'https', hostname: 'images.pexels.com' },
@@ -29,4 +36,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = withNextIntl(nextConfig);

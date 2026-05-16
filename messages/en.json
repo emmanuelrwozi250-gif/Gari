@@ -1,25 +1,18 @@
 {
   "nav": {
-    "browse": "Browse Cars",
-    "host": "Become a Host",
-    "list": "List Your Car",
-    "signIn": "Sign In",
-    "getStarted": "Get Started",
-    "dashboard": "Dashboard",
-    "messages": "Messages",
-    "profile": "Profile",
-    "signOut": "Sign Out",
-    "rentCar": "Rent a Car",
-    "buyCar": "Buy a Car",
-    "sellCar": "Sell Your Car",
-    "earnCar": "Earn with Your Car",
-    "map": "Map",
+    "rentACar": "Rent a Car",
     "safari": "Safari",
     "airport": "Airport",
     "airportTransfer": "Airport Transfer",
     "packages": "Packages",
     "becomeHost": "Become a Host",
     "hostDashboard": "Host Dashboard",
+    "signIn": "Sign In",
+    "getStarted": "Get Started",
+    "dashboard": "Dashboard",
+    "messages": "Messages",
+    "profile": "Profile",
+    "signOut": "Sign Out",
     "darkMode": "Dark mode",
     "language": "Language"
   },
@@ -28,7 +21,6 @@
       "badge": "Now available across all 30 Rwanda districts",
       "title": "Rent a Car Anywhere in Rwanda",
       "subtitle": "The simplest way to rent a verified car in Rwanda — with or without a driver. Pay with MoMo or card.",
-      "search": "Search available cars",
       "searchPlaceholder": "Any district in Rwanda"
     },
     "stats": {
@@ -83,7 +75,12 @@
       "subtitle": "Real stories from hosts and renters across Rwanda"
     },
     "featuredCars": "Featured Cars",
-    "viewAll": "View all cars"
+    "viewAll": "View all cars",
+    "cta": {
+      "title": "Your Next Drive Starts Here",
+      "subtitle": "Rwanda's trusted car rental marketplace.",
+      "button": "Browse Cars"
+    }
   },
   "search": {
     "title": "Find your perfect car",
@@ -173,11 +170,18 @@
     "selectDates": "Select dates to see total price",
     "calculating": "Calculating price…",
     "serviceFee": "Service fee (12%)",
+    "driverFee": "Driver fee",
+    "baseRate": "Base rate",
+    "seasonalAdjustment": "Seasonal adjustment",
+    "vat": "VAT 18% (EBM receipt)",
+    "vatNote": "+ 18% VAT",
     "rentalTotal": "Rental total",
+    "total": "Total",
     "totalDue": "Total due today",
     "depositLine": "Security deposit (refundable within 48h)",
     "ebmPromise": "An EBM receipt (Irisiti ya EBM) is issued upon booking confirmation",
     "cancellationPolicy": "Free cancellation within 48h · 50% refund within 24h · No refund after trip starts",
+    "cancellationPolicyTitle": "Cancellation policy",
     "backToListing": "Back to listing",
     "bookingFor": "Booking for",
     "nidaVerifiedRenter": "NIDA-verified renter",
@@ -187,11 +191,12 @@
     "momoInputDesc": "Enter the phone number that will receive the payment request.",
     "idpRequired": "International Driving Permit (IDP) required",
     "confirmAndPay": "Confirm & Pay",
-    "driverFee": "Driver fee",
     "approveHow": "How to approve:",
     "approveStep1": "Open your MTN MoMo or Airtel Money app",
     "approveStep2": "Find the pending request from Gari",
-    "approveStep3": "Enter your PIN to approve"
+    "approveStep3": "Enter your PIN to approve",
+    "roadsideWarning": "⚠️ Roadside towing covers Kigali only. For remote destinations, confirm breakdown procedures with your host before departure.",
+    "fuelReminder": "⛽ Reminder: Fill up in town before heading to the national park. Petrol stations are scarce near your destination."
   },
   "payment": {
     "mtn": "MTN MoMo",
@@ -219,6 +224,71 @@
     "quickActions": "Quick Actions",
     "browseCars": "Browse Cars",
     "listCar": "List Your Car"
+  },
+  "safari": {
+    "badge": "Rwanda Adventure Rentals",
+    "title": "Go Off-Road in Rwanda",
+    "subtitle": "4WD SUVs and pickups for gorilla trekking, Akagera safaris, and highland adventures. All verified. Driver optional.",
+    "roadsTitle": "Rwanda roads",
+    "roadsNote": "Most park routes require a 4WD or high-clearance vehicle, especially during rainy season (Mar–May, Oct–Nov).",
+    "fuelTitle": "Fuel up in town",
+    "fuelNote": "Fill up before leaving Kigali or the nearest large town — petrol stations are scarce near national parks.",
+    "driverTitle": "Add a driver",
+    "driverNote": "Many hosts offer certified safari drivers who know park entry points, ranger contacts, and best wildlife spots.",
+    "permitTitle": "Park permits",
+    "permitNote": "Gorilla trekking permits ($1,500 USD) must be pre-booked via Rwanda Development Board.",
+    "destinationsTitle": "Popular Destinations",
+    "routesTitle": "Popular Safari Routes from Kigali",
+    "vehiclesTitle": "Safari Vehicles",
+    "vehiclesSubtitle": "All verified 4WD vehicles, available with or without a certified safari driver.",
+    "ctaTitle": "Need help planning your safari?",
+    "ctaSubtitle": "Our hosts know Rwanda inside out. Add a driver to your booking.",
+    "ctaButton": "Find a 4WD with Driver",
+    "viewAllButton": "View all",
+    "findCarsButton": "Find cars",
+    "browseButton": "Browse Safari Vehicles",
+    "withDriverButton": "With Driver",
+    "popularDestinations": "Popular Destinations",
+    "popularRoutes": "Popular Safari Routes from Kigali",
+    "featuredVehicles": "Safari Vehicles"
+  },
+  "international": {
+    "title": "Explore Rwanda Your Way",
+    "subtitle": "Verified hosts · Card payments · English-speaking drivers · Airport pickup · All vehicles insured",
+    "idpTitle": "International Driving Permit (IDP) — required for self-drive",
+    "idpBody": "Rwandan traffic law requires all foreign nationals driving (not using a driver) to carry a valid IDP alongside their home driving licence. Without an IDP, you cannot legally self-drive — and your insurance coverage may be void.",
+    "idpObtain": "Obtain your IDP from your national motoring authority before you fly.",
+    "idpAuthorities": "Valid IDPs are issued by AAA (USA), AA (UK/Ireland), ADAC (Germany), RAC, CAA, etc.",
+    "idpAlternative": "If you prefer not to get an IDP, book with a driver — our licensed hosts handle all driving."
+  },
+  "insurance": {
+    "title": "Every Trip is Covered",
+    "subtitle": "Gari Basic Insurance is automatically included on every booking — no add-ons, no surprises.",
+    "covered": "What's Covered",
+    "notCovered": "What's Not Covered",
+    "howToClaim": "How to File a Claim",
+    "vehicleDamage": "Collision, accidental damage, and theft of the rental car",
+    "thirdParty": "Damage caused to other vehicles or property up to RWF 5,000,000",
+    "medical": "Emergency medical costs for renter up to RWF 500,000",
+    "roadside": "Emergency towing within Kigali city limits"
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Everything you need to know about renting and hosting on Gari.",
+    "forRenters": "For Renters",
+    "forHosts": "For Hosts",
+    "forOperators": "For Operators"
+  },
+  "becomeOperator": {
+    "title": "List Your Licensed Fleet on Gari",
+    "subtitle": "Rwanda's only marketplace dedicated to RURA-licensed commercial rental vehicles.",
+    "cta": "Apply to List Your Fleet",
+    "howItWorks": "How It Works",
+    "requirements": "What You Need to List",
+    "earnings": "Projected Monthly Earnings",
+    "requirementsTitle": "What You Need to List",
+    "earningsTitle": "Projected Monthly Earnings",
+    "payoutNote": "💳 Earnings paid to your MoMo within 24 hours of each completed trip."
   },
   "footer": {
     "tagline": "Rwanda's car rental marketplace. Verified hosts, mobile money payments, available across all 30 districts.",
@@ -272,54 +342,5 @@
     "diesel": "Diesel",
     "electric": "Electric",
     "hybrid": "Hybrid"
-  },
-  "international": {
-    "title": "Explore Rwanda Your Way",
-    "subtitle": "Verified hosts · Card payments · English-speaking drivers · Airport pickup · All vehicles insured",
-    "idpTitle": "International Driving Permit (IDP) — required for self-drive",
-    "idpBody": "Rwandan traffic law requires all foreign nationals driving (not using a driver) to carry a valid IDP alongside their home driving licence. Without an IDP, you cannot legally self-drive — and your insurance coverage may be void.",
-    "idpObtain": "Obtain your IDP from your national motoring authority before you fly.",
-    "idpAuthorities": "Valid IDPs are issued by AAA (USA), AA (UK/Ireland), ADAC (Germany), RAC, CAA, etc.",
-    "idpAlternative": "If you prefer not to get an IDP, book with a driver — our licensed hosts handle all driving."
-  },
-  "insurance": {
-    "title": "Every Trip is Covered",
-    "subtitle": "Gari Basic Insurance is automatically included on every booking — no add-ons, no surprises.",
-    "covered": "What's Covered",
-    "notCovered": "What's Not Covered",
-    "howToClaim": "How to File a Claim",
-    "vehicleDamage": "Collision, accidental damage, and theft of the rental car",
-    "thirdParty": "Damage caused to other vehicles or property up to RWF 5,000,000",
-    "medical": "Emergency medical costs for renter up to RWF 500,000",
-    "roadside": "Emergency towing within Kigali city limits"
-  },
-  "faq": {
-    "title": "Frequently Asked Questions",
-    "subtitle": "Everything you need to know about renting and hosting on Gari.",
-    "forRenters": "For Renters",
-    "forHosts": "For Hosts",
-    "forOperators": "For Operators"
-  },
-  "becomeOperator": {
-    "title": "List Your Licensed Fleet on Gari",
-    "subtitle": "Rwanda's only marketplace dedicated to RURA-licensed commercial rental vehicles.",
-    "cta": "Apply to List Your Fleet",
-    "howItWorks": "How It Works",
-    "requirements": "What You Need to List",
-    "earnings": "Projected Monthly Earnings"
-  },
-  "safari": {
-    "title": "Go Off-Road in Rwanda",
-    "subtitle": "4WD SUVs and pickups for gorilla trekking, Akagera safaris, and highland adventures. All verified. Driver optional.",
-    "roadsNote": "Most park routes require a 4WD or high-clearance vehicle, especially during rainy season.",
-    "fuelNote": "Fill up before leaving Kigali or the nearest large town — petrol stations are scarce near national parks.",
-    "driverNote": "Many hosts offer certified safari drivers who know park entry points, ranger contacts, and best wildlife spots.",
-    "permitNote": "Gorilla trekking permits ($1,500 USD) must be pre-booked via Rwanda Development Board.",
-    "browseVehicles": "Browse Safari Vehicles",
-    "withDriver": "With Driver",
-    "popularDestinations": "Popular Destinations",
-    "popularRoutes": "Popular Safari Routes from Kigali",
-    "featuredVehicles": "Safari Vehicles",
-    "vehiclesSubtitle": "All verified 4WD vehicles, available with or without a certified safari driver."
   }
 }
