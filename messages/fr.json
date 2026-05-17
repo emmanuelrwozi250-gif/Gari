@@ -342,5 +342,17 @@
     "diesel": "Diesel",
     "electric": "Électrique",
     "hybrid": "Hybride"
+  },
+  "seo": {
+    "homeTitle": "Gari — Location de voiture partout au Rwanda",
+    "homeDesc": "Réservez des voitures vérifiées dans les 30 districts du Rwanda. Payez par MTN MoMo ou carte. Conduite autonome ou avec chauffeur. Aucun frais caché.",
+    "safariTitle": "Voitures Safari & Aventure au Rwanda · Gari",
+    "safariDesc": "Louez des SUV 4x4 pour le trekking des gorilles, les safaris à Akagera et les excursions à Nyungwe. Véhicules vérifiés avec guides optionnels.",
+    "internationalTitle": "Location de voiture pour visiteurs internationaux — Gari Rwanda",
+    "internationalDesc": "Louez une voiture au Rwanda en tant que touriste ou expatrié. Vérification du passeport, paiements par carte, hôtes anglophones, transferts aéroport.",
+    "collectionsTitle": "Offres de voitures | Gari Rwanda",
+    "collectionsDesc": "Explorez nos offres de voitures pour chaque aventure au Rwanda — treks des gorilles, escapades au lac, voyages d'affaires, safari et bien plus.",
+    "becomeOperatorTitle": "Devenez Opérateur Vérifié | Gari Rwanda",
+    "becomeOperatorDesc": "Inscrivez votre flotte licenciée RURA sur Gari Rwanda. Atteignez des milliers de locataires dans les 30 districts. Véhicules commerciaux uniquement."
   }
 }

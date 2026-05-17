@@ -123,8 +123,13 @@ export default function InsurancePage() {
               <FileText className="w-6 h-6 text-primary flex-shrink-0" />
               <h2 className="text-lg font-bold text-text-primary dark:text-white">Your Insurance Certificate</h2>
             </div>
+            <p className="text-sm text-text-secondary leading-relaxed mb-3">
+              All Gari rentals are underwritten by{' '}
+              <strong className="text-text-primary dark:text-white">[Insurance Partner] — Rwanda Insurance Board licensed</strong>.
+              An insurance certificate is automatically generated after your payment is confirmed. You can find it in your booking dashboard under any confirmed or active booking. The certificate includes your policy number, coverage period, and the insurer&apos;s direct claims contact.
+            </p>
             <p className="text-sm text-text-secondary leading-relaxed">
-              An insurance certificate is automatically generated after your payment is confirmed. You can find it in your booking dashboard under any confirmed or active booking. The certificate includes your policy number, coverage period, and the insurer&apos;s claims contact. Print or screenshot it to keep in the car during your trip.
+              Print or screenshot the certificate to keep in the car during your trip. For institutional travel (NGO, embassy, UN), the certificate is accepted documentation for most internal travel approval processes.
             </p>
           </div>
 

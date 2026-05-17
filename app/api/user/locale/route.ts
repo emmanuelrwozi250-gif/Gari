@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
-const VALID_LOCALES = ['en', 'fr', 'rw'] as const;
+const VALID_LOCALES = ['en', 'fr'] as const;
 type Locale = typeof VALID_LOCALES[number];
 
 export async function PATCH(req: NextRequest) {

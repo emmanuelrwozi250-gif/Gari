@@ -1,36 +1,40 @@
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
 import Link from 'next/link';
+import { getLocale, getTranslations } from 'next-intl/server';
 import { CheckCircle, FileText, Shield, TrendingUp, Car, Phone } from 'lucide-react';
 import { COMPANY, waLink } from '@/lib/config/company';
 
-export const metadata: Metadata = {
-  title: 'Become a Verified Operator | Gari Rwanda',
-  description:
-    'List your RURA-licensed fleet on Gari Rwanda. Reach thousands of renters across all 30 districts. Commercial vehicles only.',
-  openGraph: {
-    title: 'List Your Licensed Fleet on Gari Rwanda',
-    description: 'Join Rwanda\'s trusted B2B2C car rental marketplace. RURA-compliant vehicles only.',
-    url: 'https://gari.rw/become-operator',
-    siteName: 'Gari',
-    images: [{
-      url: 'https://gari.rw/og?title=List+Your+Fleet&sub=RURA+Verified+Operators+Only&type=operator',
-      width: 1200,
-      height: 630,
-      alt: 'List Your Licensed Fleet on Gari Rwanda',
-    }],
-    locale: 'en_RW',
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'List Your Licensed Fleet on Gari Rwanda',
-    description: 'RURA-compliant B2B2C car rental marketplace. Commercial vehicles only.',
-  },
-  alternates: {
-    canonical: 'https://gari.rw/become-operator',
-    languages: { 'en': 'https://gari.rw/become-operator', 'fr': 'https://gari.rw/become-operator', 'x-default': 'https://gari.rw/become-operator' },
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  const t = await getTranslations('seo');
+  return {
+    title: t('becomeOperatorTitle'),
+    description: t('becomeOperatorDesc'),
+    openGraph: {
+      title: t('becomeOperatorTitle'),
+      description: t('becomeOperatorDesc'),
+      url: 'https://gari.rw/become-operator',
+      siteName: 'Gari',
+      images: [{
+        url: 'https://gari.rw/og?title=List+Your+Fleet&sub=RURA+Verified+Operators+Only&type=operator',
+        width: 1200,
+        height: 630,
+        alt: t('becomeOperatorTitle'),
+      }],
+      locale: locale === 'fr' ? 'fr_RW' : 'en_RW',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: t('becomeOperatorTitle'),
+      description: t('becomeOperatorDesc'),
+    },
+    alternates: {
+      canonical: 'https://gari.rw/become-operator',
+      languages: { 'en': 'https://gari.rw/become-operator', 'fr': 'https://gari.rw/become-operator', 'x-default': 'https://gari.rw/become-operator' },
+    },
+  };
+}
 
 const REQUIREMENTS = [
   {
@@ -67,7 +71,8 @@ const STEPS = [
   { n: '03', title: 'Go Live',          desc: 'Your cars appear on Gari and start receiving bookings immediately.' },
 ];
 
-export default function BecomeOperatorPage() {
+export default async function BecomeOperatorPage() {
+  const tbo = await getTranslations('becomeOperator');
   const applyLink = waLink(
     'Hi Gari, I would like to list my licensed fleet as a verified operator. My company name is '
   );
@@ -80,12 +85,10 @@ export default function BecomeOperatorPage() {
           B2B2C Platform · RURA Compliant
         </span>
         <h1 className="text-3xl sm:text-4xl font-extrabold text-text-primary dark:text-white mb-4">
-          List Your Licensed Fleet on Gari
+          {tbo('title')}
         </h1>
         <p className="text-text-secondary dark:text-gray-400 max-w-2xl mx-auto text-lg">
-          Rwanda&apos;s only marketplace dedicated to RURA-licensed commercial rental vehicles.
-          Reach thousands of renters across all 30 districts — with mobile money payments
-          and full deposit protection.
+          {tbo('subtitle')}
         </p>
         <a
           href={applyLink}
@@ -93,7 +96,7 @@ export default function BecomeOperatorPage() {
           rel="noopener noreferrer"
           className="btn-primary mt-6 inline-flex items-center gap-2"
         >
-          <Phone className="w-4 h-4" /> Apply to List Your Fleet
+          <Phone className="w-4 h-4" /> {tbo('cta')}
         </a>
       </div>
 

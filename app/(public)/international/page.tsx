@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { getLocale, getTranslations } from 'next-intl/server';
 import {
   Globe, Car, Shield, MapPin, CheckCircle, ChevronRight,
   Phone, FileText, AlertTriangle, Navigation,
@@ -7,20 +8,25 @@ import {
 import { COMPANY, waLink } from '@/lib/config/company';
 import { INSURANCE } from '@/config/insurance';
 
-export const metadata: Metadata = {
-  title: 'Car Rental for International Visitors — Gari Rwanda',
-  description: 'Rent a car in Rwanda as a tourist or expat. Passport verification, card payments, English-speaking hosts, airport pickup. All vehicles insured.',
-  openGraph: {
-    title: 'Rent a Car in Rwanda — Gari International',
-    description: 'Rwanda\'s trusted car rental for tourists & expats. NIDA-verified hosts, card payments, airport transfers.',
-    url: 'https://gari.rw/international',
-    images: [{ url: 'https://gari.rw/og?title=Car+Rental+for+Visitors&sub=Rwanda\'s+most+trusted+platform&type=intl', width: 1200, height: 630 }],
-  },
-  alternates: {
-    canonical: 'https://gari.rw/international',
-    languages: { 'en': 'https://gari.rw/international', 'fr': 'https://gari.rw/international', 'x-default': 'https://gari.rw/international' },
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  const t = await getTranslations('seo');
+  return {
+    title: t('internationalTitle'),
+    description: t('internationalDesc'),
+    openGraph: {
+      title: t('internationalTitle'),
+      description: t('internationalDesc'),
+      url: 'https://gari.rw/international',
+      locale: locale === 'fr' ? 'fr_RW' : 'en_RW',
+      images: [{ url: 'https://gari.rw/og?title=Car+Rental+for+Visitors&sub=Rwanda\'s+most+trusted+platform&type=intl', width: 1200, height: 630 }],
+    },
+    alternates: {
+      canonical: 'https://gari.rw/international',
+      languages: { 'en': 'https://gari.rw/international', 'fr': 'https://gari.rw/international', 'x-default': 'https://gari.rw/international' },
+    },
+  };
+}
 
 const ROUTES = [
   { from: 'Kigali (RIA)', to: 'Musanze / Volcanoes NP', km: 110, hrs: 2.5, notes: 'Gorilla trekking — book 6 months ahead' },
@@ -66,7 +72,8 @@ const FAQS = [
   },
 ];
 
-export default function InternationalPage() {
+export default async function InternationalPage() {
+  const ti = await getTranslations('international');
   const conciergeLink = waLink("Hi, I'm an international visitor looking to rent a car in Rwanda. Can you help?");
   const bookLink = waLink("Hi, I need help booking a car as an international visitor to Rwanda.");
 
@@ -80,10 +87,10 @@ export default function InternationalPage() {
             <Globe className="w-4 h-4" /> International Visitors Welcome
           </div>
           <h1 className="text-4xl sm:text-5xl font-extrabold mb-4 leading-tight">
-            Explore Rwanda Your Way
+            {ti('title')}
           </h1>
           <p className="text-xl text-white/85 mb-8 max-w-2xl mx-auto">
-            Verified hosts · Card payments · English-speaking drivers · Airport pickup · All vehicles insured
+            {ti('subtitle')}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link href="/search?intl=true" className="bg-white text-primary font-bold px-6 py-3.5 rounded-xl hover:bg-gray-50 transition-colors inline-flex items-center gap-2">
@@ -124,15 +131,15 @@ export default function InternationalPage() {
             <AlertTriangle className="w-8 h-8 text-amber-600 flex-shrink-0 mt-1" />
             <div>
               <h2 className="text-xl font-extrabold text-amber-800 dark:text-amber-200 mb-2">
-                International Driving Permit (IDP) — required for self-drive
+                {ti('idpTitle')}
               </h2>
               <p className="text-sm text-amber-700 dark:text-amber-300 leading-relaxed mb-4">
-                Rwandan traffic law requires all foreign nationals driving (not using a driver) to carry a valid IDP alongside their home driving licence. Without an IDP, you cannot legally self-drive — and your insurance coverage may be void.
+                {ti('idpBody')}
               </p>
               <div className="space-y-2 text-sm text-amber-700 dark:text-amber-300">
-                <div className="flex items-start gap-2"><CheckCircle className="w-4 h-4 flex-shrink-0 mt-0.5 text-amber-600" /> Obtain your IDP from your national motoring authority <strong>before you fly</strong>.</div>
-                <div className="flex items-start gap-2"><CheckCircle className="w-4 h-4 flex-shrink-0 mt-0.5 text-amber-600" /> Valid IDPs are issued by AAA (USA), AA (UK/Ireland), ADAC (Germany), RAC, CAA, etc.</div>
-                <div className="flex items-start gap-2"><CheckCircle className="w-4 h-4 flex-shrink-0 mt-0.5 text-amber-600" /> If you prefer not to get an IDP, book with a driver — our licensed hosts handle all driving.</div>
+                <div className="flex items-start gap-2"><CheckCircle className="w-4 h-4 flex-shrink-0 mt-0.5 text-amber-600" /> {ti('idpObtain')}</div>
+                <div className="flex items-start gap-2"><CheckCircle className="w-4 h-4 flex-shrink-0 mt-0.5 text-amber-600" /> {ti('idpAuthorities')}</div>
+                <div className="flex items-start gap-2"><CheckCircle className="w-4 h-4 flex-shrink-0 mt-0.5 text-amber-600" /> {ti('idpAlternative')}</div>
               </div>
             </div>
           </div>
@@ -172,7 +179,7 @@ export default function InternationalPage() {
             {[
               { icon: Shield, title: 'Passport-verified hosts', desc: 'Every host is NIDA-verified. We know who owns every vehicle.' },
               { icon: FileText, title: 'EBM receipts', desc: 'RRA-compliant receipts issued after every trip — useful for business expense claims.' },
-              { icon: Car, title: 'Insured rentals', desc: 'All vehicles have third-party insurance. Gari Protect adds collision damage cover.' },
+              { icon: Car, title: 'Insured rentals', desc: 'All vehicles are insured through [Insurance Partner] (Rwanda Insurance Board licensed). Third-party liability up to RWF 5,000,000 included. Gari Protect adds collision damage cover.' },
               { icon: Globe, title: 'English-speaking hosts', desc: 'Filter for International Friendly hosts who speak English (some also French).' },
               { icon: MapPin, title: 'Airport pickup', desc: 'Many hosts offer pickup from Kigali International Airport — no need for a taxi.' },
               { icon: Phone, title: '24/7 WhatsApp support', desc: 'Our team is available on WhatsApp for emergencies, directions, and help.' },

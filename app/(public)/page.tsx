@@ -1,6 +1,7 @@
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import Script from 'next/script';
+import { getLocale, getTranslations } from 'next-intl/server';
 import { SearchBar } from '@/components/SearchBar';
 import { CarCard } from '@/components/CarCard';
 import { STATS } from '@/config/social-proof';
@@ -20,46 +21,50 @@ import { COLLECTIONS } from '@/lib/collections';
 import { RecommendedCars } from '@/components/recommendations/RecommendedCars';
 
 // ─── SEO Metadata ──────────────────────────────────────────────────────────────
-export const metadata: Metadata = {
-  title: 'Gari — Rent a Car Anywhere in Rwanda',
-  description: 'Book verified cars across all 30 Rwanda districts. Pay with MTN MoMo or card. Self-drive or with a professional driver. No hidden fees.',
-  keywords: [
-    'car rental Rwanda', 'rent a car Kigali', 'car hire Rwanda',
-    'MTN MoMo car rental', 'self-drive Rwanda', 'driver Rwanda',
-    'Kigali car hire', 'Rwanda car booking', 'Gari Rwanda',
-  ],
-  openGraph: {
-    type: 'website',
-    url: 'https://gari.rw',
-    siteName: 'Gari',
-    title: 'Gari — Rent a Car Anywhere in Rwanda',
-    description: 'Verified hosts, mobile money payments, available across all 30 districts.',
-    locale: 'en_RW',
-    images: [
-      {
-        url: 'https://gari.rw/og?title=Rent+a+Car+Anywhere+in+Rwanda&sub=Verified+hosts+%C2%B7+MTN+MoMo+%C2%B7+30+districts',
-        width: 1200,
-        height: 630,
-        alt: 'Gari — Rwanda Car Rental Marketplace',
-      },
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  const t = await getTranslations('seo');
+  const ogLocale = locale === 'fr' ? 'fr_RW' : 'en_RW';
+  return {
+    title: t('homeTitle'),
+    description: t('homeDesc'),
+    keywords: [
+      'car rental Rwanda', 'rent a car Kigali', 'car hire Rwanda',
+      'MTN MoMo car rental', 'self-drive Rwanda', 'driver Rwanda',
+      'Kigali car hire', 'Rwanda car booking', 'Gari Rwanda',
     ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Gari — Rent a Car Anywhere in Rwanda',
-    description: 'Verified hosts, mobile money payments, available across all 30 districts.',
-    images: ['https://gari.rw/og?title=Rent+a+Car+Anywhere+in+Rwanda&sub=Verified+hosts+%C2%B7+MTN+MoMo+%C2%B7+30+districts'],
-  },
-  alternates: {
-    canonical: 'https://gari.rw',
-    languages: {
-      'en': 'https://gari.rw',
-      'fr': 'https://gari.rw',
-      'rw': 'https://gari.rw',
-      'x-default': 'https://gari.rw',
+    openGraph: {
+      type: 'website',
+      url: 'https://gari.rw',
+      siteName: 'Gari',
+      title: t('homeTitle'),
+      description: t('homeDesc'),
+      locale: ogLocale,
+      images: [
+        {
+          url: 'https://gari.rw/og?title=Rent+a+Car+Anywhere+in+Rwanda&sub=Verified+hosts+%C2%B7+MTN+MoMo+%C2%B7+30+districts',
+          width: 1200,
+          height: 630,
+          alt: 'Gari — Rwanda Car Rental Marketplace',
+        },
+      ],
     },
-  },
-};
+    twitter: {
+      card: 'summary_large_image',
+      title: t('homeTitle'),
+      description: t('homeDesc'),
+      images: ['https://gari.rw/og?title=Rent+a+Car+Anywhere+in+Rwanda&sub=Verified+hosts+%C2%B7+MTN+MoMo+%C2%B7+30+districts'],
+    },
+    alternates: {
+      canonical: 'https://gari.rw',
+      languages: {
+        'en': 'https://gari.rw',
+        'fr': 'https://gari.rw',
+        'x-default': 'https://gari.rw',
+      },
+    },
+  };
+}
 
 // ─── Data fetching ─────────────────────────────────────────────────────────────
 async function getFeaturedCars() {
@@ -113,44 +118,6 @@ function demoToCard(c: typeof DEMO_RENTAL_CARS[number]) {
 
 const STAT_ICONS = [Car, Users, Globe, Star, Shield];
 
-const HOW_IT_WORKS = [
-  { icon: SearchIcon, step: '01', title: 'Find Your Car', desc: 'Search across 30 districts. Filter by type, budget, and whether you want a driver. Every vehicle is RURA-licensed and commercially insured.' },
-  { icon: BadgeCheck, step: '02', title: 'Book Instantly', desc: 'Confirm your dates, pay with MTN MoMo, Airtel Money, or Visa/Mastercard. No hidden fees.' },
-  { icon: Car, step: '03', title: 'Pick Up & Go', desc: 'Meet the host, inspect the car together, and start your journey.' },
-  { icon: Star, step: '04', title: 'Rate & Review', desc: 'Share your experience and help build trust in the community.' },
-];
-
-const GUARANTEE_ITEMS = [
-  {
-    icon: Lock,
-    title: 'Payment Held Safe',
-    desc: 'Your payment is held in escrow and only released to the host after your trip starts. You pay, we hold.',
-    colour: 'bg-blue-500/10 border-blue-500/20',
-    iconColour: 'text-blue-400',
-  },
-  {
-    icon: RefreshCcw,
-    title: 'Full Refund If Host Cancels',
-    desc: 'If a host cancels your confirmed booking, you receive a 100% refund — no questions asked.',
-    colour: 'bg-emerald-500/10 border-emerald-500/20',
-    iconColour: 'text-emerald-400',
-  },
-  {
-    icon: Shield,
-    title: 'Deposit Protected',
-    desc: 'Security deposits are returned within 48 hours of a smooth return. Every transaction is logged.',
-    colour: 'bg-violet-500/10 border-violet-500/20',
-    iconColour: 'text-violet-400',
-  },
-  {
-    icon: Phone,
-    title: '24/7 WhatsApp Support',
-    desc: 'Stuck on the road at 2 AM? Our team is one WhatsApp message away, every day of the year.',
-    colour: 'bg-amber-500/10 border-amber-500/20',
-    iconColour: 'text-amber-400',
-  },
-];
-
 function SearchIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg {...props} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -188,7 +155,21 @@ const jsonLd = {
 
 // ─── Page ──────────────────────────────────────────────────────────────────────
 export default async function HomePage() {
-  const dbCars = await getFeaturedCars();
+  const [dbCars, th] = await Promise.all([getFeaturedCars(), getTranslations('home')]);
+
+  const HOW_IT_WORKS = [
+    { icon: SearchIcon, step: '01', title: th('howItWorks.step1Title'), desc: th('howItWorks.step1Desc') },
+    { icon: BadgeCheck, step: '02', title: th('howItWorks.step2Title'), desc: th('howItWorks.step2Desc') },
+    { icon: Car, step: '03', title: th('howItWorks.step3Title'), desc: th('howItWorks.step3Desc') },
+    { icon: Star, step: '04', title: th('howItWorks.step4Title'), desc: th('howItWorks.step4Desc') },
+  ];
+
+  const GUARANTEE_ITEMS = [
+    { icon: Lock,       title: th('guarantee.paymentSafeTitle'), desc: th('guarantee.paymentSafeDesc'), colour: 'bg-blue-500/10 border-blue-500/20',    iconColour: 'text-blue-400'    },
+    { icon: RefreshCcw, title: th('guarantee.refundTitle'),       desc: th('guarantee.refundDesc'),       colour: 'bg-emerald-500/10 border-emerald-500/20', iconColour: 'text-emerald-400' },
+    { icon: Shield,     title: th('guarantee.depositTitle'),      desc: th('guarantee.depositDesc'),      colour: 'bg-violet-500/10 border-violet-500/20',  iconColour: 'text-violet-400'  },
+    { icon: Phone,      title: th('guarantee.supportTitle'),      desc: th('guarantee.supportDesc'),      colour: 'bg-amber-500/10 border-amber-500/20',    iconColour: 'text-amber-400'   },
+  ];
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const featuredCars: any[] = dbCars.length > 0
@@ -230,16 +211,14 @@ export default async function HomePage() {
         <div className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14 md:py-24 text-center">
           <div className="inline-flex items-center gap-2 bg-primary/20 border border-primary/30 rounded-full px-3 py-1.5 text-primary-light text-xs sm:text-sm font-medium mb-6 max-w-[90vw]">
             <Globe className="w-3.5 h-3.5 flex-shrink-0" />
-            <span>Now available across all 30 Rwanda districts</span>
+            <span>{th('hero.badge')}</span>
           </div>
 
           <h1 className="text-[1.85rem] sm:text-4xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight mb-4 sm:mb-6">
-            Rent a Car{' '}
-            <span className="text-primary">Anywhere in</span>{' '}
-            <span className="text-accent-yellow">Rwanda</span>
+            {th('hero.title')}
           </h1>
           <p className="text-base sm:text-lg md:text-xl text-gray-400 mb-8 sm:mb-10 max-w-2xl mx-auto px-2">
-            The simplest way to rent a verified car in Rwanda — with or without a driver. Pay with MoMo or card.
+            {th('hero.subtitle')}
           </p>
 
           <div className="max-w-5xl mx-auto">
@@ -268,7 +247,6 @@ export default async function HomePage() {
           <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 mt-8 sm:mt-10">
             {([
               { label: 'Verified Cars', value: PLATFORM_STATS.verifiedCars },
-              { label: 'RURA Licensed Operators in Rwanda', value: PLATFORM_STATS.tripsCompleted },
               { label: 'Districts Covered', value: PLATFORM_STATS.districtsActive },
               { label: 'Avg. Rating', value: `${PLATFORM_STATS.avgRating}★` },
               { label: 'RURA Compliant · Licensed vehicles only', value: '100%' },
@@ -293,11 +271,11 @@ export default async function HomePage() {
       <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h2 className="section-title">Featured Cars</h2>
+            <h2 className="section-title">{th('featuredCars')}</h2>
             <p className="section-subtitle">Top-rated picks + an affordable option for every budget</p>
           </div>
           <Link href="/search" className="btn-ghost">
-            View all <ArrowRight className="w-4 h-4" />
+            {th('viewAll')} <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
 
@@ -330,8 +308,8 @@ export default async function HomePage() {
       <section className="py-16 bg-gray-bg dark:bg-gray-950">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="section-title">How Gari Works</h2>
-            <p className="section-subtitle">Rent a car in 4 simple steps</p>
+            <h2 className="section-title">{th('howItWorks.title')}</h2>
+            <p className="section-subtitle">{th('howItWorks.subtitle')}</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {HOW_IT_WORKS.map(({ icon: Icon, step, title, desc }) => (
@@ -380,27 +358,27 @@ export default async function HomePage() {
       {/* ── Testimonials ──────────────────────────────────────────────────── */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="text-center mb-12">
-          <h2 className="section-title">What Our Community Says</h2>
-          <p className="section-subtitle">Real stories from hosts and renters across Rwanda</p>
+          <h2 className="section-title">{th('testimonials.title')}</h2>
+          <p className="section-subtitle">{th('testimonials.subtitle')}</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {DEMO_TESTIMONIALS.slice(0, 3).map((t) => (
-            <div key={t.name} className="card p-6">
+          {DEMO_TESTIMONIALS.slice(0, 3).map((item) => (
+            <div key={item.name} className="card p-6">
               <div className="flex mb-3">
-                {Array.from({ length: t.rating }).map((_, i) => (
+                {Array.from({ length: item.rating }).map((_, i) => (
                   <Star key={i} className="w-4 h-4 fill-accent-yellow text-accent-yellow" />
                 ))}
               </div>
-              <p className="text-text-secondary dark:text-gray-400 text-sm leading-relaxed mb-4">&ldquo;{t.text}&rdquo;</p>
+              <p className="text-text-secondary dark:text-gray-400 text-sm leading-relaxed mb-4">&ldquo;{item.text}&rdquo;</p>
               <div className="flex items-center gap-3">
                 <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm flex-shrink-0 ${
-                  ['bg-blue-100 text-blue-700','bg-green-100 text-green-700','bg-purple-100 text-purple-700','bg-amber-100 text-amber-700'][t.name.charCodeAt(0) % 4]
+                  ['bg-blue-100 text-blue-700','bg-green-100 text-green-700','bg-purple-100 text-purple-700','bg-amber-100 text-amber-700'][item.name.charCodeAt(0) % 4]
                 }`}>
-                  {t.name.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}
+                  {item.name.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}
                 </div>
                 <div>
-                  <div className="font-semibold text-sm text-text-primary dark:text-white">{t.name}</div>
-                  <div className="text-xs text-text-light">{t.role}</div>
+                  <div className="font-semibold text-sm text-text-primary dark:text-white">{item.name}</div>
+                  <div className="text-xs text-text-light">{item.role}</div>
                 </div>
               </div>
             </div>
@@ -415,9 +393,9 @@ export default async function HomePage() {
             <div className="inline-flex items-center gap-2 bg-primary/20 border border-primary/30 rounded-full px-3 py-1.5 text-primary-light text-xs font-semibold mb-4">
               <Shield className="w-3.5 h-3.5" /> The Gari Guarantee
             </div>
-            <h2 className="text-3xl font-extrabold text-white mb-3">Book With Confidence</h2>
+            <h2 className="text-3xl font-extrabold text-white mb-3">{th('guarantee.title')}</h2>
             <p className="text-gray-400 max-w-xl mx-auto">
-              Every booking on Gari is backed by our renter-first promise. If anything goes wrong, we make it right.
+              {th('guarantee.subtitle')}
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -441,12 +419,12 @@ export default async function HomePage() {
       <section className="py-16 px-4 bg-dark-bg text-white text-center border-t border-white/5">
         <div className="max-w-2xl mx-auto">
           <HeartHandshake className="w-12 h-12 text-primary mx-auto mb-4" />
-          <h2 className="text-3xl font-extrabold mb-4">Your Next Drive Starts Here</h2>
+          <h2 className="text-3xl font-extrabold mb-4">{th('cta.title')}</h2>
           <p className="text-gray-400 mb-8">
-            Rwanda&apos;s trusted car rental marketplace — join the pilot. ID-verified hosts, MTN MoMo &amp; card payments.
+            {th('cta.subtitle')}
           </p>
           <Link href="/search" className="btn-primary text-base px-12 py-4 inline-flex items-center gap-2">
-            Browse Cars <ArrowRight className="w-5 h-5" />
+            {th('cta.button')} <ArrowRight className="w-5 h-5" />
           </Link>
         </div>
       </section>

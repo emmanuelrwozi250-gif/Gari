@@ -1,37 +1,42 @@
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
+import { getLocale, getTranslations } from 'next-intl/server';
 import { Mountain, MapPin, Star, Users, CheckCircle, ArrowRight, Zap, Clock, AlertTriangle } from 'lucide-react';
 import { formatRWF, toUSD, getCarTypeLabel, getFuelLabel } from '@/lib/utils';
 import { prisma } from '@/lib/prisma';
 
-export const metadata: Metadata = {
-  title: 'Safari & Adventure Cars in Rwanda · Gari',
-  description: 'Rent 4WD SUVs and pickups for gorilla trekking, Akagera safaris, Nyungwe forest drives, and Lake Kivu tours. Verified vehicles with optional guides.',
-  openGraph: {
-    title: 'Safari & Adventure Cars in Rwanda · Gari',
-    description: 'Rent verified 4WD SUVs for gorilla trekking, Akagera safaris, and Nyungwe forest drives. RURA-licensed operators.',
-    url: 'https://gari.rw/safari',
-    siteName: 'Gari',
-    images: [{
-      url: 'https://gari.rw/og?title=Safari+Cars+Rwanda&sub=4WD+SUVs+for+National+Parks&type=safari',
-      width: 1200,
-      height: 630,
-      alt: 'Safari & Adventure Cars in Rwanda · Gari',
-    }],
-    locale: 'en_RW',
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Safari & Adventure Cars in Rwanda · Gari',
-    description: 'Rent verified 4WD SUVs for gorilla trekking, Akagera safaris, and Nyungwe forest drives.',
-  },
-  alternates: {
-    canonical: 'https://gari.rw/safari',
-    languages: { 'en': 'https://gari.rw/safari', 'fr': 'https://gari.rw/safari', 'x-default': 'https://gari.rw/safari' },
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  const t = await getTranslations('seo');
+  return {
+    title: t('safariTitle'),
+    description: t('safariDesc'),
+    openGraph: {
+      title: t('safariTitle'),
+      description: t('safariDesc'),
+      url: 'https://gari.rw/safari',
+      siteName: 'Gari',
+      images: [{
+        url: 'https://gari.rw/og?title=Safari+Cars+Rwanda&sub=4WD+SUVs+for+National+Parks&type=safari',
+        width: 1200,
+        height: 630,
+        alt: t('safariTitle'),
+      }],
+      locale: locale === 'fr' ? 'fr_RW' : 'en_RW',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: t('safariTitle'),
+      description: t('safariDesc'),
+    },
+    alternates: {
+      canonical: 'https://gari.rw/safari',
+      languages: { 'en': 'https://gari.rw/safari', 'fr': 'https://gari.rw/safari', 'x-default': 'https://gari.rw/safari' },
+    },
+  };
+}
 
 const DESTINATIONS = [
   {
@@ -72,12 +77,6 @@ const DESTINATIONS = [
   },
 ];
 
-const SAFARI_TIPS = [
-  { icon: '🛣️', title: 'Rwanda roads', body: 'Most park routes require a 4WD or high-clearance vehicle, especially during rainy season (Mar–May, Oct–Nov).' },
-  { icon: '⛽', title: 'Fuel up in town', body: 'Fill up before leaving Kigali or the nearest large town — petrol stations are scarce near national parks.' },
-  { icon: '🧑‍✈️', title: 'Add a driver', body: 'Many hosts offer certified safari drivers who know park entry points, ranger contacts, and best wildlife spots.' },
-  { icon: '📋', title: 'Park permits', body: 'Gorilla trekking permits ($1,500 USD) must be pre-booked via Rwanda Development Board. Your host can assist.' },
-];
 
 const POPULAR_ROUTES = [
   {
@@ -139,7 +138,14 @@ async function getSafariCars() {
 }
 
 export default async function SafariPage() {
-  const safariCars = await getSafariCars();
+  const [safariCars, ts] = await Promise.all([getSafariCars(), getTranslations('safari')]);
+
+  const SAFARI_TIPS = [
+    { icon: '🛣️', title: ts('roadsTitle'), body: ts('roadsNote') },
+    { icon: '⛽', title: ts('fuelTitle'),  body: ts('fuelNote')  },
+    { icon: '🧑‍✈️', title: ts('driverTitle'), body: ts('driverNote') },
+    { icon: '📋', title: ts('permitTitle'), body: ts('permitNote') },
+  ];
 
   return (
     <div className="min-h-screen bg-gray-bg dark:bg-gray-950">
@@ -157,20 +163,20 @@ export default async function SafariPage() {
         <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-4">
           <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-1.5 text-white text-sm font-medium mb-4">
             <Mountain className="w-4 h-4" />
-            Rwanda Adventure Rentals
+            {ts('badge')}
           </div>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white leading-tight mb-4">
-            Go <span className="text-accent-yellow">Off-Road</span> in Rwanda
+            {ts('title')}
           </h1>
           <p className="text-lg text-white/80 max-w-xl mb-8">
-            4WD SUVs and pickups for gorilla trekking, Akagera safaris, and highland adventures. All verified. Driver optional.
+            {ts('subtitle')}
           </p>
           <div className="flex flex-col sm:flex-row gap-3">
             <Link href="#vehicles" className="btn-primary px-8 py-3 text-base">
-              Browse Safari Vehicles
+              {ts('browseButton')}
             </Link>
             <Link href="/search?type=suv-4x4&driver=true" className="flex items-center gap-2 bg-white/15 backdrop-blur-sm border border-white/30 text-white font-semibold px-8 py-3 rounded-xl hover:bg-white/25 transition-colors text-base">
-              With Driver <ArrowRight className="w-4 h-4" />
+              {ts('withDriverButton')} <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         </div>
@@ -192,7 +198,7 @@ export default async function SafariPage() {
       {/* Destinations */}
       <section className="max-w-6xl mx-auto px-4 pb-12">
         <div className="mb-6">
-          <h2 className="text-2xl font-extrabold text-text-primary dark:text-white">Popular Destinations</h2>
+          <h2 className="text-2xl font-extrabold text-text-primary dark:text-white">{ts('destinationsTitle')}</h2>
           <p className="text-text-secondary mt-1 text-sm">Filter cars by your destination district with one click</p>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -231,7 +237,7 @@ export default async function SafariPage() {
       {/* Popular Routes — Section 8.2 */}
       <section className="max-w-6xl mx-auto px-4 pb-12">
         <div className="mb-6">
-          <h2 className="text-2xl font-extrabold text-text-primary dark:text-white">Popular Safari Routes from Kigali</h2>
+          <h2 className="text-2xl font-extrabold text-text-primary dark:text-white">{ts('routesTitle')}</h2>
           <p className="text-text-secondary mt-1 text-sm">Drive times and road conditions at a glance</p>
         </div>
         <div className="grid sm:grid-cols-2 gap-4">
@@ -271,8 +277,8 @@ export default async function SafariPage() {
       <section id="vehicles" className="max-w-6xl mx-auto px-4 pb-12">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h2 className="text-2xl font-extrabold text-text-primary dark:text-white">Safari Vehicles</h2>
-            <p className="text-text-secondary mt-1 text-sm">All 4WD & high-clearance — ready for any terrain</p>
+            <h2 className="text-2xl font-extrabold text-text-primary dark:text-white">{ts('vehiclesTitle')}</h2>
+            <p className="text-text-secondary mt-1 text-sm">{ts('vehiclesSubtitle')}</p>
           </div>
           <Link href="/search?type=suv-4x4" className="text-sm text-primary font-semibold flex items-center gap-1 hover:gap-2 transition-all">
             View all <ArrowRight className="w-4 h-4" />
@@ -362,10 +368,10 @@ export default async function SafariPage() {
             quality={60}
           />
           <div className="relative z-10 bg-gradient-to-r from-black/70 to-black/30 p-8 md:p-12">
-            <h2 className="text-2xl md:text-3xl font-extrabold text-white mb-2">Need help planning your safari?</h2>
-            <p className="text-white/80 mb-6 max-w-lg">Our hosts know Rwanda inside out. Add a driver to your booking and get local expertise included.</p>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-white mb-2">{ts('ctaTitle')}</h2>
+            <p className="text-white/80 mb-6 max-w-lg">{ts('ctaSubtitle')}</p>
             <Link href="/search?type=suv-4x4&driver=true" className="btn-primary px-8 py-3 text-base inline-flex items-center gap-2">
-              Find a 4WD with Driver <ArrowRight className="w-4 h-4" />
+              {ts('ctaButton')} <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         </div>

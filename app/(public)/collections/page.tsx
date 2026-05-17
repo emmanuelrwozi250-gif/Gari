@@ -1,19 +1,24 @@
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
+import { getLocale, getTranslations } from 'next-intl/server';
 import { CollectionCard } from '@/components/CollectionCard';
 import { COLLECTIONS } from '@/lib/collections';
 
-export const metadata: Metadata = {
-  title: 'Car Packages | Gari Rwanda',
-  description: 'Browse curated car packages for every Rwanda adventure — gorilla treks, lake escapes, business travel, safari, and more.',
-  openGraph: {
-    title: 'Car Packages | Gari Rwanda',
-    description: 'Curated cars for every Rwanda journey.',
-    url: 'https://gari.rw/collections',
-    siteName: 'Gari',
-    locale: 'en_RW',
-    type: 'website',
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  const t = await getTranslations('seo');
+  return {
+    title: t('collectionsTitle'),
+    description: t('collectionsDesc'),
+    openGraph: {
+      title: t('collectionsTitle'),
+      description: t('collectionsDesc'),
+      url: 'https://gari.rw/collections',
+      siteName: 'Gari',
+      locale: locale === 'fr' ? 'fr_RW' : 'en_RW',
+      type: 'website',
+    },
+  };
+}
 
 export default function CollectionsPage() {
   return (
