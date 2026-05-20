@@ -7,7 +7,7 @@ import { RENTAL_POLICY } from '@/config/rental-policy';
 import { formatRWF } from '@/lib/utils';
 import { format, addMinutes } from 'date-fns';
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://gari-nu.vercel.app';
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://gari-africa.com';
 
 // ── Renter reminders ─────────────────────────────────────────────────────────
 

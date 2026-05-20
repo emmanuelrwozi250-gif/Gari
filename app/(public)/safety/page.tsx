@@ -129,7 +129,7 @@ export default function SafetyPage() {
             <ol className="mt-3 space-y-2 text-sm text-text-secondary list-decimal list-inside">
               <li>Through your booking dashboard — use the &quot;Report Issue&quot; button on any active or recent booking</li>
               <li>Via WhatsApp at +250 788 123 000 — send photos and a description</li>
-              <li>By email to support@gari.rw — include your booking ID</li>
+              <li>By email to support@gari-africa.com — include your booking ID</li>
             </ol>
             <p className="mt-3 text-sm text-text-secondary">
               Our team responds within 2 hours during business hours and within 4 hours after hours.

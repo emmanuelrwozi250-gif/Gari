@@ -9,7 +9,7 @@ interface EmailSendResult {
   error?: string;
 }
 
-const FROM_ADDRESS = process.env.EMAIL_FROM || 'Gari <no-reply@gari.rw>';
+const FROM_ADDRESS = process.env.EMAIL_FROM || 'Gari <no-reply@gari-africa.com>';
 
 function isConfigured() {
   return (
@@ -84,8 +84,8 @@ function wrapEmailHtml(subject: string, body: string): string {
         <tr>
           <td style="background:#f4f6f8;padding:16px 32px;font-size:12px;color:#8a9ab8;border-top:1px solid #e2e8ef;">
             Gari — Rwanda's Car Rental Marketplace<br/>
-            <a href="${process.env.NEXTAUTH_URL || 'https://gari.rw'}" style="color:#1a7a4a;">gari.rw</a>
-            · Questions? <a href="mailto:support@gari.rw" style="color:#1a7a4a;">support@gari.rw</a>
+            <a href="${process.env.NEXTAUTH_URL || 'https://gari-africa.com'}" style="color:#1a7a4a;">gari-africa.com</a>
+            · Questions? <a href="mailto:support@gari-africa.com" style="color:#1a7a4a;">support@gari-africa.com</a>
           </td>
         </tr>
       </table>

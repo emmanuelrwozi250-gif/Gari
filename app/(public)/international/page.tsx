@@ -17,13 +17,13 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       title: t('internationalTitle'),
       description: t('internationalDesc'),
-      url: 'https://gari.rw/international',
+      url: 'https://gari-africa.com/international',
       locale: locale === 'fr' ? 'fr_RW' : 'en_RW',
-      images: [{ url: 'https://gari.rw/og?title=Car+Rental+for+Visitors&sub=Rwanda\'s+most+trusted+platform&type=intl', width: 1200, height: 630 }],
+      images: [{ url: 'https://gari-africa.com/og?title=Car+Rental+for+Visitors&sub=Rwanda\'s+most+trusted+platform&type=intl', width: 1200, height: 630 }],
     },
     alternates: {
-      canonical: 'https://gari.rw/international',
-      languages: { 'en': 'https://gari.rw/international', 'fr': 'https://gari.rw/international', 'x-default': 'https://gari.rw/international' },
+      canonical: 'https://gari-africa.com/international',
+      languages: { 'en': 'https://gari-africa.com/international', 'fr': 'https://gari-africa.com/international', 'x-default': 'https://gari-africa.com/international' },
     },
   };
 }
@@ -255,7 +255,7 @@ export default async function InternationalPage() {
             </a>
           </div>
           <p className="text-xs text-text-light mt-4">
-            Questions? Email <a href="mailto:hello@gari.rw" className="text-primary hover:underline">{COMPANY.email}</a>
+            Questions? Email <a href="mailto:hello@gari-africa.com" className="text-primary hover:underline">{COMPANY.email}</a>
           </p>
         </div>
       </section>

@@ -28,7 +28,7 @@ export async function generateMetadata(
     openGraph: {
       title,
       description,
-      url: `https://gari.rw/search${p.district ? `?district=${p.district}` : ''}`,
+      url: `https://gari-africa.com/search${p.district ? `?district=${p.district}` : ''}`,
       siteName: 'Gari',
       locale: 'en_RW',
       type: 'website',
@@ -39,11 +39,11 @@ export async function generateMetadata(
       description,
     },
     alternates: {
-      canonical: `https://gari.rw/search${p.district ? `?district=${p.district}` : ''}`,
+      canonical: `https://gari-africa.com/search${p.district ? `?district=${p.district}` : ''}`,
       languages: {
-        'en': 'https://gari.rw/search',
-        'fr': 'https://gari.rw/search',
-        'x-default': 'https://gari.rw/search',
+        'en': 'https://gari-africa.com/search',
+        'fr': 'https://gari-africa.com/search',
+        'x-default': 'https://gari-africa.com/search',
       },
     },
   };

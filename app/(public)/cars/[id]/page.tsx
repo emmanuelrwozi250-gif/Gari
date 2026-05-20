@@ -86,7 +86,7 @@ export async function generateMetadata(
   const car = await getCar(id);
   if (!car) return { title: 'Car not found — Gari' };
 
-  const baseUrl = process.env.NEXTAUTH_URL || 'https://gari.rw';
+  const baseUrl = process.env.NEXTAUTH_URL || 'https://gari-africa.com';
   const carTitle = `${car.year} ${car.make} ${car.model}`;
   const ogUrl = `${baseUrl}/og?title=${encodeURIComponent(carTitle)}&sub=${encodeURIComponent('Available in Rwanda · NIDA Verified')}&price=${encodeURIComponent(formatRWF(car.pricePerDay))}`;
 
@@ -187,7 +187,7 @@ export default async function CarPage(
     // Session check is non-critical — silently skip
   }
 
-  const baseUrl = process.env.NEXTAUTH_URL || 'https://gari.rw';
+  const baseUrl = process.env.NEXTAUTH_URL || 'https://gari-africa.com';
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Product',

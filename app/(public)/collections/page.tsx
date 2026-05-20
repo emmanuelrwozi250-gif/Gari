@@ -12,7 +12,7 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       title: t('collectionsTitle'),
       description: t('collectionsDesc'),
-      url: 'https://gari.rw/collections',
+      url: 'https://gari-africa.com/collections',
       siteName: 'Gari',
       locale: locale === 'fr' ? 'fr_RW' : 'en_RW',
       type: 'website',

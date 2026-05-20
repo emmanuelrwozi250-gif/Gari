@@ -44,7 +44,7 @@ export async function GET(req: NextRequest) {
 
     for (const booking of bookings) {
       const renterPhone = (booking.renter.whatsappNumber || booking.renter.phone || '').replace(/\D/g, '');
-      const reviewUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'https://gari-nu.vercel.app'}/reviews/new?booking=${booking.id}`;
+      const reviewUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'https://gari-africa.com'}/reviews/new?booking=${booking.id}`;
       const carName = `${booking.car.year} ${booking.car.make} ${booking.car.model}`;
       const renterName = booking.renter.name?.split(' ')[0] || 'there';
 

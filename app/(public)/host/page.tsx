@@ -13,10 +13,10 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Earn with Your Car — Gari',
     description: 'List your car on Gari and earn RWF 550,000–2,600,000/month. Free to list, instant MoMo payouts.',
-    url: 'https://gari.rw/host',
+    url: 'https://gari-africa.com/host',
     siteName: 'Gari',
     images: [{
-      url: 'https://gari.rw/og?title=Earn+with+Your+Car&sub=RWF+550k%E2%80%932.6M%2Fmonth&type=host',
+      url: 'https://gari-africa.com/og?title=Earn+with+Your+Car&sub=RWF+550k%E2%80%932.6M%2Fmonth&type=host',
       width: 1200,
       height: 630,
       alt: 'Earn with Your Car on Gari',

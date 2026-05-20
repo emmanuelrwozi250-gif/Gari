@@ -28,7 +28,7 @@ const SECTIONS = [
   },
   {
     title: '6. Your Rights',
-    body: `You have the right to: (a) Access the personal data we hold about you; (b) Correct inaccurate data; (c) Request deletion of your account and data (subject to legal retention requirements); (d) Object to certain uses of your data; and (e) Export a copy of your data. To exercise any of these rights, email support@gari.rw with the subject line "Data Request — [your name]". We will respond within 14 business days.`,
+    body: `You have the right to: (a) Access the personal data we hold about you; (b) Correct inaccurate data; (c) Request deletion of your account and data (subject to legal retention requirements); (d) Object to certain uses of your data; and (e) Export a copy of your data. To exercise any of these rights, email support@gari-africa.com with the subject line "Data Request — [your name]". We will respond within 14 business days.`,
   },
   {
     title: '7. Data Retention',
@@ -36,11 +36,11 @@ const SECTIONS = [
   },
   {
     title: '8. Security',
-    body: `Gari uses industry-standard security measures including TLS encryption for all data in transit, encrypted database storage, access controls, and regular security reviews. Despite these measures, no system is 100% secure. If you suspect unauthorized access to your account, contact us immediately at support@gari.rw.`,
+    body: `Gari uses industry-standard security measures including TLS encryption for all data in transit, encrypted database storage, access controls, and regular security reviews. Despite these measures, no system is 100% secure. If you suspect unauthorized access to your account, contact us immediately at support@gari-africa.com.`,
   },
   {
     title: '9. Contact & Data Protection',
-    body: `For any privacy-related questions, requests, or concerns, contact our Data Protection Officer at support@gari.rw. You can also reach us by WhatsApp at +250 788 123 000 or in writing at: Gari, KG 11 Ave, Kigali, Rwanda. This Privacy Policy is governed by the laws of the Republic of Rwanda.`,
+    body: `For any privacy-related questions, requests, or concerns, contact our Data Protection Officer at support@gari-africa.com. You can also reach us by WhatsApp at +250 788 123 000 or in writing at: Gari, KG 11 Ave, Kigali, Rwanda. This Privacy Policy is governed by the laws of the Republic of Rwanda.`,
   },
 ];
 
@@ -68,7 +68,7 @@ export default function PrivacyPage() {
 
         <p className="text-center text-xs text-text-light mt-8">
           Questions? Email{' '}
-          <a href="mailto:support@gari.rw" className="text-primary hover:underline">support@gari.rw</a>
+          <a href="mailto:support@gari-africa.com" className="text-primary hover:underline">support@gari-africa.com</a>
           {' '}or{' '}
           <a href="https://wa.me/250788123000" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
             WhatsApp us

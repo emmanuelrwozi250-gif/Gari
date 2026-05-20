@@ -13,7 +13,7 @@
  *   MTN_MOMO_API_USER            - UUID created via provisioning API
  *   MTN_MOMO_API_KEY             - API key for the API user
  *   MTN_MOMO_ENVIRONMENT         - "sandbox" | "production"
- *   MTN_MOMO_CALLBACK_URL        - https://gari.rw/api/webhooks/momo
+ *   MTN_MOMO_CALLBACK_URL        - https://gari-africa.com/api/webhooks/momo
  */
 
 import { randomUUID } from 'crypto';

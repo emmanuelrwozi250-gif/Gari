@@ -21,12 +21,12 @@ function DemoBannerInner() {
         🚧 <strong>Pilot Mode</strong>
         {' — '}Limited fleet available · Real bookings on select vehicles ·{' '}
         <a
-          href="https://gari-nu.vercel.app"
+          href="https://gari-africa.com"
           className="underline opacity-90 hover:opacity-100"
           target="_blank"
           rel="noopener noreferrer"
         >
-          gari-nu.vercel.app
+          gari-africa.com
         </a>
       </span>
       <button

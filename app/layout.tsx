@@ -25,7 +25,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXTAUTH_URL || 'https://gari.rw'),
+  metadataBase: new URL(process.env.NEXTAUTH_URL || 'https://gari-africa.com'),
   title: {
     default: 'Gari — Car Rental in Rwanda',
     template: '%s | Gari',
@@ -102,7 +102,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         </NextIntlClientProvider>
         <Script
           defer
-          data-domain="gari.rw"
+          data-domain="gari-africa.com"
           src="https://plausible.io/js/script.js"
           strategy="afterInteractive"
         />

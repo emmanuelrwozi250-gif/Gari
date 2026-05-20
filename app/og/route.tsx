@@ -94,7 +94,7 @@ export async function GET(req: NextRequest) {
           position: 'absolute', bottom: '40px', right: '80px',
           fontSize: '18px', color: 'rgba(255,255,255,0.4)',
         }}>
-          gari.rw
+          gari-africa.com
         </div>
       </div>
     ),

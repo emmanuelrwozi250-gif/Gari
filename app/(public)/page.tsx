@@ -35,14 +35,14 @@ export async function generateMetadata(): Promise<Metadata> {
     ],
     openGraph: {
       type: 'website',
-      url: 'https://gari.rw',
+      url: 'https://gari-africa.com',
       siteName: 'Gari',
       title: t('homeTitle'),
       description: t('homeDesc'),
       locale: ogLocale,
       images: [
         {
-          url: 'https://gari.rw/og?title=Rent+a+Car+Anywhere+in+Rwanda&sub=Verified+hosts+%C2%B7+MTN+MoMo+%C2%B7+30+districts',
+          url: 'https://gari-africa.com/og?title=Rent+a+Car+Anywhere+in+Rwanda&sub=Verified+hosts+%C2%B7+MTN+MoMo+%C2%B7+30+districts',
           width: 1200,
           height: 630,
           alt: 'Gari — Rwanda Car Rental Marketplace',
@@ -53,14 +53,14 @@ export async function generateMetadata(): Promise<Metadata> {
       card: 'summary_large_image',
       title: t('homeTitle'),
       description: t('homeDesc'),
-      images: ['https://gari.rw/og?title=Rent+a+Car+Anywhere+in+Rwanda&sub=Verified+hosts+%C2%B7+MTN+MoMo+%C2%B7+30+districts'],
+      images: ['https://gari-africa.com/og?title=Rent+a+Car+Anywhere+in+Rwanda&sub=Verified+hosts+%C2%B7+MTN+MoMo+%C2%B7+30+districts'],
     },
     alternates: {
-      canonical: 'https://gari.rw',
+      canonical: 'https://gari-africa.com',
       languages: {
-        'en': 'https://gari.rw',
-        'fr': 'https://gari.rw',
-        'x-default': 'https://gari.rw',
+        'en': 'https://gari-africa.com',
+        'fr': 'https://gari-africa.com',
+        'x-default': 'https://gari-africa.com',
       },
     },
   };
@@ -131,7 +131,7 @@ const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'AutoRental',
   name: 'Gari',
-  url: 'https://gari.rw',
+  url: 'https://gari-africa.com',
   description: 'Rwanda\'s car rental marketplace. Verified hosts, mobile money payments, available across all 30 districts.',
   areaServed: {
     '@type': 'Country',
@@ -149,7 +149,7 @@ const jsonLd = {
   },
   sameAs: [
     'https://twitter.com/gari_rw',
-    'https://instagram.com/gari.rw',
+    'https://instagram.com/gari_africa',
   ],
 };
 

@@ -94,7 +94,7 @@ export default async function CarRentalKigaliPage() {
     '@type': 'AutoDealer',
     name: 'Gari — Car Rental Kigali',
     description: 'Rwanda\'s leading car rental marketplace. Verified cars across all Kigali districts.',
-    url: 'https://gari-nu.vercel.app/car-rental-kigali',
+    url: 'https://gari-africa.com/car-rental-kigali',
     telephone: '+250788123000',
     address: {
       '@type': 'PostalAddress',

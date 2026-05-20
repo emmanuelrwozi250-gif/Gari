@@ -60,7 +60,7 @@ export default async function CarRentalKigaliAirportPage() {
     '@type': 'AutoDealer',
     name: 'Gari — Car Rental Kigali Airport',
     description: 'Airport car rental with meet & greet at Kigali International Airport.',
-    url: 'https://gari-nu.vercel.app/car-rental-kigali-airport',
+    url: 'https://gari-africa.com/car-rental-kigali-airport',
     address: { '@type': 'PostalAddress', addressLocality: 'Kigali', addressCountry: 'RW' },
     priceRange: 'RWF 35,000 – RWF 400,000 per day',
   };

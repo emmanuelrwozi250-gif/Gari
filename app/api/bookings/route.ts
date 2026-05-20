@@ -281,7 +281,7 @@ export async function POST(req: NextRequest) {
     const renterEmail = (session.user as any).email;
     const renterType = (session.user as any).renterType ?? 'LOCAL';
     if (renterEmail) {
-      const appUrl = process.env.NEXTAUTH_URL || 'https://gari.rw';
+      const appUrl = process.env.NEXTAUTH_URL || 'https://gari-africa.com';
       const bookingRef = booking.id.slice(0, 8).toUpperCase();
       const isInstant = car.instantBooking;
       const usdEquiv = Math.round(booking.totalAmount / 1450);
@@ -318,7 +318,7 @@ ${renterType === 'FOREIGN' ? `
 </p>
 
 <p style="font-size:13px;color:#6b7a8d;">
-  Questions? WhatsApp us at <a href="https://wa.me/250788123000" style="color:#1a7a4a;">+250 788 123 000</a> or email <a href="mailto:hello@gari.rw" style="color:#1a7a4a;">hello@gari.rw</a>
+  Questions? WhatsApp us at <a href="https://wa.me/250788123000" style="color:#1a7a4a;">+250 788 123 000</a> or email <a href="mailto:hello@gari-africa.com" style="color:#1a7a4a;">hello@gari-africa.com</a>
 </p>`;
 
       void sendEmail(

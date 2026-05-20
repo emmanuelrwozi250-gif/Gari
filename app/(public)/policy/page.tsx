@@ -132,7 +132,7 @@ export default function PolicyPage() {
           <Row label="Dispute window" value="Host must report damage within 24h of return" />
           <Row label="Evidence" value="Photos with timestamps required" />
           <Row label="Gari decision" value="Final — within 48 hours of dispute" />
-          <Row label="Appeal" value="Contact support@gari.rw within 7 days" />
+          <Row label="Appeal" value="Contact support@gari-africa.com within 7 days" />
         </Section>
 
         {/* Repeat Offenders */}

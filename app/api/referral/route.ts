@@ -57,7 +57,7 @@ export async function GET(_req: NextRequest) {
       totalReferrals: referredBookings,
       totalEarningsRwf: user.referralEarnings,
       pendingRwf: (pendingCommission._sum.referralCommission ?? 0) - user.referralEarnings,
-      shareUrl: `${process.env.NEXTAUTH_URL || 'https://gari.rw'}/?ref=${user.referralCode}`,
+      shareUrl: `${process.env.NEXTAUTH_URL || 'https://gari-africa.com'}/?ref=${user.referralCode}`,
     });
   } catch {
     return NextResponse.json({ error: 'Failed to load referral data' }, { status: 500 });

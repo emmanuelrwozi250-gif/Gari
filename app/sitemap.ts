@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 import { prisma } from '@/lib/prisma';
 
-const BASE = process.env.NEXTAUTH_URL || 'https://gari.rw';
+const BASE = process.env.NEXTAUTH_URL || 'https://gari-africa.com';
 
 function url(path: string): string {
   return `${BASE}${path}`;

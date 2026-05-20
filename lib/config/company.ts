@@ -3,9 +3,9 @@ export const COMPANY = {
   phone: '+250 788 123 000',
   whatsapp: '250788123000',
   whatsappUrl: 'https://wa.me/250788123000',
-  email: 'hello@gari.rw',
+  email: 'hello@gari-africa.com',
   address: 'KG 11 Ave, Kigali, Rwanda',
-  instagram: 'https://instagram.com/gari.rw',
+  instagram: 'https://instagram.com/gari_africa',
   twitter: 'https://twitter.com/garirwanda',
   founded: '2025',
 } as const;

@@ -13,10 +13,10 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       title: t('becomeOperatorTitle'),
       description: t('becomeOperatorDesc'),
-      url: 'https://gari.rw/become-operator',
+      url: 'https://gari-africa.com/become-operator',
       siteName: 'Gari',
       images: [{
-        url: 'https://gari.rw/og?title=List+Your+Fleet&sub=RURA+Verified+Operators+Only&type=operator',
+        url: 'https://gari-africa.com/og?title=List+Your+Fleet&sub=RURA+Verified+Operators+Only&type=operator',
         width: 1200,
         height: 630,
         alt: t('becomeOperatorTitle'),
@@ -30,8 +30,8 @@ export async function generateMetadata(): Promise<Metadata> {
       description: t('becomeOperatorDesc'),
     },
     alternates: {
-      canonical: 'https://gari.rw/become-operator',
-      languages: { 'en': 'https://gari.rw/become-operator', 'fr': 'https://gari.rw/become-operator', 'x-default': 'https://gari.rw/become-operator' },
+      canonical: 'https://gari-africa.com/become-operator',
+      languages: { 'en': 'https://gari-africa.com/become-operator', 'fr': 'https://gari-africa.com/become-operator', 'x-default': 'https://gari-africa.com/become-operator' },
     },
   };
 }

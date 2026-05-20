@@ -20,8 +20,8 @@ export async function POST(req: NextRequest) {
     // import { Resend } from 'resend';
     // const resend = new Resend(process.env.RESEND_API_KEY);
     // await resend.emails.send({
-    //   from: 'Gari Contact <noreply@gari.rw>',
-    //   to: 'hello@gari.rw',
+    //   from: 'Gari Contact <noreply@gari-africa.com>',
+    //   to: 'hello@gari-africa.com',
     //   subject: `[Contact] ${subject} — ${name}`,
     //   text: `From: ${name} <${email}>\n\n${message}`,
     // });

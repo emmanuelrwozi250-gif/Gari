@@ -68,7 +68,7 @@ export default async function MinibusHireKigaliPage() {
     '@type': 'AutoDealer',
     name: 'Gari — Minibus Hire Kigali',
     description: '14-seater and Coaster minibus hire in Kigali, Rwanda.',
-    url: 'https://gari-nu.vercel.app/minibus-hire-kigali',
+    url: 'https://gari-africa.com/minibus-hire-kigali',
     address: { '@type': 'PostalAddress', addressLocality: 'Kigali', addressCountry: 'RW' },
     priceRange: 'RWF 80,000 – RWF 200,000 per day',
   };

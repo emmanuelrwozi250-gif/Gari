@@ -157,12 +157,12 @@ export async function POST(req: NextRequest) {
     if (cmd === '3') {
       // ── View details ────────────────────────────────────────────────────────
       if (!pendingBooking) {
-        const appUrl = process.env.NEXTAUTH_URL || 'https://gari.rw';
+        const appUrl = process.env.NEXTAUTH_URL || 'https://gari-africa.com';
         return xmlResponse(twimlReply(
           `No pending requests. View all your bookings:\n${appUrl}/dashboard/host`
         ));
       }
-      const appUrl = process.env.NEXTAUTH_URL || 'https://gari.rw';
+      const appUrl = process.env.NEXTAUTH_URL || 'https://gari-africa.com';
       return xmlResponse(twimlReply(
         `📋 *Booking Details*\n\n` +
         `Car: ${pendingBooking.car.year} ${pendingBooking.car.make} ${pendingBooking.car.model}\n` +
@@ -179,11 +179,11 @@ export async function POST(req: NextRequest) {
   }
 
   // ── DEFAULT HELP ─────────────────────────────────────────────────────────────
-  const appUrl = process.env.NEXTAUTH_URL || 'https://gari.rw';
+  const appUrl = process.env.NEXTAUTH_URL || 'https://gari-africa.com';
   const isHost = ['HOST', 'BOTH', 'ADMIN'].includes(user.role);
   const help = isHost
     ? `Hi ${user.name?.split(' ')[0] || 'there'}! 👋\n\nFor pending booking requests, reply:\n*1* — Accept\n*2* — Decline\n*3* — View details\n\nOr visit: ${appUrl}/dashboard/host`
-    : `Hi ${user.name?.split(' ')[0] || 'there'}! 👋\n\nFor help with your Gari booking, visit:\n${appUrl}/dashboard\n\nOr contact support: support@gari.rw`;
+    : `Hi ${user.name?.split(' ')[0] || 'there'}! 👋\n\nFor help with your Gari booking, visit:\n${appUrl}/dashboard\n\nOr contact support: support@gari-africa.com`;
 
   return xmlResponse(twimlReply(help));
 }

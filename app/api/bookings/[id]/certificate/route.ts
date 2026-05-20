@@ -184,14 +184,14 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
 
     <hr class="divider" />
     <p style="font-size:11px;color:#8a9ab8;line-height:1.6;margin-top:4px">
-      This certificate is issued subject to the full Gari Rental Protection Terms and Conditions available at <strong>gari.rw/terms</strong>.
+      This certificate is issued subject to the full Gari Rental Protection Terms and Conditions available at <strong>gari-africa.com/terms</strong>.
       In case of an incident, call the Gari emergency line immediately. Do not admit liability to third parties.
       Certificate issued: ${issueDate}.
     </p>
   </div>
   <div class="footer">
     <span>Gari Marketplace Ltd. · KG 11 Ave, Kigali, Rwanda</span>
-    <span>support@gari.rw · gari.rw</span>
+    <span>support@gari-africa.com · gari-africa.com</span>
   </div>
 </div>
 </body>

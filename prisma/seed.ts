@@ -85,49 +85,49 @@ async function main() {
   // ── Users ──────────────────────────────────────────────────────────────
 
   const jean = await prisma.user.create({ data: {
-    name: 'Jean-Pierre Habimana', email: 'jean@gari.rw', password,
+    name: 'Jean-Pierre Habimana', email: 'jean@gari-africa.com', password,
     phone: '+250788100001', role: 'HOST',
     nidaVerified: true, licenseVerified: true,
     avatar: 'https://i.pravatar.cc/150?img=11', trustScore: 92,
   }});
 
   const immaculee = await prisma.user.create({ data: {
-    name: 'Immaculée Uwimana', email: 'imma@gari.rw', password,
+    name: 'Immaculée Uwimana', email: 'imma@gari-africa.com', password,
     phone: '+250788100002', role: 'HOST',
     nidaVerified: true, licenseVerified: true,
     avatar: 'https://i.pravatar.cc/150?img=48', trustScore: 88,
   }});
 
   const david = await prisma.user.create({ data: {
-    name: 'David Nkurunziza', email: 'david@gari.rw', password,
+    name: 'David Nkurunziza', email: 'david@gari-africa.com', password,
     phone: '+250788100003', role: 'BOTH',
     nidaVerified: true, licenseVerified: true,
     avatar: 'https://i.pravatar.cc/150?img=22', trustScore: 95,
   }});
 
   const claudine = await prisma.user.create({ data: {
-    name: 'Claudine Mukamana', email: 'claudine@gari.rw', password,
+    name: 'Claudine Mukamana', email: 'claudine@gari-africa.com', password,
     phone: '+250788100004', role: 'HOST',
     nidaVerified: true, licenseVerified: true,
     avatar: 'https://i.pravatar.cc/150?img=44', trustScore: 85,
   }});
 
   const renter = await prisma.user.create({ data: {
-    name: 'Patrick Mugisha', email: 'renter@gari.rw', password,
+    name: 'Patrick Mugisha', email: 'renter@gari-africa.com', password,
     phone: '+250788100010', role: 'RENTER',
     nidaVerified: true, licenseVerified: true,
     avatar: 'https://i.pravatar.cc/150?img=33',
   }});
 
   const renter2 = await prisma.user.create({ data: {
-    name: 'Amina Kagabo', email: 'amina@gari.rw', password,
+    name: 'Amina Kagabo', email: 'amina@gari-africa.com', password,
     phone: '+250788100011', role: 'RENTER',
     nidaVerified: true, licenseVerified: true,
     avatar: 'https://i.pravatar.cc/150?img=5',
   }});
 
   await prisma.user.create({ data: {
-    name: 'Gari Admin', email: 'admin@gari.rw', password, role: 'ADMIN',
+    name: 'Gari Admin', email: 'admin@gari-africa.com', password, role: 'ADMIN',
     nidaVerified: true, licenseVerified: true,
   }});
 
@@ -889,13 +889,13 @@ async function main() {
   console.log('\n🎉 Database seeded successfully!\n');
   console.log('─────────────────────────────────────────');
   console.log('📧 Test accounts (password: password123)');
-  console.log('   jean@gari.rw      — Host (Kigali)');
-  console.log('   imma@gari.rw      — Host (Musanze)');
-  console.log('   david@gari.rw     — Host (Rubavu)');
-  console.log('   claudine@gari.rw  — Host (Kigali)');
-  console.log('   renter@gari.rw    — Renter (Patrick Mugisha)');
-  console.log('   amina@gari.rw     — Renter (Amina Kagabo)');
-  console.log('   admin@gari.rw     — Admin');
+  console.log('   jean@gari-africa.com      — Host (Kigali)');
+  console.log('   imma@gari-africa.com      — Host (Musanze)');
+  console.log('   david@gari-africa.com     — Host (Rubavu)');
+  console.log('   claudine@gari-africa.com  — Host (Kigali)');
+  console.log('   renter@gari-africa.com    — Renter (Patrick Mugisha)');
+  console.log('   amina@gari-africa.com     — Renter (Amina Kagabo)');
+  console.log('   admin@gari-africa.com     — Admin');
   console.log('─────────────────────────────────────────');
 }
 

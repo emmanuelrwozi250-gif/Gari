@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Terms of Service | Gari Rwanda',
     description: 'Gari Terms of Service — RURA-compliant B2B2C car rental. Booking terms, VAT/EBM policy, cancellation, governing law.',
-    url: 'https://gari.rw/terms',
+    url: 'https://gari-africa.com/terms',
     siteName: 'Gari',
     locale: 'en_RW',
     type: 'website',
@@ -65,7 +65,7 @@ const SECTIONS = [
   },
   {
     title: '12. Governing Law',
-    body: `These Terms are governed by the laws of the Republic of Rwanda. Any disputes arising from these Terms shall be resolved in the competent courts of Rwanda. For any questions about these Terms, contact us at legal@gari.rw or via WhatsApp at +250 788 123 000.`,
+    body: `These Terms are governed by the laws of the Republic of Rwanda. Any disputes arising from these Terms shall be resolved in the competent courts of Rwanda. For any questions about these Terms, contact us at legal@gari-africa.com or via WhatsApp at +250 788 123 000.`,
   },
   {
     title: '13. International Renters',
@@ -73,7 +73,7 @@ const SECTIONS = [
   },
   {
     title: '14. Personal Data Protection',
-    body: `In compliance with Rwanda Law No. 058/2021 on Personal Data Protection and Privacy, Gari collects and processes personal data — including names, national identification numbers, phone numbers, and payment information — solely for the purpose of facilitating car rental transactions and related platform services. Your data is not sold to third parties. You have the right to request access to, correction of, or deletion of your personal data by contacting legal@gari.rw. Gari retains transaction records for seven (7) years as required by Rwanda Revenue Authority regulations. National ID (NIDA) verification data is processed under the authority of the National Identification Agency of Rwanda. By using the Platform you consent to this processing in accordance with Law No. 058/2021.`,
+    body: `In compliance with Rwanda Law No. 058/2021 on Personal Data Protection and Privacy, Gari collects and processes personal data — including names, national identification numbers, phone numbers, and payment information — solely for the purpose of facilitating car rental transactions and related platform services. Your data is not sold to third parties. You have the right to request access to, correction of, or deletion of your personal data by contacting legal@gari-africa.com. Gari retains transaction records for seven (7) years as required by Rwanda Revenue Authority regulations. National ID (NIDA) verification data is processed under the authority of the National Identification Agency of Rwanda. By using the Platform you consent to this processing in accordance with Law No. 058/2021.`,
   },
 ];
 
@@ -104,7 +104,7 @@ export default function TermsPage() {
 
         <p className="text-center text-xs text-text-light mt-8">
           Questions? Email{' '}
-          <a href="mailto:legal@gari.rw" className="text-primary hover:underline">legal@gari.rw</a>
+          <a href="mailto:legal@gari-africa.com" className="text-primary hover:underline">legal@gari-africa.com</a>
           {' '}or{' '}
           <a href="https://wa.me/250788123000" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
             WhatsApp us

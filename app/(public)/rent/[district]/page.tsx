@@ -72,7 +72,7 @@ export default async function DistrictRentalPage({ params }: PageProps) {
       addressCountry: 'RW',
     },
     geo: { '@type': 'GeoCoordinates', latitude: district.lat, longitude: district.lng },
-    url: `https://gari.rw/rent/${districtId}`,
+    url: `https://gari-africa.com/rent/${districtId}`,
     priceRange: `RWF ${formatRWF(avgPrice)}/day`,
   };
 

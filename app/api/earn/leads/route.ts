@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
     // Confirm to buyer
     void sendWhatsApp(
       data.whatsapp,
-      `✅ *Gari — We've received your interest!*\n\nHi ${data.name}, thank you for expressing interest in our Buy & Earn program.\n\nOur team will contact you within 24 hours on WhatsApp to discuss options that match your budget and preferences.\n\n_gari.rw · Rwanda's Automotive Platform_`
+      `✅ *Gari — We've received your interest!*\n\nHi ${data.name}, thank you for expressing interest in our Buy & Earn program.\n\nOur team will contact you within 24 hours on WhatsApp to discuss options that match your budget and preferences.\n\n_gari-africa.com · Rwanda's Automotive Platform_`
     );
 
     return NextResponse.json({ success: true, leadId: lead.id });

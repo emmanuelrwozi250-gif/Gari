@@ -15,10 +15,10 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       title: t('safariTitle'),
       description: t('safariDesc'),
-      url: 'https://gari.rw/safari',
+      url: 'https://gari-africa.com/safari',
       siteName: 'Gari',
       images: [{
-        url: 'https://gari.rw/og?title=Safari+Cars+Rwanda&sub=4WD+SUVs+for+National+Parks&type=safari',
+        url: 'https://gari-africa.com/og?title=Safari+Cars+Rwanda&sub=4WD+SUVs+for+National+Parks&type=safari',
         width: 1200,
         height: 630,
         alt: t('safariTitle'),
@@ -32,8 +32,8 @@ export async function generateMetadata(): Promise<Metadata> {
       description: t('safariDesc'),
     },
     alternates: {
-      canonical: 'https://gari.rw/safari',
-      languages: { 'en': 'https://gari.rw/safari', 'fr': 'https://gari.rw/safari', 'x-default': 'https://gari.rw/safari' },
+      canonical: 'https://gari-africa.com/safari',
+      languages: { 'en': 'https://gari-africa.com/safari', 'fr': 'https://gari-africa.com/safari', 'x-default': 'https://gari-africa.com/safari' },
     },
   };
 }
