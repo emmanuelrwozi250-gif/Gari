@@ -9,6 +9,7 @@ export interface PricingRule {
   endDate: Date | null;
   dayOfWeek: number[];    // 0=Sun, 1=Mon … 6=Sat
   minDays: number | null;
+  year?: number | null;
   description?: string | null;
 }
 
@@ -54,10 +55,21 @@ function iterateDays(start: Date, end: Date): Date[] {
   return days.length > 0 ? days : [new Date(start)];
 }
 
-function matchesDateRange(date: Date, startDate: Date | null, endDate: Date | null): boolean {
+function matchesDateRange(date: Date, startDate: Date | null, endDate: Date | null, year?: number | null): boolean {
   if (!startDate || !endDate) return false;
 
-  // Compare only MM-DD (treat rules as annual, year-agnostic)
+  // Year-specific rules: only fire in the specified calendar year
+  if (year !== null && year !== undefined && date.getUTCFullYear() !== year) return false;
+
+  // Year-specific: use exact UTC date comparison (no MM-DD wrap-around ambiguity)
+  if (year !== null && year !== undefined) {
+    const check = date.getTime();
+    const s = new Date(Date.UTC(year, startDate.getUTCMonth(), startDate.getUTCDate())).getTime();
+    const e = new Date(Date.UTC(year, endDate.getUTCMonth(), endDate.getUTCDate())).getTime();
+    return check >= s && check <= e;
+  }
+
+  // Year-agnostic MM-DD comparison (existing behaviour — fixed annual holidays)
   const m = (d: Date) => d.getUTCMonth() * 100 + d.getUTCDate();
   const dateMD = m(date);
   const startMD = m(startDate);
@@ -89,7 +101,7 @@ export function computePricing(input: PricingEngineInput): PricingEngineResult {
       let matches = false;
 
       if (rule.type === 'season' || rule.type === 'holiday') {
-        matches = matchesDateRange(day, rule.startDate, rule.endDate);
+        matches = matchesDateRange(day, rule.startDate, rule.endDate, rule.year);
       } else if (rule.type === 'day_of_week') {
         matches = rule.dayOfWeek.includes(dow);
       }

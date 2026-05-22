@@ -3,13 +3,13 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { Car, ClipboardList, User, Tent } from 'lucide-react';
+import { Car, Compass, User, Tent } from 'lucide-react';
 
 const navItems = [
-  { href: '/search', icon: Car, label: 'Rent', requiresAuth: false },
-  { href: '/safari', icon: Tent, label: 'Safari', requiresAuth: false },
-  { href: '/dashboard', icon: ClipboardList, label: 'Trips', requiresAuth: true, loginReason: 'trips' },
-  { href: '/profile', icon: User, label: 'Me', requiresAuth: true },
+  { href: '/search',      icon: Car,     label: 'Rent',    requiresAuth: false },
+  { href: '/safari',      icon: Tent,    label: 'Safari',  requiresAuth: false },
+  { href: '/collections', icon: Compass, label: 'Explore', requiresAuth: false },
+  { href: '/dashboard',   icon: User,    label: 'Account', requiresAuth: true },
 ];
 
 export function MobileNav() {
@@ -19,14 +19,12 @@ export function MobileNav() {
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-t border-border shadow-lg">
       <div className="flex items-center justify-around h-16">
-        {navItems.map(({ href, icon: Icon, label, requiresAuth, loginReason }) => {
+        {navItems.map(({ href, icon: Icon, label, requiresAuth }) => {
           const active = pathname === href ||
             (href !== '/' && pathname.startsWith(href) &&
              !(href === '/dashboard' && pathname.startsWith('/dashboard/host')));
-          const isProfile = href === '/profile';
-          const loginHref = loginReason
-            ? `/login?callbackUrl=${encodeURIComponent(href)}&reason=${loginReason}`
-            : '/login';
+          const isProfile = href === '/dashboard';
+          const loginHref = `/login?callbackUrl=${encodeURIComponent(href)}`;
           return (
             <Link
               key={href}

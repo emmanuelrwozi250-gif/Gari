@@ -1178,6 +1178,7 @@ model PricingRule {
   endDate     DateTime? @db.Date
   dayOfWeek   Int[]
   minDays     Int?
+  year        Int?
   description String?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt

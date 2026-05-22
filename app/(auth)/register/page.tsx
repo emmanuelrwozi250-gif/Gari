@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Car, Mail, Lock, User, Phone, Eye, EyeOff, Loader2, Upload, Globe } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -35,6 +35,15 @@ const COUNTRIES = [
 
 export default function RegisterPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const intent = searchParams.get('intent');
+  const isHost = intent === 'host';
+  const headline = isHost
+    ? 'List your car on Gari'
+    : 'Create your renter account';
+  const subCopy = isHost
+    ? 'Join Rwanda\'s verified fleet. You set the price. We handle the bookings.'
+    : 'Book verified cars across Rwanda. Pay with MoMo or card.';
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [role, setRole] = useState<Role>('RENTER');
@@ -118,11 +127,10 @@ export default function RegisterPage() {
             <Car className="w-8 h-8 text-primary" />
             <span className="text-3xl font-extrabold">
               Gar<span className="text-accent-yellow">i</span>
-              <span className="text-primary text-sm">•</span>
             </span>
           </Link>
-          <h1 className="text-2xl font-bold text-text-primary dark:text-white">Create your account</h1>
-          <p className="text-text-secondary mt-1">Join {STATS.tripsCompleted} people already on Gari</p>
+          <h1 className="text-2xl font-bold text-text-primary dark:text-white">{headline}</h1>
+          <p className="text-text-secondary mt-1">{subCopy}</p>
         </div>
 
         <div className="card p-8">

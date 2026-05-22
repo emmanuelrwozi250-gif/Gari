@@ -9,6 +9,7 @@
     "hostDashboard": "Tableau de bord hôte",
     "signIn": "Se connecter",
     "getStarted": "Commencer",
+    "browseCars": "Voir les voitures →",
     "dashboard": "Tableau de bord",
     "messages": "Messages",
     "profile": "Profil",
@@ -19,9 +20,13 @@
   "home": {
     "hero": {
       "badge": "Maintenant disponible dans les 30 districts du Rwanda",
-      "title": "Louez une voiture partout au Rwanda",
-      "subtitle": "La façon la plus simple de louer une voiture vérifiée au Rwanda — avec ou sans chauffeur. Payez par MoMo ou carte.",
-      "searchPlaceholder": "Tous les districts du Rwanda"
+      "eyebrow": "Disponible dans les 30 districts du Rwanda",
+      "tagline": "Le Rwanda, à votre rythme.",
+      "title": "Louez une voiture vérifiée partout au Rwanda",
+      "subtitle": "Chaque voiture est licenciée RURA et assurée commercialement. Payez par MoMo ou carte — aucun frais caché.",
+      "searchPlaceholder": "Tous les districts du Rwanda",
+      "ctaRenter": "Voir les voitures →",
+      "ctaHost": "Gagnez avec votre voiture →"
     },
     "stats": {
       "cars": "Voitures listées",
@@ -39,25 +44,25 @@
       "title": "Comment fonctionne Gari",
       "subtitle": "Louez une voiture en 4 étapes simples",
       "step1Title": "Trouvez votre voiture",
-      "step1Desc": "Recherchez dans 30 districts. Filtrez par type, budget et chauffeur. Chaque véhicule est licencié RURA et assuré commercialement.",
-      "step2Title": "Réservez instantanément",
-      "step2Desc": "Confirmez vos dates, payez par MTN MoMo, Airtel Money ou Visa/Mastercard. Sans frais cachés.",
-      "step3Title": "Prenez le volant",
-      "step3Desc": "Rencontrez l'hôte, inspectez la voiture ensemble et commencez votre voyage.",
-      "step4Title": "Notez et évaluez",
-      "step4Desc": "Partagez votre expérience et contribuez à renforcer la confiance dans la communauté."
+      "step1Desc": "Recherchez dans les 30 districts — de Kigali à Musanze à Rubavu. Filtrez par type, budget et chauffeur. Chaque voiture est licenciée RURA et assurée commercialement avant de rejoindre Gari.",
+      "step2Title": "Réservez à votre façon",
+      "step2Desc": "Confirmez vos dates et payez par MTN MoMo, Airtel Money, Visa ou Mastercard. Votre paiement est conservé en séquestre — libéré à l'hôte uniquement après le début de votre voyage. Aucune surprise.",
+      "step3Title": "Rencontrez, inspectez et partez",
+      "step3Desc": "Rencontrez votre hôte à l'endroit convenu, faites un rapide tour d'inspection ensemble et vous voilà en route. Nos hôtes sont vérifiés NIDA et notés par de vrais locataires.",
+      "step4Title": "Notez et aidez les autres",
+      "step4Desc": "Votre avis honnête aide le prochain voyageur à choisir en confiance. Les bons hôtes sont récompensés par plus de visibilité. Les mauvais sont supprimés. C'est ainsi que Gari reste fiable."
     },
     "guarantee": {
       "title": "Réservez en toute confiance",
       "subtitle": "Chaque réservation sur Gari est garantie par notre promesse en faveur des locataires.",
-      "paymentSafeTitle": "Paiement sécurisé",
-      "paymentSafeDesc": "Votre paiement est conservé en séquestre et n'est libéré à l'hôte qu'après le début de votre voyage.",
-      "refundTitle": "Remboursement complet si l'hôte annule",
-      "refundDesc": "Si un hôte annule votre réservation confirmée, vous recevez un remboursement de 100% — sans questions.",
-      "depositTitle": "Dépôt protégé",
-      "depositDesc": "Les dépôts de garantie sont restitués dans les 48 heures suivant un retour sans incident.",
-      "supportTitle": "Assistance WhatsApp 24h/7j",
-      "supportDesc": "Bloqué sur la route à 2h du matin ? Notre équipe est à un message WhatsApp, tous les jours de l'année."
+      "paymentSafeTitle": "Votre argent est en sécurité avant de conduire",
+      "paymentSafeDesc": "Nous conservons votre paiement en séquestre et ne le libérons à l'hôte qu'après le début de votre voyage. Vous ne payez jamais dans le vide.",
+      "refundTitle": "L'hôte annule ? Vous récupérez 100%.",
+      "refundDesc": "Pas de formulaires, pas de délais d'attente, pas de négociation. Si un hôte confirmé annule, le montant total est restitué immédiatement.",
+      "depositTitle": "Dépôts restitués dans les 48 heures",
+      "depositDesc": "Retournez la voiture dans l'état où vous l'avez reçue, et votre dépôt de garantie est de retour sur votre MoMo ou compte bancaire sous deux jours.",
+      "supportTitle": "Panne à 2h du matin ? Nous sommes sur WhatsApp.",
+      "supportDesc": "Notre équipe d'assistance est joignable chaque heure, chaque jour. Pas un bot. Pas un formulaire. Une personne, sur WhatsApp, qui connaît les routes du Rwanda."
     },
     "earnings": {
       "title": "Combien pourriez-vous gagner ?",
@@ -78,8 +83,9 @@
     "viewAll": "Voir toutes les voitures",
     "cta": {
       "title": "Votre prochain voyage commence ici",
-      "subtitle": "La marketplace de location de voitures de confiance au Rwanda.",
-      "button": "Voir les voitures"
+      "subtitle": "La première marketplace de location de voitures vérifiées au Rwanda.",
+      "button": "Voir les voitures →",
+      "hostButton": "Gagnez avec votre voiture →"
     }
   },
   "search": {
@@ -280,8 +286,8 @@
     "forOperators": "Pour les opérateurs"
   },
   "becomeOperator": {
-    "title": "Publiez votre flotte licenciée sur Gari",
-    "subtitle": "La seule marketplace au Rwanda dédiée aux véhicules de location commerciaux licenciés RURA.",
+    "title": "Votre voiture gagne pendant que vous dormez.",
+    "subtitle": "Publiez votre véhicule licencié RURA sur Gari gratuitement. Vous fixez le prix, la disponibilité et les règles. Nous gérons les réservations, les paiements MoMo et la vérification.",
     "cta": "Demander à publier votre flotte",
     "howItWorks": "Comment ça fonctionne",
     "requirements": "Ce dont vous avez besoin pour publier",
@@ -310,13 +316,16 @@
     "operatorDashboard": "Tableau de bord opérateur",
     "boostListings": "Booster les annonces",
     "analytics": "Analyses",
+    "travelPartners": "Partenaires de voyage",
     "helpCenter": "Centre d'aide",
     "safety": "Sécurité",
     "insurance": "Assurance",
     "contactUs": "Nous contacter",
     "terms": "Conditions d'utilisation",
     "privacy": "Politique de confidentialité",
-    "press": "Presse"
+    "press": "Presse",
+    "newsletter": "Restez informé",
+    "newsletterDesc": "Nouvelles voitures, nouveaux districts et conseils de voyage au Rwanda — directement dans votre boîte mail."
   },
   "common": {
     "loading": "Chargement...",

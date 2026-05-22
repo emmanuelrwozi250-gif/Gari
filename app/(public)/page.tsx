@@ -7,7 +7,6 @@ import { CarCard } from '@/components/CarCard';
 import { STATS } from '@/config/social-proof';
 import { prisma } from '@/lib/prisma';
 import { DEMO_RENTAL_CARS, DEMO_TESTIMONIALS } from '@/lib/demo-data';
-import { PLATFORM_STATS } from '@/lib/config/stats';
 import { EarningsEstimator } from '@/components/home/EarningsEstimator';
 import { ActivityTicker } from '@/components/ActivityTicker';
 import { InternationalBanner } from '@/components/InternationalBanner';
@@ -116,7 +115,6 @@ function demoToCard(c: typeof DEMO_RENTAL_CARS[number]) {
   };
 }
 
-const STAT_ICONS = [Car, Users, Globe, Star, Shield];
 
 function SearchIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -210,14 +208,18 @@ export default async function HomePage() {
 
         <div className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14 md:py-24 text-center">
           <div className="inline-flex items-center gap-2 bg-primary/20 border border-primary/30 rounded-full px-3 py-1.5 text-primary-light text-xs sm:text-sm font-medium mb-6 max-w-[90vw]">
-            <Globe className="w-3.5 h-3.5 flex-shrink-0" />
-            <span>{th('hero.badge')}</span>
+            <BadgeCheck className="w-3.5 h-3.5 flex-shrink-0" />
+            <span>{th('hero.eyebrow')}</span>
           </div>
 
-          <h1 className="text-[1.85rem] sm:text-4xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight mb-4 sm:mb-6">
+          <p className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white leading-tight mb-3">
+            {th('hero.tagline')}
+          </p>
+
+          <h1 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-300 mb-4">
             {th('hero.title')}
           </h1>
-          <p className="text-base sm:text-lg md:text-xl text-gray-400 mb-8 sm:mb-10 max-w-2xl mx-auto px-2">
+          <p className="text-base sm:text-lg text-gray-400 mb-8 sm:mb-10 max-w-2xl mx-auto px-2">
             {th('hero.subtitle')}
           </p>
 
@@ -246,20 +248,17 @@ export default async function HomePage() {
           {/* Stats */}
           <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 mt-8 sm:mt-10">
             {([
-              { label: 'Verified Cars', value: PLATFORM_STATS.verifiedCars },
-              { label: 'Districts Covered', value: PLATFORM_STATS.districtsActive },
-              { label: 'Avg. Rating', value: `${PLATFORM_STATS.avgRating}★` },
-              { label: 'RURA Compliant · Licensed vehicles only', value: '100%' },
-            ] as const).map(({ label, value }, i) => {
-              const Icon = STAT_ICONS[i];
-              return (
-                <div key={label} className="flex items-center gap-2 text-gray-400">
-                  <Icon className="w-4 h-4 text-primary" />
-                  <span className="font-bold text-white">{value}</span>
-                  <span className="text-sm">{label}</span>
-                </div>
-              );
-            })}
+              { icon: Shield, value: '100%',  label: 'RURA-licensed fleet' },
+              { icon: Globe,  value: '30',    label: 'Districts covered' },
+              { icon: Star,   value: '4.8★',  label: 'Average guest rating' },
+              { icon: Lock,   value: 'RWF',   label: 'Escrow-protected payments' },
+            ] as const).map(({ icon: Icon, label, value }) => (
+              <div key={label} className="flex items-center gap-2 text-gray-400">
+                <Icon className="w-4 h-4 text-primary" />
+                <span className="font-bold text-white">{value}</span>
+                <span className="text-sm">{label}</span>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -423,9 +422,14 @@ export default async function HomePage() {
           <p className="text-gray-400 mb-8">
             {th('cta.subtitle')}
           </p>
-          <Link href="/search" className="btn-primary text-base px-12 py-4 inline-flex items-center gap-2">
-            {th('cta.button')} <ArrowRight className="w-5 h-5" />
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Link href="/search" className="btn-primary text-base px-10 py-4 inline-flex items-center justify-center gap-2">
+              {th('cta.button')} <ArrowRight className="w-5 h-5" />
+            </Link>
+            <Link href="/become-operator?intent=host" className="btn-secondary text-base px-10 py-4 inline-flex items-center justify-center gap-2">
+              {th('cta.hostButton')} <ArrowRight className="w-5 h-5" />
+            </Link>
+          </div>
         </div>
       </section>
     </div>

@@ -28,6 +28,7 @@ function toEngineRule(r: DbPricingRule): EnginePricingRule {
     endDate: r.endDate ?? null,
     dayOfWeek: r.dayOfWeek,
     minDays: r.minDays ?? null,
+    year: r.year ?? null,
     description: r.description ?? null,
   };
 }

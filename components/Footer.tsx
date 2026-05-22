@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { Car, MapPin, Phone, Mail, Twitter, Instagram } from 'lucide-react';
+import { NewsletterSignup } from './NewsletterSignup';
 import { DISTRICTS_BY_PROVINCE } from '@/lib/districts';
 import { COMPANY } from '@/lib/config/company';
 import { useTranslations } from 'next-intl';
@@ -20,7 +21,6 @@ export function Footer() {
               <Car className="w-6 h-6 text-primary" />
               <span className="text-2xl font-bold text-white">
                 Gar<span className="text-accent-yellow">i</span>
-                <span className="text-primary text-sm">•</span>
               </span>
             </Link>
             <p className="text-sm leading-relaxed mb-6 max-w-xs">
@@ -82,6 +82,7 @@ export function Footer() {
               <li><Link href="/dashboard/host" className="hover:text-primary transition-colors">{tf('operatorDashboard')}</Link></li>
               <li><Link href="/dashboard/operator/boost" className="hover:text-primary transition-colors">{tf('boostListings')}</Link></li>
               <li><Link href="/dashboard/operator/analytics" className="hover:text-primary transition-colors">{tf('analytics')}</Link></li>
+              <li><Link href="/partners" className="hover:text-primary transition-colors">{tf('travelPartners')}</Link></li>
             </ul>
           </div>
 
@@ -130,6 +131,15 @@ export function Footer() {
                 </li>
               ))}
             </ul>
+          </div>
+        </div>
+
+        {/* Newsletter */}
+        <div className="border-t border-white/10 pt-8 mb-8">
+          <div className="max-w-md mx-auto text-center">
+            <h4 className="font-bold text-white mb-1">{tf('newsletter')}</h4>
+            <p className="text-sm text-gray-400 mb-3">{tf('newsletterDesc')}</p>
+            <NewsletterSignup />
           </div>
         </div>
 

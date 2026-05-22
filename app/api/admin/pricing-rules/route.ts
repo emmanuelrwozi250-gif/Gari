@@ -53,6 +53,7 @@ export async function POST(req: NextRequest) {
       endDate: endDate ? new Date(endDate) : null,
       dayOfWeek: Array.isArray(dayOfWeek) ? dayOfWeek : [],
       minDays: minDays ?? null,
+      year: typeof body.year === 'number' ? body.year : null,
       description: description ?? null,
     },
   });

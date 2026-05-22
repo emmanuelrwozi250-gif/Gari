@@ -9,6 +9,7 @@
     "hostDashboard": "Host Dashboard",
     "signIn": "Sign In",
     "getStarted": "Get Started",
+    "browseCars": "Browse Cars →",
     "dashboard": "Dashboard",
     "messages": "Messages",
     "profile": "Profile",
@@ -19,9 +20,13 @@
   "home": {
     "hero": {
       "badge": "Now available across all 30 Rwanda districts",
-      "title": "Rent a Car Anywhere in Rwanda",
-      "subtitle": "The simplest way to rent a verified car in Rwanda — with or without a driver. Pay with MoMo or card.",
-      "searchPlaceholder": "Any district in Rwanda"
+      "eyebrow": "Now live across all 30 Rwanda districts",
+      "tagline": "Rwanda, at your own pace.",
+      "title": "Rent a verified car anywhere in Rwanda",
+      "subtitle": "Every car is RURA-licensed and commercially insured. Pay with MoMo or card — no hidden fees.",
+      "searchPlaceholder": "Any district in Rwanda",
+      "ctaRenter": "Browse cars →",
+      "ctaHost": "Earn with your car →"
     },
     "stats": {
       "cars": "Cars listed",
@@ -38,26 +43,26 @@
     "howItWorks": {
       "title": "How Gari Works",
       "subtitle": "Rent a car in 4 simple steps",
-      "step1Title": "Find Your Car",
-      "step1Desc": "Search across 30 districts. Filter by type, budget, and whether you want a driver. Every vehicle is RURA-licensed and commercially insured.",
-      "step2Title": "Book Instantly",
-      "step2Desc": "Confirm your dates, pay with MTN MoMo, Airtel Money, or Visa/Mastercard. No hidden fees.",
-      "step3Title": "Pick Up & Go",
-      "step3Desc": "Meet the host, inspect the car together, and start your journey.",
-      "step4Title": "Rate & Review",
-      "step4Desc": "Share your experience and help build trust in the community."
+      "step1Title": "Find your car",
+      "step1Desc": "Search across all 30 districts — from Kigali to Musanze to Rubavu. Filter by type, budget, and driver preference. Every car you see is RURA-licensed and commercially insured before it joins Gari.",
+      "step2Title": "Book and pay your way",
+      "step2Desc": "Confirm your dates and pay with MTN MoMo, Airtel Money, Visa, or Mastercard. Your payment is held in escrow — released to the host only after your trip begins. No surprises.",
+      "step3Title": "Meet, inspect, and go",
+      "step3Desc": "Meet your host at the agreed location, do a quick walk-around together, and you're on your way. Our hosts are NIDA-verified and rated by real renters.",
+      "step4Title": "Rate and help others",
+      "step4Desc": "Your honest review helps the next traveller choose with confidence. Great hosts get rewarded with more visibility. Poor ones get removed. That's how Gari stays trusted."
     },
     "guarantee": {
       "title": "Book With Confidence",
       "subtitle": "Every booking on Gari is backed by our renter-first promise.",
-      "paymentSafeTitle": "Payment Held Safe",
-      "paymentSafeDesc": "Your payment is held in escrow and only released to the host after your trip starts.",
-      "refundTitle": "Full Refund If Host Cancels",
-      "refundDesc": "If a host cancels your confirmed booking, you receive a 100% refund — no questions asked.",
-      "depositTitle": "Deposit Protected",
-      "depositDesc": "Security deposits are returned within 48 hours of a smooth return.",
-      "supportTitle": "24/7 WhatsApp Support",
-      "supportDesc": "Stuck on the road at 2 AM? Our team is one WhatsApp message away, every day of the year."
+      "paymentSafeTitle": "Your money is safe before you drive",
+      "paymentSafeDesc": "We hold your payment in escrow and only release it to the host after your trip has started. You are never paying into a void.",
+      "refundTitle": "Host cancels? You get 100% back.",
+      "refundDesc": "No forms, no waiting periods, no negotiation. If a confirmed host cancels on you, the full amount is returned immediately.",
+      "depositTitle": "Deposits returned within 48 hours",
+      "depositDesc": "Return the car in the condition you received it, and your security deposit is back in your MoMo or bank account within two days.",
+      "supportTitle": "2am breakdown? We're on WhatsApp.",
+      "supportDesc": "Our support team is reachable every hour of every day. Not a bot. Not a form. A person, on WhatsApp, who knows Rwanda's roads."
     },
     "earnings": {
       "title": "How Much Could You Earn?",
@@ -78,8 +83,9 @@
     "viewAll": "View all cars",
     "cta": {
       "title": "Your Next Drive Starts Here",
-      "subtitle": "Rwanda's trusted car rental marketplace.",
-      "button": "Browse Cars"
+      "subtitle": "Rwanda's first verified car rental marketplace.",
+      "button": "Browse Cars →",
+      "hostButton": "Earn with your car →"
     }
   },
   "search": {
@@ -280,8 +286,8 @@
     "forOperators": "For Operators"
   },
   "becomeOperator": {
-    "title": "List Your Licensed Fleet on Gari",
-    "subtitle": "Rwanda's only marketplace dedicated to RURA-licensed commercial rental vehicles.",
+    "title": "Your car earns while you sleep.",
+    "subtitle": "List your RURA-licensed vehicle on Gari for free. You set the price, the availability, and the rules. We handle bookings, MoMo payments, and verification.",
     "cta": "Apply to List Your Fleet",
     "howItWorks": "How It Works",
     "requirements": "What You Need to List",
@@ -310,13 +316,16 @@
     "operatorDashboard": "Operator Dashboard",
     "boostListings": "Boost Listings",
     "analytics": "Analytics",
+    "travelPartners": "Travel Partners",
     "helpCenter": "Help Center",
     "safety": "Safety",
     "insurance": "Insurance",
     "contactUs": "Contact Us",
     "terms": "Terms of Service",
     "privacy": "Privacy Policy",
-    "press": "Press"
+    "press": "Press",
+    "newsletter": "Stay in the loop",
+    "newsletterDesc": "New cars, new districts, and Rwanda travel tips — straight to your inbox."
   },
   "common": {
     "loading": "Loading...",

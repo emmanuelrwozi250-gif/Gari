@@ -139,21 +139,25 @@ export function CarCard({ car, compact = false, pickupDate, returnDate }: CarCar
 
         {/* Price bottom-left */}
         <div className="absolute bottom-3 left-3">
-          {tripTotal ? (
-            <>
-              <span className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm text-primary font-bold text-sm px-2.5 py-1 rounded-lg shadow">
-                {formatRWF(tripTotal)}<span className="text-text-light font-normal text-xs"> total</span>
-              </span>
-              <span className="block text-[10px] text-white/80 mt-0.5 pl-0.5">{formatRWF(car.pricePerDay)}/day · {tripDays}d · +18% VAT</span>
-            </>
-          ) : (
-            <>
-              <span className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm text-primary font-bold text-sm px-2.5 py-1 rounded-lg shadow">
-                {formatRWF(car.pricePerDay)}<span className="text-text-light font-normal text-xs">/day</span>
-              </span>
-              <span className="block text-[10px] text-white/80 mt-0.5 pl-0.5">{toUSD(car.pricePerDay)} · +18% VAT</span>
-            </>
-          )}
+          {(() => {
+            const vatIncPrice = Math.round(car.pricePerDay * 1.18);
+            const vatIncTotal = tripTotal ? Math.round(tripTotal * 1.18) : null;
+            return vatIncTotal ? (
+              <>
+                <span className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm text-primary font-bold text-sm px-2.5 py-1 rounded-lg shadow">
+                  {formatRWF(vatIncTotal)}<span className="text-text-light font-normal text-xs"> total</span>
+                </span>
+                <span className="block text-[10px] text-white/80 mt-0.5 pl-0.5">{formatRWF(vatIncPrice)}/day · {tripDays}d · incl. VAT</span>
+              </>
+            ) : (
+              <>
+                <span className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm text-primary font-bold text-sm px-2.5 py-1 rounded-lg shadow">
+                  {formatRWF(vatIncPrice)}<span className="text-text-light font-normal text-xs">/day</span>
+                </span>
+                <span className="block text-[10px] text-white/80 mt-0.5 pl-0.5">{toUSD(vatIncPrice)} · incl. VAT</span>
+              </>
+            );
+          })()}
         </div>
       </div>
 

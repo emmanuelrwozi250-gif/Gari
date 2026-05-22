@@ -11,6 +11,7 @@ function makeRule(overrides: Partial<PricingRule> & { id: string; type: string; 
     endDate: null,
     dayOfWeek: [],
     minDays: null,
+    year: null,
     ...overrides,
   };
 }
@@ -176,5 +177,29 @@ describe('computePricing', () => {
     // season (+0.20) + holiday (+0.25) = raw 1.45 → clamped to 1.20
     expect(result.finalMultiplier).toBe(1.20);
     expect(result.appliedRules.length).toBeGreaterThanOrEqual(2);
+  });
+
+  it('10. year-specific rule: fires on correct year', () => {
+    const rule = makeRule({
+      id: 'yr1', type: 'holiday', multiplier: 1.15,
+      startDate: d('2025-04-18'), endDate: d('2025-04-18'), year: 2025,
+    });
+    const r = computePricing({
+      pickupDate: d('2025-04-18'), returnDate: d('2025-04-19'), totalDays: 1, rules: [rule],
+    });
+    expect(r.appliedRules).toHaveLength(1);
+    expect(r.finalMultiplier).toBeCloseTo(1.15);
+  });
+
+  it('11. year-specific rule: does NOT fire on wrong year', () => {
+    const rule = makeRule({
+      id: 'yr2', type: 'holiday', multiplier: 1.15,
+      startDate: d('2025-04-18'), endDate: d('2025-04-18'), year: 2025,
+    });
+    const r = computePricing({
+      pickupDate: d('2026-04-18'), returnDate: d('2026-04-19'), totalDays: 1, rules: [rule],
+    });
+    expect(r.appliedRules).toHaveLength(0);
+    expect(r.finalMultiplier).toBe(1.0);
   });
 });

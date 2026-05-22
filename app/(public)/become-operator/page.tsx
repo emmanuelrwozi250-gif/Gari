@@ -252,6 +252,42 @@ export default async function BecomeOperatorPage() {
         ))}
       </section>
 
+      {/* Three things Gari does for you */}
+      <section className="mb-14">
+        <h2 className="text-xl font-bold text-text-primary dark:text-white text-center mb-8">
+          Three things Gari does for you
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          {[
+            {
+              icon: CheckCircle,
+              title: 'Verified renters only',
+              desc: 'NIDA-checked before any booking. You never hand your keys to a stranger.',
+            },
+            {
+              icon: Shield,
+              title: 'Escrow payments',
+              desc: 'Your money is protected every time. We release earnings to your MoMo within 24h of trip completion.',
+            },
+            {
+              icon: CheckCircle,
+              title: 'RURA compliance handled',
+              desc: 'We manage the paperwork layer — your fleet stays compliant without the admin headache.',
+            },
+          ].map(item => (
+            <div key={item.title} className="card p-6 flex items-start gap-4">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <item.icon className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <h3 className="font-bold text-text-primary dark:text-white mb-1">{item.title}</h3>
+                <p className="text-sm text-text-secondary dark:text-gray-400">{item.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="text-center bg-primary/5 dark:bg-primary/10 rounded-2xl p-8">
         <TrendingUp className="w-10 h-10 text-primary mx-auto mb-4" />

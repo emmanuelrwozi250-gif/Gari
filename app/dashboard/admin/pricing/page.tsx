@@ -17,6 +17,7 @@ interface PricingRule {
   endDate: string | null;
   dayOfWeek: number[];
   minDays: number | null;
+  year: number | null;
   description: string | null;
 }
 
@@ -56,7 +57,7 @@ function multiplierBadge(m: number) {
 const EMPTY_FORM = {
   name: '', type: 'season', multiplier: '1.10', priority: '5',
   startDate: '', endDate: '', dayOfWeek: [] as number[], minDays: '',
-  description: '',
+  year: '', description: '',
 };
 
 export default function AdminPricingPage() {
@@ -152,6 +153,7 @@ export default function AdminPricingPage() {
         endDate: form.endDate || null,
         dayOfWeek: form.dayOfWeek,
         minDays: form.minDays ? parseInt(form.minDays, 10) : null,
+        year: form.year ? parseInt(form.year, 10) : null,
         description: form.description || null,
       };
       const res = await fetch('/api/admin/pricing-rules', {

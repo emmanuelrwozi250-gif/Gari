@@ -8,6 +8,7 @@ import { CarCard, CarCardSkeleton } from '@/components/CarCard';
 import { SearchBar } from '@/components/SearchBar';
 import { FilterSidebar } from '@/components/FilterSidebar';
 import { MapPin, List, Map, SlidersHorizontal, ChevronLeft, ChevronRight, X, CalendarCheck, Tent } from 'lucide-react';
+import { DistrictWaitlistCard } from '@/components/DistrictWaitlistCard';
 import { RWANDA_DISTRICTS } from '@/lib/districts';
 import { getCarTypeLabel } from '@/lib/utils';
 
@@ -273,6 +274,11 @@ export function SearchResults({ cars, total, page, searchParams, priceMin, price
                   Clear all filters
                 </button>
               </div>
+            )}
+
+            {/* District waitlist — show when results are sparse */}
+            {cars.length < 4 && district && (
+              <DistrictWaitlistCard district={district} />
             )}
 
             {/* Pagination */}

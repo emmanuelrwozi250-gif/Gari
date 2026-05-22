@@ -31,6 +31,7 @@ export async function PATCH(
   if (body.endDate !== undefined) updateData.endDate = body.endDate ? new Date(body.endDate) : null;
   if (Array.isArray(body.dayOfWeek)) updateData.dayOfWeek = body.dayOfWeek;
   if (body.minDays !== undefined) updateData.minDays = body.minDays ?? null;
+  if (body.year !== undefined) updateData.year = typeof body.year === 'number' ? body.year : null;
 
   if (Object.keys(updateData).length === 0) {
     return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 });

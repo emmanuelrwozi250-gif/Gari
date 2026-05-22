@@ -29,7 +29,6 @@ export function Navbar() {
             <Car className="w-7 h-7 text-primary" strokeWidth={2.5} />
             <span className="text-2xl font-bold tracking-tight">
               Gar<span className="text-accent-yellow">i</span>
-              <span className="text-primary text-sm">•</span>
             </span>
           </Link>
 
@@ -125,8 +124,8 @@ export function Navbar() {
                 <Link href="/login" className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors">
                   {t('signIn')}
                 </Link>
-                <Link href="/register" className="btn-primary text-sm py-2 px-5">
-                  {t('getStarted')}
+                <Link href="/search" className="btn-primary text-sm py-2 px-5">
+                  {t('browseCars')}
                 </Link>
               </div>
             )}
@@ -196,9 +195,9 @@ export function Navbar() {
                 className="flex-1 text-center px-4 py-2 border border-white/20 rounded-xl text-sm text-gray-300">
                 {t('signIn')}
               </Link>
-              <Link href="/register" onClick={() => setMenuOpen(false)}
+              <Link href="/search" onClick={() => setMenuOpen(false)}
                 className="flex-1 text-center px-4 py-2 bg-primary rounded-xl text-sm font-semibold text-white">
-                {t('getStarted')}
+                {t('browseCars')}
               </Link>
             </div>
           )}
