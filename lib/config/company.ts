@@ -1,3 +1,5 @@
+export const SITE_URL = 'https://gari-africa.com';
+
 export const COMPANY = {
   name: 'Gari Technologies Ltd.',
   phone: '+250 788 123 000',

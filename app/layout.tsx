@@ -25,7 +25,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXTAUTH_URL || 'https://gari-africa.com'),
+  metadataBase: new URL('https://gari-africa.com'),
   title: {
     default: 'Gari — Car Rental in Rwanda',
     template: '%s | Gari',

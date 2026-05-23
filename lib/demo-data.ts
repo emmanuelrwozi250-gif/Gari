@@ -34,6 +34,7 @@ export interface DemoTestimonial {
   avatar: string | null;
   text: string;
   rating: number;
+  hesitation?: string;
 }
 
 export const DEMO_STATS = [
@@ -359,6 +360,7 @@ export const DEMO_TESTIMONIALS: DemoTestimonial[] = [
     name: 'Jean-Pierre Habimana',
     role: 'Licensed Operator — Gasabo, Kigali · 🏛️ RURA Verified',
     avatar: null,
+    hesitation: "I wasn't sure anyone would trust a new platform — but the RURA verification badge did the work for me.",
     text: 'We registered our fleet of 3 vehicles on Gari in October 2025. Within 90 days we earned over RWF 2.4M. The platform handles bookings, payments, and compliance. We just hand over the keys.',
     rating: 5,
   },
@@ -366,6 +368,7 @@ export const DEMO_TESTIMONIALS: DemoTestimonial[] = [
     name: 'Amina Kalisa',
     role: 'Renter — Musanze',
     avatar: null,
+    hesitation: "I'd booked rental cars in three other African countries and every time something went wrong at pickup. I almost didn't try again.",
     text: 'Found a RURA-licensed Prado for our Volcanoes NP gorilla trekking trip in minutes. MTN MoMo payment was instant. Knowing the car was commercially insured gave us real peace of mind.',
     rating: 5,
   },
@@ -373,6 +376,7 @@ export const DEMO_TESTIMONIALS: DemoTestimonial[] = [
     name: 'David Nkurunziza',
     role: 'Fleet Owner — Rubavu · 🏛️ RURA Verified',
     avatar: null,
+    hesitation: "I thought managing bookings online would be complicated for someone running a business in Rubavu, not Kigali.",
     text: 'As a licensed fleet operator in Rubavu, Gari gave us digital visibility overnight. Our RURA-certified Hiace minibuses are now booked weeks in advance for Lake Kivu tours.',
     rating: 5,
   },

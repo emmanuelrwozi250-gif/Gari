@@ -368,6 +368,11 @@ export default async function HomePage() {
                   <Star key={i} className="w-4 h-4 fill-accent-yellow text-accent-yellow" />
                 ))}
               </div>
+              {item.hesitation && (
+                <p className="text-xs italic text-text-light dark:text-gray-500 mb-3 leading-relaxed">
+                  &ldquo;{item.hesitation}&rdquo;
+                </p>
+              )}
               <p className="text-text-secondary dark:text-gray-400 text-sm leading-relaxed mb-4">&ldquo;{item.text}&rdquo;</p>
               <div className="flex items-center gap-3">
                 <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm flex-shrink-0 ${

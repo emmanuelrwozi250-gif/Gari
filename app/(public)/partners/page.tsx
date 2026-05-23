@@ -26,28 +26,28 @@ export const metadata: Metadata = {
 const BENEFITS = [
   {
     icon: Car,
-    title: 'Verified fleet on demand',
-    desc: 'Access Rwanda\'s largest network of RURA-licensed vehicles — from budget saloons to Land Cruisers — without owning a single car.',
-  },
-  {
-    icon: CheckCircle,
-    title: 'Dedicated partner account',
-    desc: 'A named account manager, priority booking support, and a direct WhatsApp line for urgent guest requests.',
+    title: 'Earn on every booking',
+    desc: '8% commission on every completed booking, no cap. Paid monthly to your MTN MoMo or bank account — no chasing invoices.',
   },
   {
     icon: Globe,
-    title: 'Seamless guest experience',
-    desc: 'Pre-vetted drivers, English-speaking hosts, airport pickups, and clean vehicles — your guests will thank you.',
+    title: 'Real-time partner dashboard',
+    desc: 'Track every click, booking, and commission earned. See exactly what your referrals are doing and what you\'re owed.',
+  },
+  {
+    icon: CheckCircle,
+    title: 'Verified cars your guests can trust',
+    desc: 'Every car on Gari is RURA-licensed and commercially insured before it goes live. Your guests know what they\'re getting.',
   },
   {
     icon: Building2,
-    title: 'Volume pricing',
-    desc: 'Preferential rates for partners who bring consistent volume. The more you book, the less you pay.',
+    title: 'Priority access during peak season',
+    desc: 'Partner guests get first availability when demand is high. Your guests won\'t be turned away during gorilla season or Kwita Izina.',
   },
   {
     icon: Users,
-    title: 'Group & convoy coordination',
-    desc: 'Need 4 cars for a 16-person group? We coordinate multi-vehicle bookings so you don\'t have to.',
+    title: 'One account manager, always',
+    desc: 'A named person — not a support queue. Your account manager knows your guests\' needs and answers on WhatsApp.',
   },
 ];
 
@@ -81,12 +81,12 @@ export default function PartnersPage() {
           Trade & B2B Programme
         </span>
         <h1 className="text-3xl sm:text-4xl font-extrabold text-text-primary dark:text-white mb-4">
-          Send your guests. We handle the car.
+          Your guests need cars. You earn when they book.
         </h1>
         <p className="text-lg text-text-secondary dark:text-gray-400 max-w-2xl mx-auto mb-8">
-          Rwanda&apos;s best lodges and tour operators use Gari to organise guest transport.
-          Verified vehicles, professional drivers, and a single point of contact — so you
-          can focus on the experience, not the logistics.
+          Join the Gari Partners programme. Refer your guests to Rwanda&apos;s verified car
+          rental platform and earn 8% commission on every completed booking — paid monthly
+          to your MoMo or bank account.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <a
@@ -256,6 +256,23 @@ function PartnerEnquiryForm() {
           <option>21–50 bookings / month</option>
           <option>50+ bookings / month</option>
         </select>
+      </div>
+      <div>
+        <label className="block text-xs font-medium text-text-secondary dark:text-gray-400 mb-1">
+          Preferred payout method <span className="text-red-500">*</span>
+        </label>
+        <select name="payoutMethod" required className="input w-full">
+          <option value="">Select payout method…</option>
+          <option>MTN MoMo</option>
+          <option>Airtel Money</option>
+          <option>Bank Transfer</option>
+        </select>
+      </div>
+      <div>
+        <label className="block text-xs font-medium text-text-secondary dark:text-gray-400 mb-1">
+          How did you hear about Gari?
+        </label>
+        <input name="referralSource" className="input w-full" placeholder="e.g. colleague, Google, social media…" />
       </div>
       <div>
         <label className="block text-xs font-medium text-text-secondary dark:text-gray-400 mb-1">

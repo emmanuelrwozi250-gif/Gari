@@ -60,9 +60,9 @@ const REQUIREMENTS = [
 ];
 
 const EARNINGS_TABLE = [
-  { type: 'Economy Car',  model: 'Toyota Vitz / Fielder', price: '30,000',  days: 20, monthly: '528,000' },
-  { type: 'SUV / 4×4',   model: 'RAV4 / Vitara / Prado', price: '90,000',  days: 18, monthly: '1,425,600' },
-  { type: 'Minibus',     model: 'Toyota Hiace',           price: '130,000', days: 22, monthly: '2,513,600' },
+  { type: 'Economy Car',  model: 'Toyota Vitz / Fielder', price: '30,000',  days: 20, monthly: '528,000',   benchmark: 'RWF 430,000 – 610,000' },
+  { type: 'SUV / 4×4',   model: 'RAV4 / Vitara / Prado', price: '90,000',  days: 18, monthly: '1,425,600', benchmark: 'RWF 1,180,000 – 1,620,000' },
+  { type: 'Minibus',     model: 'Toyota Hiace',           price: '130,000', days: 22, monthly: '2,513,600', benchmark: 'RWF 2,100,000 – 2,800,000' },
 ];
 
 const STEPS = [
@@ -229,7 +229,12 @@ export default async function BecomeOperatorPage() {
                   <td className="px-4 py-4 text-text-secondary dark:text-gray-400">{row.model}</td>
                   <td className="px-4 py-4 text-text-primary dark:text-white">{row.price}</td>
                   <td className="px-4 py-4 text-text-secondary dark:text-gray-400">{row.days}</td>
-                  <td className="px-4 py-4 font-bold text-primary">{row.monthly}</td>
+                  <td className="px-4 py-4 font-bold text-primary">
+                    {row.monthly}
+                    <div className="text-[11px] text-text-light font-normal mt-0.5">
+                      Comparable hosts: {row.benchmark}/mo
+                    </div>
+                  </td>
                 </tr>
               ))}
             </tbody>
