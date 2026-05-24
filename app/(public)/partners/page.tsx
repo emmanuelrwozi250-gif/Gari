@@ -9,17 +9,17 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Partner with Gari | Lodges, Tour Operators & DMCs',
     description: "Rwanda's best lodges and tour operators use Gari to organise guest transport. Join the Gari Partners programme.",
-    url: 'https://gari-africa.com/partners',
+    url: '/partners',
     siteName: 'Gari',
     images: [{
-      url: 'https://gari-africa.com/og?title=Partner+with+Gari&sub=Lodges+%C2%B7+Tour+Operators+%C2%B7+DMCs',
+      url: '/og?title=Partner+with+Gari&sub=Lodges+%C2%B7+Tour+Operators+%C2%B7+DMCs',
       width: 1200,
       height: 630,
       alt: 'Partner with Gari',
     }],
   },
   alternates: {
-    canonical: 'https://gari-africa.com/partners',
+    canonical: '/partners',
   },
 };
 

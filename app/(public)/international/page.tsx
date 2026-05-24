@@ -17,13 +17,13 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       title: t('internationalTitle'),
       description: t('internationalDesc'),
-      url: 'https://gari-africa.com/international',
+      url: '/international',
       locale: locale === 'fr' ? 'fr_RW' : 'en_RW',
-      images: [{ url: 'https://gari-africa.com/og?title=Car+Rental+for+Visitors&sub=Rwanda\'s+most+trusted+platform&type=intl', width: 1200, height: 630 }],
+      images: [{ url: '/og?title=Car+Rental+for+Visitors&sub=Rwanda\'s+most+trusted+platform&type=intl', width: 1200, height: 630 }],
     },
     alternates: {
-      canonical: 'https://gari-africa.com/international',
-      languages: { 'en': 'https://gari-africa.com/international', 'fr': 'https://gari-africa.com/international', 'x-default': 'https://gari-africa.com/international' },
+      canonical: '/international',
+      languages: { 'en': '/international', 'fr': '/international', 'x-default': '/international' },
     },
   };
 }

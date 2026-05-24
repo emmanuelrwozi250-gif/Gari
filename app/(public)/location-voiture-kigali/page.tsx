@@ -62,7 +62,7 @@ export default async function LocationVoitureKigaliPage() {
     '@type': 'AutoDealer',
     name: 'Gari — Location de Voiture Kigali',
     description: 'La principale place de marché de location de voiture au Rwanda.',
-    url: 'https://gari-africa.com/location-voiture-kigali',
+    url: '/location-voiture-kigali',
     address: { '@type': 'PostalAddress', addressLocality: 'Kigali', addressCountry: 'RW' },
     priceRange: '35 000 FRW – 400 000 FRW par jour',
   };

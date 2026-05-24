@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Terms of Service | Gari Rwanda',
     description: 'Gari Terms of Service — RURA-compliant B2B2C car rental. Booking terms, VAT/EBM policy, cancellation, governing law.',
-    url: 'https://gari-africa.com/terms',
+    url: '/terms',
     siteName: 'Gari',
     locale: 'en_RW',
     type: 'website',

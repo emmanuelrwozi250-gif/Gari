@@ -69,7 +69,7 @@ export default async function SafariRwandaPage() {
     '@type': 'AutoDealer',
     name: 'Gari — 4x4 Safari Car Hire Rwanda',
     description: 'Rwanda\'s leading 4x4 and SUV hire for national park safaris.',
-    url: 'https://gari-africa.com/4x4-safari-rwanda',
+    url: '/4x4-safari-rwanda',
     address: { '@type': 'PostalAddress', addressLocality: 'Kigali', addressCountry: 'RW' },
     priceRange: 'RWF 70,000 – RWF 200,000 per day',
   };

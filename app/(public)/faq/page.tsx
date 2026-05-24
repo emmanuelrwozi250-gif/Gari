@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'FAQ | Gari Rwanda Car Rental',
     description: "Common questions about renting and hosting on Gari — Rwanda's trusted B2B2C car rental platform.",
-    url: 'https://gari-africa.com/faq',
+    url: '/faq',
     siteName: 'Gari',
     locale: 'en_RW',
     type: 'website',

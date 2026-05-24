@@ -67,7 +67,7 @@ export default async function CarRentalMusanzePage() {
     '@type': 'AutoDealer',
     name: 'Gari — Car Rental Musanze',
     description: 'Car rental in Musanze (Ruhengeri) for gorilla trekking and Volcanoes National Park.',
-    url: 'https://gari-africa.com/car-rental-musanze',
+    url: '/car-rental-musanze',
     address: { '@type': 'PostalAddress', addressLocality: 'Musanze', addressCountry: 'RW' },
     priceRange: 'RWF 50,000 – RWF 150,000 per day',
   };

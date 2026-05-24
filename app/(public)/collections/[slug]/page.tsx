@@ -80,7 +80,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `${collection.emoji} ${collection.title} | Gari Rwanda`,
       description: collection.description,
       images: [{ url: collection.heroImage, width: 1200, height: 630 }],
-      url: `https://gari-africa.com/collections/${slug}`,
+      url: `/collections/${slug}`,
       siteName: 'Gari',
       locale: 'en_RW',
       type: 'website',

@@ -1,7 +1,8 @@
 import { MetadataRoute } from 'next';
 import { prisma } from '@/lib/prisma';
+import { SITE_URL } from '@/lib/config/company';
 
-const BASE = 'https://gari-africa.com';
+const BASE = SITE_URL;
 
 function url(path: string): string {
   return `${BASE}${path}`;

@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import { SITE_URL } from '@/lib/config/company';
 import { Inter } from 'next/font/google';
 import Script from 'next/script';
 import { cookies } from 'next/headers';
@@ -25,7 +26,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://gari-africa.com'),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: 'Gari — Car Rental in Rwanda',
     template: '%s | Gari',
