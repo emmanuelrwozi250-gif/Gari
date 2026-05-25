@@ -1186,3 +1186,12 @@ model PricingRule {
   @@index([type])
   @@index([enabled])
 }
+
+// ─── NEWSLETTER SIGNUPS ────────────────────────────────────────────────────────
+
+model NewsletterSignup {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  district  String?
+  createdAt DateTime @default(now())
+}

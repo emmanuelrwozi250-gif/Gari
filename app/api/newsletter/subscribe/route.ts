@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
 
 export async function POST(request: NextRequest) {
   try {
@@ -9,11 +10,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Valid email is required.' }, { status: 400 });
     }
 
-    // Log the signup (replace with DB write or email service when ready)
-    console.log('[newsletter] New signup:', { email: email.trim().toLowerCase(), district: district || null, at: new Date().toISOString() });
+    const normalised = email.trim().toLowerCase();
 
-    // TODO: persist to DB or forward to mailing list service (e.g. Resend, Mailchimp)
-    // Example: await prisma.newsletterSignup.create({ data: { email: email.trim().toLowerCase(), district } });
+    await prisma.newsletterSignup.upsert({
+      where:  { email: normalised },
+      create: { email: normalised, district: district || null },
+      update: {}, // already subscribed — no-op
+    });
 
     return NextResponse.json({ ok: true });
   } catch {
